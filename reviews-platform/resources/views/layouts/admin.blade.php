@@ -2065,32 +2065,6 @@
     })();
     </script>
     
-    <script>
-    window.downloadQRCode = function(url, filename) {
-        if (!url) return;
-        filename = filename || 'qrcode-avaliacao.png';
-        function doDownload() {
-            if (typeof QRCode === 'undefined') {
-                var s = document.createElement('script');
-                s.src = 'https://unpkg.com/qrcode@1.5.3/build/qrcode.min.js';
-                s.crossOrigin = 'anonymous';
-                s.onload = function() { doDownload(); };
-                s.onerror = function() { console.error('QRCode library failed to load'); };
-                document.head.appendChild(s);
-                return;
-            }
-            QRCode.toDataURL(url, { width: 256, margin: 2 }, function(err, dataUrl) {
-                if (err) { console.error(err); return; }
-                var a = document.createElement('a');
-                a.href = dataUrl;
-                a.download = filename;
-                a.click();
-            });
-        }
-        doDownload();
-    };
-    </script>
-    
     @yield('scripts')
 </body>
 </html>

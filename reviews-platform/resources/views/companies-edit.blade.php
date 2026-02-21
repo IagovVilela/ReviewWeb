@@ -603,9 +603,9 @@
                     <a href="{{ $company->public_url }}" target="_blank" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm inline-flex items-center gap-2">
                         <i class="fas fa-external-link-alt"></i> {{ __('dashboard.view') }}
                     </a>
-                    <button type="button" onclick="downloadQRCode('{{ $company->public_url }}', 'qrcode-{{ \Illuminate\Support\Str::slug($company->name) }}.png')" class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm inline-flex items-center gap-2">
+                    <a href="{{ route('companies.qrcode', $company->id) }}" class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm inline-flex items-center gap-2">
                         <i class="fas fa-qrcode"></i> {{ __('companies.download_qr') }}
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>

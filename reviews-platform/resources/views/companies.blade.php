@@ -235,10 +235,10 @@
                                 <span class="hidden sm:inline">{{ __('companies.view_page') }}</span>
                                 <span class="sm:hidden">{{ __('companies.view') }}</span>
                             </a>
-                            <button type="button" onclick="downloadQRCode('{{ $company->public_url }}', 'qrcode-{{ Str::slug($company->name) }}.png')" class="flex-1 bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200 px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors text-center">
+                            <a href="{{ route('companies.qrcode', $company->id) }}" class="flex-1 bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200 px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors text-center inline-flex items-center justify-center">
                                 <i class="fas fa-qrcode mr-1"></i>
                                 {{ __('companies.download_qr') }}
-                            </button>
+                            </a>
                         @endif
                         <a href="{{ route('companies.edit', $company->id) }}" class="flex-1 bg-purple-50 text-purple-600 px-3 py-2 rounded-lg text-sm font-medium hover:bg-purple-100 transition-colors text-center">
                             <i class="fas fa-edit mr-1"></i>

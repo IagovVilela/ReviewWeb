@@ -743,6 +743,49 @@ class CompanyController extends Controller
             ->with('success', 'Empresa excluída com sucesso!');
     }
 
+    /**
+     * Gera e retorna o QR Code da página de avaliação da empresa (download PNG).
+     * Não depende de biblioteca no navegador.
+     */
+    public function downloadQrCode($id)
+    {
+        $user = auth()->user();
+        $company = Company::findOrFail($id);
+
+        if ($user->role === 'user' && $company->user_id !== $user->id) {
+            return redirect()->route('companies.index')
+                ->with('error', 'Você não tem permissão para acessar esta empresa.');
+        }
+
+        $url = $company->public_url;
+        $filename = 'qrcode-' . Str::slug($company->name) . '.png';
+
+        if (!class_exists(\Endroid\QrCode\Builder\Builder::class)) {
+            return redirect()->back()
+                ->with('error', 'Pacote QR Code não instalado. Execute: composer require endroid/qr-code');
+        }
+
+        try {
+            $builder = new \Endroid\QrCode\Builder\Builder(
+                data: $url,
+                size: 256,
+                margin: 2
+            );
+            $result = $builder->build();
+            $pngData = $result->getString();
+        } catch (\Throwable $e) {
+            \Log::error('QR Code generation failed', ['company_id' => $company->id, 'error' => $e->getMessage()]);
+            return redirect()->back()
+                ->with('error', 'Não foi possível gerar o QR Code. Tente novamente.');
+        }
+
+        return response($pngData, 200, [
+            'Content-Type'        => 'image/png',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            'Cache-Control'       => 'no-cache',
+        ]);
+    }
+
     protected function resolveUserFromMediaToken(?string $token, Company $company)
     {
         if (!$token) {

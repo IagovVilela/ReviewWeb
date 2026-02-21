@@ -221,10 +221,10 @@
                             <i class="fas fa-external-link-alt"></i>
                             <span>{{ __('dashboard.view') }}</span>
                         </a>
-                        <button type="button" onclick="downloadQRCode('{{ $selectedCompany->public_url }}', 'qrcode-{{ Str::slug($selectedCompany->name) }}.png')" class="flex-1 sm:flex-none px-4 sm:px-6 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors inline-flex items-center justify-center gap-2 text-sm sm:text-base">
+                        <a href="{{ route('companies.qrcode', $selectedCompany->id) }}" class="flex-1 sm:flex-none px-4 sm:px-6 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors inline-flex items-center justify-center gap-2 text-sm sm:text-base">
                             <i class="fas fa-qrcode"></i>
                             <span>{{ __('dashboard.download_qr') }}</span>
-                        </button>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -258,10 +258,10 @@
                             <i class="fas fa-external-link-alt"></i>
                             {{ __('dashboard.see') }}
                         </a>
-                        <button type="button" onclick="downloadQRCode('{{ $comp->public_url }}', 'qrcode-{{ Str::slug($comp->name) }}.png')" class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors inline-flex items-center gap-2 text-sm">
+                        <a href="{{ route('companies.qrcode', $comp->id) }}" class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors inline-flex items-center gap-2 text-sm">
                             <i class="fas fa-qrcode"></i>
                             {{ __('dashboard.download_qr') }}
-                        </button>
+                        </a>
                     </div>
                 </div>
             </div>
