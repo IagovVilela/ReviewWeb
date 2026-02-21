@@ -6,6 +6,7 @@ use App\Models\Company;
 use App\Models\ReviewPage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -759,22 +760,31 @@ class CompanyController extends Controller
 
         $url = $company->public_url;
         $filename = 'qrcode-' . Str::slug($company->name) . '.png';
+        $pngData = null;
 
-        if (!class_exists(\Endroid\QrCode\Builder\Builder::class)) {
-            return redirect()->back()
-                ->with('error', 'Pacote QR Code não instalado. Execute: composer require endroid/qr-code');
+        if (class_exists(\Endroid\QrCode\Builder\Builder::class)) {
+            try {
+                $builder = new \Endroid\QrCode\Builder\Builder(
+                    data: $url,
+                    size: 256,
+                    margin: 2
+                );
+                $result = $builder->build();
+                $pngData = $result->getString();
+            } catch (\Throwable $e) {
+                \Log::warning('QR Code (endroid) failed', ['company_id' => $company->id, 'error' => $e->getMessage()]);
+            }
         }
 
-        try {
-            $builder = new \Endroid\QrCode\Builder\Builder(
-                data: $url,
-                size: 256,
-                margin: 2
-            );
-            $result = $builder->build();
-            $pngData = $result->getString();
-        } catch (\Throwable $e) {
-            \Log::error('QR Code generation failed', ['company_id' => $company->id, 'error' => $e->getMessage()]);
+        if ($pngData === null) {
+            $apiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=256x256&margin=2&data=' . rawurlencode($url);
+            $response = Http::timeout(10)->get($apiUrl);
+            if ($response->successful()) {
+                $pngData = $response->body();
+            }
+        }
+
+        if (empty($pngData)) {
             return redirect()->back()
                 ->with('error', 'Não foi possível gerar o QR Code. Tente novamente.');
         }
