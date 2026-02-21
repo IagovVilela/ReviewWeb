@@ -84,3 +84,10 @@ class SendGridService
         return $this->send($to, $subject, $htmlContent);
     }
 }
+
+
+
+
+
+
+

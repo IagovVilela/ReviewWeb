@@ -6,3 +6,10 @@ ignored:
   # Em produção, secrets são fornecidos via variáveis de ambiente do Railway
   - DL3008
   - SC2086
+
+
+
+
+
+
+

@@ -8,10 +8,23 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 use Intervention\Image\Facades\Image;
 
 class CompanyController extends Controller
 {
+    /**
+     * Slugs reservados (rotas existentes) que não podem ser usados como URL customizada.
+     */
+    private function getReservedSlugs(): array
+    {
+        return [
+            'login', 'logout', 'dashboard', 'companies', 'r', 'api', 'create-admin',
+            'forgot-password', 'reset-password', 'contact-trial', 'profile', 'support',
+            'faqs', 'users', 'reviews', 'password', 'change-locale',
+        ];
+    }
+
     public function index(Request $request)
     {
         $user = auth()->user();
@@ -122,12 +135,28 @@ class CompanyController extends Controller
         // Determinar se é rascunho ou publicação
         $isDraft = $request->has('save_as_draft') && $request->save_as_draft === 'true';
         
+        // Normalizar URL customizada antes da validação (minúsculas, trim)
+        $request->merge([
+            'url' => $request->filled('url') ? strtolower(trim($request->input('url'))) : null
+        ]);
+        
+        $urlRules = [
+            'nullable',
+            'string',
+            'max:255',
+            Rule::when($request->filled('url'), [
+                'regex:/^[a-z0-9\-]+$/',
+                Rule::notIn($this->getReservedSlugs()),
+                'unique:companies,url',
+            ]),
+        ];
+        
         // Validação diferente para rascunho vs publicação
         if ($isDraft) {
             // Validação para rascunho - campos obrigatórios do banco são exigidos
             $request->validate([
                 'name' => 'required|string|max:255',
-                'url' => 'nullable|string|max:255',
+                'url' => $urlRules,
                 'negative_email' => 'required|email',
                 'contact_number' => 'nullable|string|max:20',
                 'business_website' => 'nullable|string|max:500',
@@ -141,7 +170,7 @@ class CompanyController extends Controller
             // Validação completa para publicação
             $request->validate([
                 'name' => 'required|string|max:255',
-                'url' => 'nullable|string|max:255',
+                'url' => $urlRules,
                 'negative_email' => 'required|email',
                 'contact_number' => 'nullable|string|max:20',
                 'business_website' => 'nullable|string|max:500',
@@ -274,6 +303,20 @@ class CompanyController extends Controller
         return view('public.review-page', compact('company', 'token', 'reviews'));
     }
 
+    /**
+     * Show public review page by custom URL slug (e.g. /befly).
+     */
+    public function showBySlug($slug)
+    {
+        $company = Company::where('url', $slug)->where('is_active', true)->first();
+        if (!$company) {
+            return view('app');
+        }
+        $token = $company->token;
+        $reviews = $company->reviews()->orderBy('created_at', 'desc')->get();
+        return view('public.review-page', compact('company', 'token', 'reviews'));
+    }
+
     public function edit($id)
     {
         $user = auth()->user();
@@ -308,12 +351,28 @@ class CompanyController extends Controller
         // Determinar se é rascunho ou publicação
         $isDraft = $request->has('save_as_draft') && $request->save_as_draft === 'true';
         
+        // Normalizar URL customizada antes da validação (minúsculas, trim)
+        $request->merge([
+            'url' => $request->filled('url') ? strtolower(trim($request->input('url'))) : null
+        ]);
+        
+        $urlRulesUpdate = [
+            'nullable',
+            'string',
+            'max:255',
+            Rule::when($request->filled('url'), [
+                'regex:/^[a-z0-9\-]+$/',
+                Rule::notIn($this->getReservedSlugs()),
+                Rule::unique('companies', 'url')->ignore($company->id),
+            ]),
+        ];
+        
         // Validação diferente para rascunho vs publicação
         if ($isDraft) {
             // Validação para rascunho - campos obrigatórios do banco são exigidos
             $request->validate([
                 'name' => 'required|string|max:255',
-                'url' => 'nullable|string|max:255',
+                'url' => $urlRulesUpdate,
                 'negative_email' => 'required|email',
                 'contact_number' => 'nullable|string|max:20',
                 'business_website' => 'nullable|string|max:500',
@@ -327,7 +386,7 @@ class CompanyController extends Controller
             // Validação completa para publicação
             $request->validate([
                 'name' => 'required|string|max:255',
-                'url' => 'nullable|string|max:255',
+                'url' => $urlRulesUpdate,
                 'negative_email' => 'required|email',
                 'contact_number' => 'nullable|string|max:20',
                 'business_website' => 'nullable|string|max:500',

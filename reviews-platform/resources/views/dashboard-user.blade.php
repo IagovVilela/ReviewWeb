@@ -212,7 +212,7 @@
                            id="publicUrl"
                            readonly 
                            class="flex-1 px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-800 dark:text-gray-200 text-sm sm:text-base">
-                    <div class="flex items-stretch sm:items-center gap-2">
+                    <div class="flex flex-wrap items-stretch sm:items-center gap-2">
                         <button onclick="copyLink()" class="flex-1 sm:flex-none px-4 sm:px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors inline-flex items-center justify-center gap-2 text-sm sm:text-base">
                             <i class="fas fa-copy"></i>
                             <span>{{ __('dashboard.copy') }}</span>
@@ -221,6 +221,10 @@
                             <i class="fas fa-external-link-alt"></i>
                             <span>{{ __('dashboard.view') }}</span>
                         </a>
+                        <button type="button" onclick="downloadQRCode('{{ $selectedCompany->public_url }}', 'qrcode-{{ Str::slug($selectedCompany->name) }}.png')" class="flex-1 sm:flex-none px-4 sm:px-6 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors inline-flex items-center justify-center gap-2 text-sm sm:text-base">
+                            <i class="fas fa-qrcode"></i>
+                            <span>{{ __('dashboard.download_qr') }}</span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -245,7 +249,7 @@
                                readonly 
                                class="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-800 dark:text-gray-200">
                     </div>
-                    <div class="flex items-center gap-2">
+                    <div class="flex flex-wrap items-center gap-2">
                         <button onclick="copyLinkById('publicUrl{{ $comp->id }}')" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors inline-flex items-center gap-2 text-sm">
                             <i class="fas fa-copy"></i>
                             {{ __('dashboard.copy') }}
@@ -254,6 +258,10 @@
                             <i class="fas fa-external-link-alt"></i>
                             {{ __('dashboard.see') }}
                         </a>
+                        <button type="button" onclick="downloadQRCode('{{ $comp->public_url }}', 'qrcode-{{ Str::slug($comp->name) }}.png')" class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors inline-flex items-center gap-2 text-sm">
+                            <i class="fas fa-qrcode"></i>
+                            {{ __('dashboard.download_qr') }}
+                        </button>
                     </div>
                 </div>
             </div>

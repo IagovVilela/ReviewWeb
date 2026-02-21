@@ -570,8 +570,14 @@
                 </div>
 
                 <div>
+                    @php
+                        $urlHost = preg_replace('#^https?://#', '', rtrim(config('app.url'), '/'));
+                    @endphp
                     <label class="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">{{ __('companies.url') }}</label>
-                    <input type="text" name="url" value="{{ old('url', $company->url) }}" placeholder="{{ __('companies.url_placeholder') }}" class="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" style="font-size: 16px; min-height: 44px;">
+                    <div class="flex">
+                        <span class="inline-flex items-center px-3 text-sm text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 border border-r-0 border-gray-300 dark:border-gray-600 rounded-l-lg">{{ $urlHost }}/</span>
+                        <input type="text" name="url" value="{{ old('url', $company->url) }}" placeholder="{{ __('companies.url_placeholder') }}" class="flex-1 px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-600 rounded-r-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" style="font-size: 16px; min-height: 44px;">
+                    </div>
                     <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">{{ __('companies.url_hint') }}</p>
                 </div>
 
@@ -582,6 +588,28 @@
                 </div>
             </div>
         </div>
+
+        @if($company->status === 'published')
+        <!-- Link da página de avaliação -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-3 sm:p-6">
+            <h2 class="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">{{ __('companies.review_page_link') }}</h2>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">{{ __('companies.review_page_link_desc') }}</p>
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                <input type="text" value="{{ $company->public_url }}" readonly id="editPublicUrl" class="flex-1 px-3 sm:px-4 py-2.5 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-800 dark:text-gray-200 text-sm">
+                <div class="flex flex-wrap gap-2">
+                    <button type="button" onclick="navigator.clipboard && navigator.clipboard.writeText(document.getElementById('editPublicUrl').value); alert('{{ __("dashboard.link_copied") }}');" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm inline-flex items-center gap-2">
+                        <i class="fas fa-copy"></i> {{ __('dashboard.copy') }}
+                    </button>
+                    <a href="{{ $company->public_url }}" target="_blank" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm inline-flex items-center gap-2">
+                        <i class="fas fa-external-link-alt"></i> {{ __('dashboard.view') }}
+                    </a>
+                    <button type="button" onclick="downloadQRCode('{{ $company->public_url }}', 'qrcode-{{ \Illuminate\Support\Str::slug($company->name) }}.png')" class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm inline-flex items-center gap-2">
+                        <i class="fas fa-qrcode"></i> {{ __('companies.download_qr') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+        @endif
 
         <!-- Upload de Imagens -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-3 sm:p-6">

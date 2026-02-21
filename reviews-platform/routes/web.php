@@ -229,6 +229,11 @@ Route::middleware(['auth'])->group(function () {
 // Public review page (no auth required)
 Route::get('/r/{token}', [App\Http\Controllers\CompanyController::class, 'show'])->name('public.review-page');
 
+// Public review page by custom URL (e.g. /befly)
+Route::get('/{slug}', [App\Http\Controllers\CompanyController::class, 'showBySlug'])
+    ->where('slug', '[a-z0-9\-]+')
+    ->name('public.review-page.slug');
+
 // API Routes
 Route::post('/api/reviews', [App\Http\Controllers\ReviewController::class, 'store']);
 

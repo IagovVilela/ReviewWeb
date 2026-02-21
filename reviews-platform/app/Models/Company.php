@@ -65,6 +65,10 @@ class Company extends Model
 
     public function getPublicUrlAttribute()
     {
+        $url = $this->url ? trim($this->url) : '';
+        if ($url !== '') {
+            return url('/' . $url);
+        }
         return url('/r/' . $this->token);
     }
 

@@ -461,13 +461,16 @@
                     </div>
                     
                     <!-- URL -->
+                    @php
+                        $urlHost = preg_replace('#^https?://#', '', rtrim(config('app.url'), '/'));
+                    @endphp
                     <div>
                         <label for="url" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             {{ __('companies.url') }} *
                         </label>
                         <div class="flex">
                             <span class="inline-flex items-center px-3 text-sm text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 border border-r-0 border-gray-300 dark:border-gray-600 rounded-l-lg">
-                                rateus.io/
+                                {{ $urlHost }}/
                             </span>
                             <input 
                                 type="text" 

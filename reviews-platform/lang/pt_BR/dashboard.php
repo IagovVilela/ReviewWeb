@@ -60,6 +60,7 @@ return [
     'no_reviews_all' => 'Nenhuma das suas empresas recebeu avaliações ainda.',
     'share_link_start' => 'Compartilhe o link público para começar a receber avaliações!',
     'link_copied' => 'Link copiado para a área de transferência!',
+    'download_qr' => 'Baixar QR Code',
     'no_comment' => 'Sem comentário',
     'total_reviews_full' => 'Total de Avaliações',
     'positive_reviews_full' => 'Avaliações Positivas',

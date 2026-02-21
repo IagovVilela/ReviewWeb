@@ -60,6 +60,7 @@ return [
     'no_reviews_all' => 'None of your companies have received reviews yet.',
     'share_link_start' => 'Share the public link to start receiving reviews!',
     'link_copied' => 'Link copied to clipboard!',
+    'download_qr' => 'Download QR Code',
     'no_comment' => 'No comment',
     'total_reviews_full' => 'Total Reviews',
     'positive_reviews_full' => 'Positive Reviews',
