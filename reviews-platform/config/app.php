@@ -56,6 +56,20 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Public URL (links exibidos aos usuários)
+    |--------------------------------------------------------------------------
+    | Use APP_PUBLIC_URL quando o site for acessado por um domínio customizado
+    | (ex.: https://www.avalieganhe.app) e APP_URL for outro (ex.: Railway).
+    */
+
+    'public_url' => env('APP_PUBLIC_URL') ?? (
+        str_contains(env('APP_URL', ''), 'railway.app')
+            ? 'https://www.avalieganhe.app'
+            : env('APP_URL', 'http://localhost')
+    ),
+
     'asset_url' => env('ASSET_URL'),
 
     /*

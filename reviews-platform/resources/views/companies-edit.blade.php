@@ -571,7 +571,7 @@
 
                 <div>
                     @php
-                        $urlHost = preg_replace('#^https?://#', '', rtrim(config('app.url'), '/'));
+                        $urlHost = preg_replace('#^https?://#', '', rtrim(config('app.public_url', config('app.url')), '/'));
                     @endphp
                     <label class="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">{{ __('companies.url') }}</label>
                     <div class="flex">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Company;
 use App\Models\ReviewPage;
+use App\Services\CloudinaryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
@@ -17,6 +18,36 @@ class CompanyController extends Controller
     /**
      * Slugs reservados (rotas existentes) que não podem ser usados como URL customizada.
      */
+    private function cloudinary(): CloudinaryService
+    {
+        return app(CloudinaryService::class);
+    }
+
+    private function mediaExists(?string $path): bool
+    {
+        if (!$path) {
+            return false;
+        }
+        if (CloudinaryService::isCloudinaryUrl($path)) {
+            return true;
+        }
+        return Storage::disk('public')->exists($path);
+    }
+
+    private function mediaDelete(?string $path): void
+    {
+        if (!$path) {
+            return;
+        }
+        if (CloudinaryService::isCloudinaryUrl($path)) {
+            $this->cloudinary()->deleteByUrl($path);
+            return;
+        }
+        if (Storage::disk('public')->exists($path)) {
+            Storage::disk('public')->delete($path);
+        }
+    }
+
     private function getReservedSlugs(): array
     {
         return [
@@ -410,25 +441,15 @@ class CompanyController extends Controller
         // Processar arquivos ANTES de filtrar campos vazios
         // Handle logo removal or upload
         if ($request->has('remove_logo') && $request->input('remove_logo') == '1') {
-            // Remover logo
-            if ($oldLogo && Storage::disk('public')->exists($oldLogo)) {
-                Storage::disk('public')->delete($oldLogo);
-            }
+            $this->mediaDelete($oldLogo);
             $data['logo'] = null;
         } elseif ($request->has('logo_cropped') && !empty($request->input('logo_cropped'))) {
-            // Processar logo_cropped (base64) primeiro, se existir
-            // Deletar logo antiga se existir
-            if ($oldLogo && Storage::disk('public')->exists($oldLogo)) {
-                Storage::disk('public')->delete($oldLogo);
-            }
+            $this->mediaDelete($oldLogo);
             
             try {
                 $logoPath = $this->saveBase64Image($request->input('logo_cropped'), 'logos', 800, 800);
                 if ($logoPath) {
-                    \Log::info('Logo from crop saved', [
-                        'path' => $logoPath, 
-                        'file_exists' => Storage::disk('public')->exists($logoPath)
-                    ]);
+                    \Log::info('Logo from crop saved', ['path' => $logoPath]);
                     $data['logo'] = $logoPath;
                 } else {
                     throw new \Exception('Failed to save cropped logo');
@@ -451,19 +472,10 @@ class CompanyController extends Controller
                 'isValid' => $logoFile->isValid()
             ]);
             
-            // Deletar logo antiga se existir
-            if ($oldLogo && Storage::disk('public')->exists($oldLogo)) {
-                Storage::disk('public')->delete($oldLogo);
-            }
-            
-            // Salvar nova logo com compressão
+            $this->mediaDelete($oldLogo);
             try {
                 $logoPath = $this->compressAndStoreImage($logoFile, 'logos', 800, 800, 85);
-                \Log::info('Logo path returned', [
-                    'path' => $logoPath, 
-                    'file_exists' => Storage::disk('public')->exists($logoPath),
-                    'full_path' => Storage::disk('public')->path($logoPath)
-                ]);
+                \Log::info('Logo path returned', ['path' => $logoPath]);
                 $data['logo'] = $logoPath;
             } catch (\Exception $e) {
                 \Log::error('Error processing logo: ' . $e->getMessage(), [
@@ -484,17 +496,10 @@ class CompanyController extends Controller
         
         // Handle background removal or upload
         if ($request->has('remove_background') && $request->input('remove_background') == '1') {
-            // Remover background
-            if ($oldBackground && Storage::disk('public')->exists($oldBackground)) {
-                Storage::disk('public')->delete($oldBackground);
-            }
+            $this->mediaDelete($oldBackground);
             $data['background_image'] = null;
         } elseif ($request->hasFile('background_image')) {
-            // Deletar background antigo se existir
-            if ($oldBackground && Storage::disk('public')->exists($oldBackground)) {
-                Storage::disk('public')->delete($oldBackground);
-            }
-            // Salvar novo background com compressão
+            $this->mediaDelete($oldBackground);
             $data['background_image'] = $this->compressAndStoreImage($request->file('background_image'), 'backgrounds', 1920, 1080, 80);
         } else {
             // Preservar background antigo se não houver novo upload
@@ -611,7 +616,7 @@ class CompanyController extends Controller
             'status' => $company->status,
             'logo' => $company->logo,
             'logo_url' => $company->logo_url,
-            'logo_file_exists' => $company->logo ? Storage::disk('public')->exists($company->logo) : false
+            'logo_file_exists' => $this->mediaExists($company->logo)
         ]);
 
         if (!$isDraft && $company->status === 'published') {
@@ -686,26 +691,18 @@ class CompanyController extends Controller
             $updated = false;
 
             if ($request->hasFile('logo')) {
-                $oldLogo = $company->logo;
-                if ($oldLogo && Storage::disk('public')->exists($oldLogo)) {
-                    Storage::disk('public')->delete($oldLogo);
-                }
-
+                $this->mediaDelete($company->logo);
                 $logoPath = $this->compressAndStoreImage($request->file('logo'), 'logos', 800, 800, 85);
                 $company->logo = $logoPath;
-                $response['logo_url'] = $company->logo_url ?? url('storage/' . $logoPath);
+                $response['logo_url'] = $company->logo_url;
                 $updated = true;
             }
 
             if ($request->hasFile('background_image')) {
-                $oldBackground = $company->background_image;
-                if ($oldBackground && Storage::disk('public')->exists($oldBackground)) {
-                    Storage::disk('public')->delete($oldBackground);
-                }
-
+                $this->mediaDelete($company->background_image);
                 $backgroundPath = $this->compressAndStoreImage($request->file('background_image'), 'backgrounds', 1920, 1080, 80);
                 $company->background_image = $backgroundPath;
-                $response['background_url'] = $company->background_image_url ?? url('storage/' . $backgroundPath);
+                $response['background_url'] = $company->background_image_url;
                 $updated = true;
             }
 
@@ -848,14 +845,15 @@ class CompanyController extends Controller
      */
     private function compressAndStoreImage($file, $folder, $maxWidth, $maxHeight, $quality = 85)
     {
-        // Ambiente de produção (Railway) estava apresentando problemas com bibliotecas de imagem
-        // (Intervention Image / GD), resultando em arquivos em branco ou não legíveis.
-        // Para garantir confiabilidade, vamos simplificar e apenas armazenar o arquivo original
-        // no disco "public", sem tentativa de compressão. O caminho salvo continua igual.
+        if ($this->cloudinary()->isConfigured()) {
+            $url = $this->cloudinary()->upload($file, $folder);
+            if ($url !== null) {
+                return $url;
+            }
+        }
 
         try {
             $storedPath = $file->store($folder, 'public');
-            // Remover prefixo "public/" se existir
             return str_replace('public/', '', $storedPath);
         } catch (\Exception $e) {
             \Log::error('Error storing image: ' . $e->getMessage());
@@ -875,33 +873,30 @@ class CompanyController extends Controller
     private function saveBase64Image($base64Data, $folder, $maxWidth, $maxHeight)
     {
         try {
-            // Remove data URL prefix if present (data:image/png;base64,)
             if (strpos($base64Data, ',') !== false) {
                 $base64Data = explode(',', $base64Data)[1];
             }
-            
-            // Decode base64
             $imageData = base64_decode($base64Data);
             if ($imageData === false) {
                 \Log::error('Failed to decode base64 image');
                 return null;
             }
-            
-            // Generate unique filename
+
+            if ($this->cloudinary()->isConfigured()) {
+                $url = $this->cloudinary()->uploadFromString($imageData, $folder, 'png');
+                if ($url !== null) {
+                    return $url;
+                }
+            }
+
             $filename = uniqid($folder . '_') . '.png';
             $path = $folder . '/' . $filename;
             $fullPath = Storage::disk('public')->path($path);
-            
-            // Ensure directory exists
             $directory = dirname($fullPath);
             if (!is_dir($directory)) {
                 mkdir($directory, 0755, true);
             }
-            
-            // Save image
             file_put_contents($fullPath, $imageData);
-            
-            // Remove prefix "public/" if exists
             return str_replace('public/', '', $path);
         } catch (\Exception $e) {
             \Log::error('Error saving base64 image: ' . $e->getMessage());

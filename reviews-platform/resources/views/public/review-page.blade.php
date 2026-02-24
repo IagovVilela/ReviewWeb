@@ -621,25 +621,24 @@
             
             async submitReview() {
                 const formData = new FormData(document.getElementById('reviewForm'));
-                
-                // Check if this is a negative review with comment (second submission)
                 const commentSection = document.getElementById('commentSection');
-                const isNegativeWithComment = !commentSection.classList.contains('hidden') && 
-                                             document.getElementById('comment').value.trim() !== '';
-                
-                // Check if this is a negative review (first submission)
                 const rating = parseInt(document.getElementById('rating').value);
                 const isNegativeReview = rating < this.positiveThreshold;
-                
-                // Show appropriate loading state
+                const commentSectionVisible = !commentSection.classList.contains('hidden');
+
+                // Negative review: first step = only show comment section (do NOT call API yet)
+                if (isNegativeReview && !commentSectionVisible) {
+                    this.showCommentSectionForNegative();
+                    return;
+                }
+
+                // From here: positive review (call API once) OR negative review second step (call API once with comment)
                 if (isNegativeReview) {
-                    // For negative reviews, always show generic loading (no Google message)
                     this.showGenericLoadingState();
                 } else {
-                    // Positive review - show normal loading with Google redirect
                     this.showLoadingState();
                 }
-                
+
                 try {
                     const response = await fetch('/api/reviews', {
                         method: 'POST',
@@ -648,11 +647,11 @@
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                         }
                     });
-                    
+
                     const result = await response.json();
-                    
+
                     if (result.success) {
-                        // If negative review with comment, go straight to success (no redirect, no Google message)
+                        const isNegativeWithComment = isNegativeReview && commentSectionVisible;
                         if (isNegativeWithComment) {
                             // Hide all loading states immediately
                             document.getElementById('loadingState').classList.add('hidden');
@@ -680,6 +679,22 @@
                     console.error('Error:', error);
                     this.showErrorState('Erro ao enviar avaliação. Tente novamente.');
                 }
+            }
+
+            /**
+             * Avaliação negativa: primeiro clique em Enviar só mostra a seção de comentário.
+             * NÃO chama a API — a avaliação é criada só quando o usuário enviar de novo (com ou sem comentário).
+             */
+            showCommentSectionForNegative() {
+                document.getElementById('reviewForm').classList.remove('hidden');
+                document.getElementById('ratingStars').parentElement.classList.add('hidden');
+                const whatsappSection = document.getElementById('whatsappSection');
+                if (whatsappSection) whatsappSection.classList.add('hidden');
+                document.getElementById('commentSection').classList.remove('hidden');
+                const submitBtn = document.getElementById('submitBtn');
+                submitBtn.classList.remove('hidden');
+                submitBtn.disabled = false;
+                document.getElementById('submitBtnText').textContent = '{{ __('public.send_review') }}';
             }
             
             showLoadingState() {

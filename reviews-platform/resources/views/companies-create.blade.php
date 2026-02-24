@@ -462,7 +462,7 @@
                     
                     <!-- URL -->
                     @php
-                        $urlHost = preg_replace('#^https?://#', '', rtrim(config('app.url'), '/'));
+                        $urlHost = preg_replace('#^https?://#', '', rtrim(config('app.public_url', config('app.url')), '/'));
                     @endphp
                     <div>
                         <label for="url" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
