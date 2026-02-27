@@ -163,6 +163,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/companies/{companyId}/contacts', function ($companyId) {
             return (new \App\Http\Controllers\ReviewController)->exportContacts(request(), $companyId);
         });
+
+        Route::post('/companies/{companyId}/members', [App\Http\Controllers\CompanyController::class, 'addMember'])->name('companies.members.add');
+        Route::delete('/companies/{companyId}/members/{memberId}', [App\Http\Controllers\CompanyController::class, 'removeMember'])->name('companies.members.remove');
         
         // Get companies (only user's companies if not admin)
         Route::get('/companies', function () {
@@ -179,9 +182,9 @@ Route::middleware(['auth'])->group(function () {
                 if ($user->role === 'proprietario') {
                     $companies = \App\Models\Company::select('id', 'name', 'token')->get();
                 } else {
-                    // Admin e user veem apenas suas empresas
+                    // Admin e user veem empresas às quais têm acesso (owner ou membro)
                     $companies = \App\Models\Company::select('id', 'name', 'token')
-                        ->where('user_id', $user->id)
+                        ->accessibleBy($user->id)
                         ->get();
                 }
                 

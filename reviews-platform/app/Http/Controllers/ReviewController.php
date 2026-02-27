@@ -165,7 +165,7 @@ class ReviewController extends Controller
 
             // Apenas proprietário vê todas; admin e user filtram pelas suas empresas
             if ($user->role !== 'proprietario') {
-                $userCompanyIds = \App\Models\Company::where('user_id', $user->id)->pluck('id');
+                $userCompanyIds = \App\Models\Company::accessibleBy($user->id)->pluck('id');
                 $query->whereIn('company_id', $userCompanyIds);
             }
 
@@ -237,7 +237,7 @@ class ReviewController extends Controller
 
             // Apenas proprietário vê todas; admin e user filtram pelas suas empresas
             if ($user->role !== 'proprietario') {
-                $userCompanyIds = \App\Models\Company::where('user_id', $user->id)->pluck('id');
+                $userCompanyIds = \App\Models\Company::accessibleBy($user->id)->pluck('id');
                 $query->whereIn('company_id', $userCompanyIds);
             }
 
@@ -413,7 +413,7 @@ class ReviewController extends Controller
         try {
             $company = Company::findOrFail($companyId);
             $user = auth()->user();
-            if ($user->role !== 'proprietario' && $company->user_id !== $user->id) {
+            if ($user->role !== 'proprietario' && !$user->hasAccessTo($company)) {
                 return response()->json(['success' => false, 'message' => 'Sem permissão para exportar contatos desta empresa.'], 403);
             }
             $reviews = $company->reviews()->get();

@@ -586,8 +586,94 @@
                     <input type="email" name="negative_email" value="{{ old('negative_email', $company->negative_email) }}" class="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" style="font-size: 16px; min-height: 44px;" required>
                     <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">{{ __('companies.negative_email_desc') }}</p>
                 </div>
+
+                @if(isset($users) && $users && $users->count() > 0)
+                <div>
+                    <label class="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">
+                        <i class="fas fa-user mr-1 text-purple-600"></i>
+                        {{ __('companies.assign_to_user') }}
+                    </label>
+                    <select name="assigned_user_id" class="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" style="font-size: 16px; min-height: 44px;">
+                        <option value="">{{ $company->user ? $company->user->name . ' (' . $company->user->email . ')' : __('companies.assign_to_current_user') }}</option>
+                        @foreach($users as $assignUser)
+                            @if($assignUser->id !== $company->user_id)
+                                <option value="{{ $assignUser->id }}">{{ $assignUser->name }} ({{ $assignUser->email }})</option>
+                            @endif
+                        @endforeach
+                    </select>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">{{ __('companies.assign_to_user_hint') }}</p>
+                </div>
+                @endif
             </div>
         </div>
+
+        @if(isset($canManageTeam) && $canManageTeam)
+        <!-- Usuários com Acesso -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-3 sm:p-6">
+            <h2 class="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">
+                <i class="fas fa-users mr-2 text-purple-600"></i>
+                {{ __('companies.users_with_access') }}
+            </h2>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">{{ __('companies.users_with_access_desc') }}</p>
+            
+            <div id="teamMembersList" class="space-y-2 mb-4">
+                @if($company->user)
+                <div class="flex items-center justify-between py-2 px-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                    <div class="flex items-center gap-3">
+                        @if($company->user->photo)
+                            <img src="{{ $company->user->photo_url }}" alt="" class="w-10 h-10 rounded-full object-cover">
+                        @else
+                            <div class="w-10 h-10 rounded-full bg-purple-500 flex items-center justify-center text-white font-semibold">
+                                {{ strtoupper(substr($company->user->name, 0, 2)) }}
+                            </div>
+                        @endif
+                        <div>
+                            <p class="font-medium text-gray-900 dark:text-gray-100">{{ $company->user->name }}</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">{{ $company->user->email }}</p>
+                            <span class="inline-block mt-1 px-2 py-0.5 text-xs font-medium rounded bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-300">{{ __('companies.owner') }}</span>
+                        </div>
+                    </div>
+                </div>
+                @endif
+                @foreach($company->members as $member)
+                <div class="flex items-center justify-between py-2 px-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg team-member-row" data-user-id="{{ $member->id }}">
+                    <div class="flex items-center gap-3">
+                        @if($member->photo)
+                            <img src="{{ $member->photo_url }}" alt="" class="w-10 h-10 rounded-full object-cover">
+                        @else
+                            <div class="w-10 h-10 rounded-full bg-gray-400 dark:bg-gray-600 flex items-center justify-center text-white font-semibold">
+                                {{ strtoupper(substr($member->name, 0, 2)) }}
+                            </div>
+                        @endif
+                        <div>
+                            <p class="font-medium text-gray-900 dark:text-gray-100">{{ $member->name }}</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">{{ $member->email }}</p>
+                            <span class="inline-block mt-1 px-2 py-0.5 text-xs font-medium rounded bg-gray-200 text-gray-700 dark:bg-gray-600 dark:text-gray-300">{{ __('companies.member') }}</span>
+                        </div>
+                    </div>
+                    <button type="button" onclick="removeTeamMember({{ $member->id }}, '{{ addslashes($member->name) }}')" class="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" title="{{ __('companies.remove_member') }}">
+                        <i class="fas fa-user-minus"></i>
+                    </button>
+                </div>
+                @endforeach
+            </div>
+            
+            @if(isset($availableToAdd) && $availableToAdd->count() > 0)
+            <div class="flex flex-col sm:flex-row gap-2">
+                <select id="addMemberSelect" class="flex-1 px-3 sm:px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm">
+                    <option value="">{{ __('companies.add_member') }}...</option>
+                    @foreach($availableToAdd as $u)
+                        <option value="{{ $u->id }}">{{ $u->name }} ({{ $u->email }})</option>
+                    @endforeach
+                </select>
+                <button type="button" onclick="addTeamMember()" class="px-4 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm font-medium inline-flex items-center gap-2">
+                    <i class="fas fa-user-plus"></i>
+                    {{ __('companies.add_member') }}
+                </button>
+            </div>
+            @endif
+        </div>
+        @endif
 
         @if($company->status === 'published')
         <!-- Link da página de avaliação -->
@@ -1946,6 +2032,59 @@ function submitForm() {
     // Submit form (without save_as_draft, so it will be published)
     form.submit();
 }
+
+@if(isset($canManageTeam) && $canManageTeam)
+function addTeamMember() {
+    const select = document.getElementById('addMemberSelect');
+    if (!select || !select.value) {
+        showNotification('{{ __('companies.add_member') }}', 'warning');
+        return;
+    }
+    const companyId = {{ $company->id }};
+    fetch(`/api/companies/${companyId}/members`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+            'Accept': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ user_id: parseInt(select.value) }),
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            showNotification(data.message || 'Erro ao adicionar.', 'error');
+        }
+    })
+    .catch(() => showNotification('Erro ao adicionar usuário.', 'error'));
+}
+
+function removeTeamMember(userId, userName) {
+    if (!confirm('{{ __("companies.remove_member_confirm") }}')) return;
+    const companyId = {{ $company->id }};
+    fetch(`/api/companies/${companyId}/members/${userId}`, {
+        method: 'DELETE',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+            'Accept': 'application/json',
+        },
+        credentials: 'include',
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            document.querySelector(`.team-member-row[data-user-id="${userId}"]`)?.remove();
+            location.reload();
+        } else {
+            showNotification(data.message || 'Erro ao remover.', 'error');
+        }
+    })
+    .catch(() => showNotification('Erro ao remover usuário.', 'error'));
+}
+@endif
 
 function showNotification(message, type) {
     alert(message);

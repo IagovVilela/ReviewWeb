@@ -53,6 +53,37 @@ class Company extends Model
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * Usuários com acesso à empresa (além do proprietário)
+     */
+    public function members()
+    {
+        return $this->belongsToMany(User::class, 'company_user')
+            ->withTimestamps();
+    }
+
+    /**
+     * Todos os usuários que têm acesso (proprietário + membros)
+     */
+    public function usersWithAccess()
+    {
+        $ownerIds = $this->user_id ? [$this->user_id] : [];
+        $memberIds = $this->members()->pluck('users.id')->toArray();
+        $allIds = array_unique(array_merge($ownerIds, $memberIds));
+        return \App\Models\User::whereIn('id', $allIds)->get();
+    }
+
+    /**
+     * Empresas que o usuário pode acessar (proprietário ou membro)
+     */
+    public function scopeAccessibleBy($query, $userId)
+    {
+        return $query->where(function ($q) use ($userId) {
+            $q->where('user_id', $userId)
+              ->orWhereHas('members', fn ($m) => $m->where('user_id', $userId));
+        });
+    }
+
     public function reviews()
     {
         return $this->hasMany(Review::class);

@@ -53,18 +53,19 @@ class AjaxAuthController extends Controller
                         }
                     });
             } else {
-                // Usuários normais vêem apenas suas empresas
-                $companies = Company::select('id', 'name', 'token', 'user_id')
-                    ->where('user_id', $user->id)
+                // Usuários normais vêem empresas às quais têm acesso (owner ou membro)
+                $companies = Company::accessibleBy($user->id)
+                    ->with('user:id,name,email')
+                    ->select('id', 'name', 'token', 'user_id')
                     ->get()
-                    ->map(function ($company) use ($user) {
+                    ->map(function ($company) {
                         return [
                             'id' => $company->id,
                             'name' => $company->name,
                             'token' => $company->token,
                             'user_id' => $company->user_id,
-                            'user_name' => $user->name,
-                            'user_email' => $user->email
+                            'user_name' => $company->user?->name,
+                            'user_email' => $company->user?->email
                         ];
                     });
             }

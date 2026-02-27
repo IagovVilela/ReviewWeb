@@ -53,6 +53,26 @@ class User extends Authenticatable
     }
 
     /**
+     * Empresas às quais o usuário tem acesso como membro (não proprietário)
+     */
+    public function companiesAsMember()
+    {
+        return $this->belongsToMany(Company::class, 'company_user')
+            ->withTimestamps();
+    }
+
+    /**
+     * Verifica se o usuário tem acesso à empresa (proprietário ou membro)
+     */
+    public function hasAccessTo(Company $company): bool
+    {
+        if ($company->user_id === $this->id) {
+            return true;
+        }
+        return $company->members()->where('user_id', $this->id)->exists();
+    }
+
+    /**
      * Get the photo URL (Cloudinary or local storage)
      */
     public function getPhotoUrlAttribute(): ?string

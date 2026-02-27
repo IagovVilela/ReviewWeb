@@ -62,9 +62,9 @@ class CompanyController extends Controller
         $user = auth()->user();
         $query = Company::with('user')->withCount(['reviews', 'reviewPages']);
         
-        // Apenas proprietário vê todas as empresas; admin e user veem só as suas
+        // Apenas proprietário vê todas; admin e user veem as que têm acesso (owner ou membro)
         if ($user->role !== 'proprietario') {
-            $query->where('user_id', $user->id);
+            $query->accessibleBy($user->id);
         }
 
         // Filter by user (company owner) - only for proprietário
@@ -142,9 +142,11 @@ class CompanyController extends Controller
         $user = auth()->user();
         $users = null;
         
-        // Apenas proprietário pode atribuir empresa a outro usuário; admin cria para si mesmo
+        // Proprietário atribui a qualquer usuário; admin pode atribuir apenas a usuários comuns (role=user)
         if ($user->role === 'proprietario') {
             $users = \App\Models\User::orderBy('name')->get();
+        } elseif ($user->role === 'admin') {
+            $users = \App\Models\User::where('role', 'user')->orderBy('name')->get();
         }
         
         return view('companies-create', compact('users'));
@@ -231,9 +233,21 @@ class CompanyController extends Controller
             unset($data['google_business_url']); // Remove se for null ou vazio
         }
         
-        // Apenas proprietário pode atribuir empresa a outro usuário; admin e user criam para si mesmos
-        if ($user->role === 'proprietario' && $request->has('assigned_user_id') && $request->assigned_user_id) {
-            $data['user_id'] = $request->input('assigned_user_id');
+        // Proprietário atribui a qualquer usuário; admin pode atribuir apenas a usuários com role=user
+        if ($request->has('assigned_user_id') && $request->assigned_user_id) {
+            $assignedId = (int) $request->assigned_user_id;
+            if ($user->role === 'proprietario') {
+                $data['user_id'] = $assignedId;
+            } elseif ($user->role === 'admin') {
+                $targetUser = \App\Models\User::find($assignedId);
+                if ($targetUser && $targetUser->role === 'user') {
+                    $data['user_id'] = $assignedId;
+                } else {
+                    $data['user_id'] = $user->id;
+                }
+            } else {
+                $data['user_id'] = $user->id;
+            }
         } else {
             $data['user_id'] = $user->id;
         }
@@ -330,15 +344,29 @@ class CompanyController extends Controller
     public function edit($id)
     {
         $user = auth()->user();
-        $company = Company::findOrFail($id);
+        $company = Company::with('user', 'members')->findOrFail($id);
         
-        // Apenas proprietário pode editar qualquer empresa; admin e user só as suas
-        if ($user->role !== 'proprietario' && $company->user_id !== $user->id) {
+        // Apenas proprietário pode editar qualquer empresa; admin e user só as que têm acesso
+        if ($user->role !== 'proprietario' && !$user->hasAccessTo($company)) {
             return redirect()->route('companies.index')
                 ->with('error', 'Você não tem permissão para editar esta empresa.');
         }
 
-        return view('companies-edit', compact('company'));
+        $users = null;
+        $canManageTeam = $user->role === 'proprietario' || $company->user_id === $user->id;
+        if ($user->role === 'proprietario') {
+            $users = \App\Models\User::orderBy('name')->get();
+        } elseif ($company->user_id === $user->id) {
+            $users = \App\Models\User::where('role', 'user')->orderBy('name')->get();
+        }
+
+        $availableToAdd = collect();
+        if ($canManageTeam) {
+            $currentIds = $company->usersWithAccess()->pluck('id')->toArray();
+            $availableToAdd = \App\Models\User::whereNotIn('id', $currentIds)->orderBy('name')->get();
+        }
+
+        return view('companies-edit', compact('company', 'users', 'canManageTeam', 'availableToAdd'));
     }
 
     public function update(Request $request, $id)
@@ -348,8 +376,8 @@ class CompanyController extends Controller
         
         $company = Company::findOrFail($id);
         
-        // Apenas proprietário pode editar qualquer empresa; admin e user só as suas
-        if ($user->role !== 'proprietario' && $company->user_id !== $user->id) {
+        // Apenas proprietário pode editar qualquer empresa; admin e user só as que têm acesso
+        if ($user->role !== 'proprietario' && !$user->hasAccessTo($company)) {
             return redirect()->route('companies.index')
                 ->with('error', 'Você não tem permissão para editar esta empresa.');
         }
@@ -531,6 +559,20 @@ class CompanyController extends Controller
         unset($data['logo_cropped']); // Este campo é processado separadamente
         unset($data['_token']);
 
+        // Transferir propriedade: proprietário pode para qualquer usuário; admin apenas para usuários com role=user
+        if ($request->has('assigned_user_id') && $request->assigned_user_id) {
+            $assignedId = (int) $request->assigned_user_id;
+            if ($user->role === 'proprietario') {
+                $data['user_id'] = $assignedId;
+            } elseif ($user->role === 'admin' && $company->user_id === $user->id) {
+                $targetUser = \App\Models\User::find($assignedId);
+                if ($targetUser && $targetUser->role === 'user') {
+                    $data['user_id'] = $assignedId;
+                }
+            }
+        }
+        unset($data['assigned_user_id']); // Não existe na tabela companies
+
         // Definir status - preservar status atual se empresa já está publicada
         if ($isDraft) {
             // Se explicitamente marcado como draft, definir como draft
@@ -637,7 +679,7 @@ class CompanyController extends Controller
             ], 401);
         }
 
-        if ($user->role !== 'proprietario' && $company->user_id !== $user->id) {
+        if ($user->role !== 'proprietario' && !$user->hasAccessTo($company)) {
             return response()->json([
                 'success' => false,
                 'message' => __('companies.media_auto_save_unauthorized'),
@@ -703,7 +745,7 @@ class CompanyController extends Controller
         $user = auth()->user();
         $company = Company::findOrFail($id);
         
-        // Apenas proprietário pode excluir qualquer empresa; admin e user só as suas
+        // Apenas proprietário ou dono podem excluir; membros não podem excluir
         if ($user->role !== 'proprietario' && $company->user_id !== $user->id) {
             return redirect()->route('companies.index')
                 ->with('error', 'Você não tem permissão para excluir esta empresa.');
@@ -716,6 +758,67 @@ class CompanyController extends Controller
     }
 
     /**
+     * Adiciona um membro à empresa (apenas proprietário ou dono)
+     */
+    public function addMember(Request $request, $companyId)
+    {
+        $user = auth()->user();
+        $company = Company::findOrFail($companyId);
+
+        if ($user->role !== 'proprietario' && $company->user_id !== $user->id) {
+            return response()->json(['success' => false, 'message' => 'Sem permissão.'], 403);
+        }
+
+        $memberId = (int) $request->input('user_id');
+        if (!$memberId) {
+            return response()->json(['success' => false, 'message' => 'Usuário inválido.'], 422);
+        }
+
+        $member = \App\Models\User::find($memberId);
+        if (!$member) {
+            return response()->json(['success' => false, 'message' => 'Usuário não encontrado.'], 404);
+        }
+
+        if ($member->id === $company->user_id) {
+            return response()->json(['success' => false, 'message' => 'O proprietário já tem acesso.'], 422);
+        }
+
+        if ($company->members()->where('user_id', $member->id)->exists()) {
+            return response()->json(['success' => false, 'message' => 'Usuário já tem acesso.'], 422);
+        }
+
+        $company->members()->attach($member->id);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Usuário adicionado com sucesso.',
+            'member' => ['id' => $member->id, 'name' => $member->name, 'email' => $member->email],
+        ]);
+    }
+
+    /**
+     * Remove um membro da empresa (apenas proprietário ou dono)
+     */
+    public function removeMember($companyId, $memberId)
+    {
+        $user = auth()->user();
+        $company = Company::findOrFail($companyId);
+
+        if ($user->role !== 'proprietario' && $company->user_id !== $user->id) {
+            return response()->json(['success' => false, 'message' => 'Sem permissão.'], 403);
+        }
+
+        $memberId = (int) $memberId;
+        if ($memberId === $company->user_id) {
+            return response()->json(['success' => false, 'message' => 'Não é possível remover o proprietário.'], 422);
+        }
+
+        $company->members()->detach($memberId);
+
+        return response()->json(['success' => true, 'message' => 'Usuário removido com sucesso.']);
+    }
+
+    /**
      * Gera e retorna o QR Code da página de avaliação da empresa (download PNG).
      * Não depende de biblioteca no navegador.
      */
@@ -724,8 +827,8 @@ class CompanyController extends Controller
         $user = auth()->user();
         $company = Company::findOrFail($id);
 
-        // Apenas proprietário pode acessar QR de qualquer empresa; admin e user só das suas
-        if ($user->role !== 'proprietario' && $company->user_id !== $user->id) {
+        // Apenas proprietário ou quem tem acesso pode baixar QR
+        if ($user->role !== 'proprietario' && !$user->hasAccessTo($company)) {
             return redirect()->route('companies.index')
                 ->with('error', 'Você não tem permissão para acessar esta empresa.');
         }
