@@ -54,7 +54,7 @@
                 </div>
             </div>
 
-            <form action="{{ route('users.update', $targetUser->id) }}" method="POST" class="p-6 space-y-6">
+            <form id="userUpdateForm" action="{{ route('users.update', $targetUser->id) }}" method="POST" class="p-6 space-y-6">
                 @csrf
                 @method('PUT')
 
@@ -211,9 +211,12 @@
                     </div>
                 </div>
 
-                <!-- Form Actions -->
+            </form>
+
+            <!-- Form Actions (fora do form para evitar forms aninhados) -->
+            <div class="p-6 pt-0">
                 <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 sm:gap-3 pt-4 border-t border-gray-200">
-                    <a href="{{ route('users.index') }}" 
+                    <a href="{{ route('users.index') }}"
                        class="btn-secondary px-3 py-1.5 sm:px-6 sm:py-2.5 rounded-lg text-sm sm:text-base text-white font-medium shadow-sm hover:shadow-md transition-all inline-flex items-center gap-1.5 sm:gap-2 min-h-[36px] sm:min-h-[44px] justify-center sm:justify-start">
                         <i class="fas fa-arrow-left text-xs sm:text-sm"></i>
                         <span class="hidden sm:inline">{{ __('users.back') }}</span>
@@ -221,14 +224,14 @@
                     </a>
                     <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
                         @if($targetUser->id !== Auth::id())
-                        <form action="{{ route('users.destroy', $targetUser->id) }}" 
-                              method="POST" 
+                        <form action="{{ route('users.destroy', $targetUser->id) }}"
+                              method="POST"
                               class="inline-block delete-user-form w-full sm:w-auto"
                               data-user-name="{{ $targetUser->name }}">
                             @csrf
                             @method('DELETE')
-                            <button 
-                                type="button" 
+                            <button
+                                type="button"
                                 class="px-3 py-1.5 sm:px-6 sm:py-2.5 bg-red-600 rounded-lg text-sm sm:text-base text-white font-medium shadow-sm hover:shadow-md hover:bg-red-700 transition-all inline-flex items-center gap-1.5 sm:gap-2 delete-user-btn min-h-[36px] sm:min-h-[44px] justify-center w-full sm:w-auto">
                                 <i class="fas fa-trash text-xs sm:text-sm"></i>
                                 <span class="hidden sm:inline">{{ __('users.delete') }}</span>
@@ -236,8 +239,9 @@
                             </button>
                         </form>
                         @endif
-                        <button 
-                            type="submit" 
+                        <button
+                            type="submit"
+                            form="userUpdateForm"
                             class="btn-primary px-3 py-1.5 sm:px-6 sm:py-2.5 rounded-lg text-sm sm:text-base text-white font-medium shadow-md hover:shadow-lg transition-all inline-flex items-center gap-1.5 sm:gap-2 min-h-[36px] sm:min-h-[44px] justify-center w-full sm:w-auto">
                             <i class="fas fa-save text-xs sm:text-sm"></i>
                             <span class="hidden sm:inline">{{ __('users.save_changes') }}</span>
@@ -245,7 +249,7 @@
                         </button>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
@@ -269,7 +273,7 @@
     const t = translations[currentLang] || translations.pt_BR;
     
     // Form validation feedback
-    document.querySelector('form').addEventListener('submit', function(e) {
+    document.getElementById('userUpdateForm').addEventListener('submit', function(e) {
         const submitBtn = this.querySelector('button[type="submit"]');
         const originalText = submitBtn.innerHTML;
         submitBtn.disabled = true;
