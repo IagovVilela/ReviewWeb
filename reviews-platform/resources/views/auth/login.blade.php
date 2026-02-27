@@ -1,631 +1,407 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ __('auth.title') }} - {{ __('app.name') }}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title>{{ __('auth.title') }} — {{ __('app.name') }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ secure_asset('assets/images/lopgosDASHBOARD.png') }}?v=2">
-    <link rel="shortcut icon" type="image/png" href="{{ secure_asset('assets/images/lopgosDASHBOARD.png') }}?v=2">
-    {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
-    <link rel="stylesheet" href="{{ secure_asset('assets/css/modern-styles.css') }}">
-    <link rel="stylesheet" href="{{ secure_asset('assets/css/tailwind.css') }}">
-    
-    <!-- Dark Mode Script - Previne Flash -->
-    <script>
-        (function() {
-            const savedMode = localStorage.getItem('darkMode');
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            if (savedMode === 'true' || (savedMode === null && prefersDark)) {
-                document.documentElement.classList.add('dark');
-            }
-        })();
-    </script>
-    
+    <link rel="icon" type="image/png" href="{{ asset('assets/images/lopgosDASHBOARD.png') }}?v=2">
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --purple:   #7c3aed;
+            --purple-l: #8b5cf6;
+            --ink:      #09090b;
+            --surface:  #0f0f12;
+            --card:     #141417;
+            --border:   rgba(255,255,255,.09);
+            --text:     #fafafa;
+            --muted:    #71717a;
+            --faint:    #52525b;
+            --r:        10px;
         }
-        
-        body {
-            background-color: #f9fafb;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-            transition: background-color 0.3s ease;
-        }
-        
-        .dark body {
-            background-color: #111827;
-        }
-        
-        /* Login Container */
-        .login-container {
-            background: white;
-            border-radius: 0.75rem;
-            border: 1px solid #e5e7eb;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            padding: 3rem;
-            width: 100%;
-            max-width: 450px;
-            position: relative;
-            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .dark .login-container {
-            background: #1f2937;
-            border-color: #374151;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-        }
-        
-        /* Logo Section */
-        .logo-container {
-            text-align: center;
-            margin-bottom: 2.5rem;
-        }
-        
-        .logo-wrapper {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 80px;
-            height: 80px;
-            margin-bottom: 1.5rem;
-        }
-        
-        .logo-wrapper img {
-            width: 100%;
+
+        html, body {
             height: 100%;
-            object-fit: contain;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            background: var(--ink);
+            color: var(--text);
+            overflow-x: hidden;
         }
-        
-        .logo-container h1 {
-            font-size: 1.875rem;
-            font-weight: 800;
-            color: #111827;
-            margin-bottom: 0.5rem;
-            transition: color 0.3s ease;
-        }
-        
-        .dark .logo-container h1 {
-            color: #f9fafb;
-        }
-        
-        .logo-container p {
-            color: #6b7280;
-            font-size: 0.9375rem;
-            transition: color 0.3s ease;
-        }
-        
-        .dark .logo-container p {
-            color: #d1d5db;
-        }
-        
-        /* Input Groups */
-        .input-group {
-            position: relative;
-            margin-bottom: 1.5rem;
-        }
-        
-        .input-field {
-            width: 100%;
-            padding: 0.875rem 1rem 0.875rem 3rem;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.75rem;
-            font-size: 0.9375rem;
-            transition: all 0.3s ease;
-            background: white;
-            color: #111827;
-        }
-        
-        .dark .input-field {
-            background: #374151;
-            border-color: #4b5563;
-            color: #f9fafb;
-        }
-        
-        .dark .input-field::placeholder {
-            color: #9ca3af;
-        }
-        
-        .input-field:focus {
-            outline: none;
-            border-color: #8b5cf6;
-            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
-        }
-        
-        .dark .input-field:focus {
-            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
-        }
-        
-        .input-icon {
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #9ca3af;
-            transition: color 0.3s ease;
+
+        /* ── GLOW BACKGROUND ─────────────────────── */
+        body::before {
+            content: '';
+            position: fixed; inset: 0; z-index: 0;
+            background:
+                radial-gradient(ellipse 55% 45% at 50% 95%, rgba(124,58,237,.28) 0%, transparent 68%),
+                radial-gradient(ellipse 30% 20% at 15% 10%,  rgba(124,58,237,.08) 0%, transparent 60%);
             pointer-events: none;
-            z-index: 1;
         }
-        
-        .dark .input-icon {
-            color: #6b7280;
+
+        /* ── TOP BAR ─────────────────────────────── */
+        .topbar {
+            position: fixed; inset: 0 0 auto;
+            z-index: 50; height: 58px;
+            display: flex; align-items: center;
+            padding: 0 2rem;
+            justify-content: space-between;
         }
-        
-        .input-group:focus-within .input-icon {
-            color: #8b5cf6;
+
+        .topbar-left {
+            display: flex; align-items: center; gap: .5rem;
         }
-        
-        /* Button */
-        .btn-login {
-            width: 100%;
-            padding: 0.875rem 1.5rem;
-            background: #8b5cf6;
-            color: white;
-            border: none;
-            border-radius: 0.75rem;
-            font-size: 0.9375rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            margin-top: 1.5rem;
+
+        .back-home {
+            display: inline-flex; align-items: center; gap: .45rem;
+            font-size: .78rem; font-weight: 500; color: var(--muted);
+            text-decoration: none; letter-spacing: .01em;
+            padding: .3rem .1rem;
+            transition: color .15s;
         }
-        
-        .btn-login:hover {
-            background: #7c3aed;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.25);
-        }
-        
-        .btn-login:active {
-            transform: translateY(0);
-        }
-        
-        .btn-login:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        /* Back Link */
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: #6b7280;
+        .back-home i { font-size: .68rem; }
+        .back-home:hover { color: var(--text); }
+
+        .topbar-logo {
+            display: flex; align-items: center; gap: .45rem;
             text-decoration: none;
-            font-size: 0.875rem;
-            transition: all 0.3s ease;
-            margin-top: 1.5rem;
         }
-        
-        .dark .back-link {
-            color: #9ca3af;
+        .topbar-logo img { height: 26px; width: auto; opacity: .85; }
+        .topbar-logo-name {
+            font-size: .88rem; font-weight: 600; color: rgba(255,255,255,.55);
+            letter-spacing: -.01em;
         }
-        
-        .back-link:hover {
-            color: #8b5cf6;
+
+        .topbar-right { display: flex; align-items: center; gap: .5rem; }
+
+        .lang-select {
+            appearance: none; background: transparent;
+            border: 1px solid var(--border); border-radius: 7px;
+            padding: .32rem .55rem; font-size: .78rem; font-weight: 500;
+            color: var(--muted); cursor: pointer;
+            transition: border-color .15s, color .15s;
         }
-        
-        /* Language Selector */
-        .language-selector {
-            position: fixed;
-            top: 1.5rem;
-            right: 1.5rem;
-            z-index: 50;
-            display: flex;
-            gap: 0.75rem;
-            align-items: center;
+        .lang-select:focus { outline: none; border-color: var(--purple-l); color: var(--text); }
+        .lang-select:hover { color: var(--text); border-color: rgba(255,255,255,.2); }
+
+        /* ── MAIN LAYOUT ─────────────────────────── */
+        .page {
+            position: relative; z-index: 1;
+            min-height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            padding: 5rem 1.5rem 3rem;
         }
-        
-        .language-selector > div {
-            position: relative;
+
+        /* ── CARD ────────────────────────────────── */
+        .card {
+            width: 100%; max-width: 400px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 0 0 1px rgba(255,255,255,.03), 0 32px 64px rgba(0,0,0,.55);
         }
-        
-        .language-selector select {
-            appearance: none;
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.5rem;
-            padding: 0.5rem 2rem 0.5rem 1rem;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: #374151;
-            cursor: pointer;
-            transition: all 0.3s ease;
+
+        .card-head {
+            padding: 2.25rem 2.25rem 0;
+            text-align: center;
         }
-        
-        .dark .language-selector select {
-            background: #1f2937;
-            border-color: #374151;
-            color: #d1d5db;
+
+        .card-logo {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 52px; height: 52px;
+            border-radius: 14px;
+            background: rgba(124,58,237,.15);
+            border: 1px solid rgba(124,58,237,.25);
+            margin-bottom: 1.25rem;
         }
-        
-        .language-selector select:hover {
-            border-color: #8b5cf6;
-            background: #f9fafb;
+        .card-logo img { width: 30px; height: 30px; object-fit: contain; }
+
+        .card-head h1 {
+            font-size: 1.3rem; font-weight: 700; letter-spacing: -.03em;
+            color: var(--text); margin-bottom: .35rem;
         }
-        
-        .dark .language-selector select:hover {
-            background: #374151;
+        .card-head p {
+            font-size: .82rem; color: var(--muted); line-height: 1.5;
         }
-        
-        .language-selector select:focus {
-            outline: none;
-            border-color: #8b5cf6;
-            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+
+        .card-divider {
+            height: 1px; background: var(--border); margin: 1.75rem 0 0;
         }
-        
-        .dark .language-selector select:focus {
-            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+
+        .card-body { padding: 1.75rem 2.25rem 2.25rem; }
+
+        /* ── ALERTS ──────────────────────────────── */
+        .alert {
+            display: flex; align-items: flex-start; gap: .55rem;
+            padding: .7rem .85rem; border-radius: var(--r);
+            font-size: .8rem; line-height: 1.5;
+            margin-bottom: 1.25rem;
         }
-        
-        .language-selector > div::after {
-            content: '\f078';
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            position: absolute;
-            right: 0.75rem;
-            top: 50%;
-            transform: translateY(-50%);
-            pointer-events: none;
-            color: #6b7280;
-            font-size: 0.75rem;
-            transition: color 0.3s ease;
-        }
-        
-        .dark .language-selector > div::after {
-            color: #9ca3af;
-        }
-        
-        /* Dark Mode Toggle Button */
-        .dark-mode-toggle {
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.5rem;
-            padding: 0.5rem 0.75rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #374151;
-        }
-        
-        .dark .dark-mode-toggle {
-            background: #1f2937;
-            border-color: #374151;
-            color: #d1d5db;
-        }
-        
-        .dark-mode-toggle:hover {
-            background: #f9fafb;
-            border-color: #8b5cf6;
-            color: #8b5cf6;
-        }
-        
-        .dark .dark-mode-toggle:hover {
-            background: #374151;
-        }
-        
-        .dark-mode-toggle i {
-            font-size: 1rem;
-        }
-        
-        /* Messages */
-        .success-message {
-            background: #f0fdf4;
-            border: 1px solid #bbf7d0;
-            color: #166534;
-            padding: 0.875rem 1rem;
-            border-radius: 0.75rem;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.875rem;
-            transition: all 0.3s ease;
-        }
-        
-        .dark .success-message {
-            background: rgba(16, 185, 129, 0.1);
-            border-color: rgba(16, 185, 129, 0.3);
-            color: #34d399;
-        }
-        
-        .error-message {
-            background: #fef2f2;
-            border: 1px solid #fecaca;
-            color: #991b1b;
-            padding: 0.875rem 1rem;
-            border-radius: 0.75rem;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.875rem;
-            transition: all 0.3s ease;
-        }
-        
-        .dark .error-message {
-            background: rgba(239, 68, 68, 0.1);
-            border-color: rgba(239, 68, 68, 0.3);
+        .alert i { flex-shrink: 0; margin-top: .05rem; font-size: .78rem; }
+        .alert-error {
+            background: rgba(239,68,68,.08);
+            border: 1px solid rgba(239,68,68,.2);
             color: #f87171;
         }
-        
-        /* Additional Info */
-        .additional-info {
-            margin-top: 2rem;
-            text-align: center;
-            font-size: 0.8125rem;
-            color: #6b7280;
-            transition: color 0.3s ease;
+        .alert-success {
+            background: rgba(34,197,94,.08);
+            border: 1px solid rgba(34,197,94,.2);
+            color: #4ade80;
         }
-        
-        .dark .additional-info {
-            color: #9ca3af;
+
+        /* ── FORM ────────────────────────────────── */
+        .field { margin-bottom: 1rem; }
+
+        .field-label {
+            display: block; font-size: .75rem; font-weight: 500;
+            color: rgba(255,255,255,.5); margin-bottom: .4rem; letter-spacing: .01em;
         }
-        
-        .additional-info p {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            margin-bottom: 0.5rem;
+
+        .field-wrap { position: relative; }
+
+        .field-input {
+            width: 100%;
+            background: rgba(255,255,255,.04);
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            padding: .7rem .9rem .7rem 2.6rem;
+            font-size: .9rem; color: var(--text);
+            transition: border-color .15s, background .15s, box-shadow .15s;
         }
-        
-        .additional-info i {
-            color: #8b5cf6;
+        .field-input::placeholder { color: var(--faint); }
+        .field-input:focus {
+            outline: none;
+            border-color: var(--purple-l);
+            background: rgba(139,92,246,.05);
+            box-shadow: 0 0 0 3px rgba(139,92,246,.12);
         }
-        
-        /* Animations */
-        .fade-in {
-            animation: fadeIn 0.6s ease-out;
+
+        .field-icon {
+            position: absolute; left: .85rem; top: 50%; transform: translateY(-50%);
+            font-size: .78rem; color: var(--faint); pointer-events: none;
+            transition: color .15s;
         }
-        
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .field-wrap:focus-within .field-icon { color: var(--purple-l); }
+
+        /* password toggle */
+        .field-eye {
+            position: absolute; right: .85rem; top: 50%; transform: translateY(-50%);
+            background: none; border: none; cursor: pointer;
+            font-size: .78rem; color: var(--faint); padding: .2rem;
+            transition: color .15s;
         }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            body {
-                padding: 1rem;
-            }
-            
-            .login-container {
-                padding: 2rem 1.5rem;
-            }
-            
-            .language-selector {
-                top: 1rem;
-                right: 1rem;
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-            
-            .logo-container h1 {
-                font-size: 1.5rem;
-            }
+        .field-eye:hover { color: var(--muted); }
+        .field-input.has-eye { padding-right: 2.4rem; }
+
+        /* ── FORGOT ──────────────────────────────── */
+        .forgot-row {
+            display: flex; justify-content: flex-end;
+            margin-top: -.3rem; margin-bottom: 1.4rem;
+        }
+        .forgot-link {
+            font-size: .75rem; color: var(--muted);
+            text-decoration: none; transition: color .15s;
+        }
+        .forgot-link:hover { color: var(--purple-l); }
+
+        /* ── SUBMIT ──────────────────────────────── */
+        .btn-submit {
+            width: 100%;
+            background: var(--purple); color: #fff; border: none;
+            border-radius: var(--r); padding: .75rem 1.5rem;
+            font-size: .9rem; font-weight: 600; letter-spacing: -.01em;
+            cursor: pointer; display: flex; align-items: center;
+            justify-content: center; gap: .4rem;
+            transition: background .15s, transform .15s, box-shadow .15s;
+        }
+        .btn-submit:hover:not(:disabled) {
+            background: #6d28d9;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px rgba(124,58,237,.4);
+        }
+        .btn-submit:disabled { opacity: .5; cursor: not-allowed; }
+        .btn-submit .btn-arrow { font-size: .72rem; transition: transform .15s; }
+        .btn-submit:hover:not(:disabled) .btn-arrow { transform: translateX(3px); }
+
+        /* ── FOOTER ──────────────────────────────── */
+        .card-footer {
+            padding: 1rem 2.25rem 1.5rem;
+            border-top: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center; gap: .35rem;
+            font-size: .72rem; color: var(--faint);
+        }
+        .card-footer i { font-size: .65rem; color: var(--purple-l); }
+
+        /* ── RESPONSIVE ──────────────────────────── */
+        @media (max-width: 480px) {
+            .topbar { padding: 0 1.25rem; }
+            .card-head { padding: 1.75rem 1.5rem 0; }
+            .card-body { padding: 1.5rem; }
+            .card-footer { padding: 1rem 1.5rem 1.25rem; }
+            .page { padding-top: 4.5rem; }
         }
     </style>
 </head>
 <body>
-    <!-- Language Selector and Dark Mode Toggle -->
-    <div class="language-selector">
-        <button id="darkModeToggle" onclick="toggleDarkMode()" class="dark-mode-toggle" title="Toggle Dark Mode">
-            <i id="darkModeIcon" class="fas fa-moon"></i>
-        </button>
-        <div style="position: relative;">
-        <select id="languageSelector">
+
+<!-- ─── TOP BAR ─────────────────────────────────── -->
+<div class="topbar">
+    <a href="/" class="back-home">
+        <i class="fas fa-arrow-left"></i>
+        {{ __('auth.back_to_home') }}
+    </a>
+    <div class="topbar-right">
+        <select class="lang-select" id="languageSelector">
             <option value="pt_BR" {{ app()->getLocale() === 'pt_BR' ? 'selected' : '' }}>🇧🇷 PT</option>
             <option value="en_US" {{ app()->getLocale() === 'en_US' ? 'selected' : '' }}>🇬🇧 EN</option>
         </select>
-        </div>
     </div>
-    
-    <!-- Login Container -->
-    <div class="login-container fade-in">
-        <!-- Logo and Title -->
-        <div class="logo-container">
-            <div class="logo-wrapper">
-                <img src="{{ secure_asset('assets/images/lopgosDASHBOARD.png') }}" alt="{{ __('app.name') }}">
+</div>
+
+<!-- ─── PAGE ─────────────────────────────────────── -->
+<div class="page">
+    <div class="card">
+
+        <!-- HEAD -->
+        <div class="card-head">
+            <div class="card-logo">
+                <img src="{{ asset('assets/images/lopgosDASHBOARD.png') }}" alt="{{ __('app.name') }}">
             </div>
             <h1>{{ __('auth.welcome_back') }}</h1>
             <p>{{ __('auth.login_subtitle') }}</p>
+            <div class="card-divider"></div>
         </div>
-        
-        <!-- Messages -->
-        @if(session('success'))
-            <div class="success-message">
-                <i class="fas fa-check-circle"></i>
-                <span>{{ session('success') }}</span>
-            </div>
-        @endif
-        
-        @if(session('error'))
-            <div class="error-message">
-                <i class="fas fa-exclamation-circle"></i>
-                <span>{{ session('error') }}</span>
-            </div>
-        @endif
-        
-        @if($errors->any())
-            <div class="error-message">
-                <i class="fas fa-exclamation-circle"></i>
-                <span>{{ $errors->first() }}</span>
-            </div>
-        @endif
-        
-        <!-- Login Form -->
-        <form method="POST" action="{{ secure_url('/login') }}">
-            @csrf
-            
-            <!-- Email Field -->
-            <div class="input-group">
-                <input 
-                    type="email" 
-                    id="email" 
-                    name="email" 
-                    value="{{ old('email') }}" 
-                    required
-                    autocomplete="email"
-                    class="input-field"
-                    placeholder="{{ __('auth.email_placeholder') }}"
-                >
-                <i class="fas fa-envelope input-icon"></i>
-            </div>
-            
-            <!-- Password Field -->
-            <div class="input-group">
-                <input 
-                    type="password" 
-                    id="password" 
-                    name="password" 
-                    required
-                    autocomplete="current-password"
-                    class="input-field"
-                    placeholder="{{ __('auth.password_placeholder') }}"
-                >
-                <i class="fas fa-lock input-icon"></i>
-            </div>
-            
-            <!-- Login Button -->
-            <button type="submit" class="btn-login">
-                <i class="fas fa-sign-in-alt"></i>
-                <span>{{ __('auth.login_button') }}</span>
-            </button>
-        </form>
-        
-        <!-- Forgot Password Link -->
-        <div style="text-align: center; margin-top: 1rem;">
-            <a href="{{ route('password.forgot') }}" class="back-link">
-                <i class="fas fa-key"></i>
-                <span>Esqueceu sua senha?</span>
-            </a>
+
+        <!-- BODY -->
+        <div class="card-body">
+
+            @if(session('success'))
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i>
+                    <span>{{ session('success') }}</span>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="alert alert-error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>{{ session('error') }}</span>
+                </div>
+            @endif
+
+            @if($errors->any())
+                <div class="alert alert-error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>{{ $errors->first() }}</span>
+                </div>
+            @endif
+
+            <form id="loginForm" method="POST" action="{{ route('login') }}">
+                @csrf
+
+                <div class="field">
+                    <label class="field-label" for="email">{{ __('auth.email_placeholder') }}</label>
+                    <div class="field-wrap">
+                        <i class="fas fa-envelope field-icon"></i>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value="{{ old('email') }}"
+                            class="field-input"
+                            placeholder="voce@empresa.com"
+                            autocomplete="email"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="field-label" for="password">{{ __('auth.password_placeholder') }}</label>
+                    <div class="field-wrap">
+                        <i class="fas fa-lock field-icon"></i>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            class="field-input has-eye"
+                            placeholder="••••••••"
+                            autocomplete="current-password"
+                            required
+                        >
+                        <button type="button" class="field-eye" id="togglePassword" aria-label="Mostrar senha">
+                            <i class="fas fa-eye" id="eyeIcon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="forgot-row">
+                    <a href="{{ route('password.forgot') }}" class="forgot-link">
+                        {{ app()->getLocale() === 'pt_BR' ? 'Esqueceu a senha?' : 'Forgot password?' }}
+                    </a>
+                </div>
+
+                <button type="submit" class="btn-submit" id="submitBtn">
+                    {{ __('auth.login_button') }}
+                    <i class="fas fa-arrow-right btn-arrow"></i>
+                </button>
+            </form>
         </div>
-        
-        <!-- Back Link -->
-        <div style="text-align: center;">
-            <a href="/" class="back-link">
-                <i class="fas fa-arrow-left"></i>
-                <span>{{ __('auth.back_to_home') }}</span>
-            </a>
+
+        <!-- FOOTER -->
+        <div class="card-footer">
+            <i class="fas fa-shield-alt"></i>
+            <span>{{ __('auth.security_message') }}</span>
         </div>
-        
-        <!-- Additional Info -->
-        <div class="additional-info">
-            <p>
-                <i class="fas fa-shield-alt"></i>
-                <span>{{ __('auth.security_message') }}</span>
-            </p>
-            <p>{{ __('auth.platform_version') }}</p>
-        </div>
+
     </div>
-    
-    <script>
-        // Language Selector
-        document.getElementById('languageSelector').addEventListener('change', function() {
-            const locale = this.value;
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-            
-            fetch('/change-locale', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken,
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({ locale: locale })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    window.location.reload();
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        });
-        
-        // Add loading state to button
-        document.querySelector('form').addEventListener('submit', function(e) {
-            const button = document.querySelector('.btn-login');
-            const originalHTML = button.innerHTML;
-            
-            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>{{ __('auth.logging_in') }}</span>';
-            button.disabled = true;
-            
-            // Re-enable after 5 seconds (in case of error)
-            setTimeout(() => {
-                button.innerHTML = originalHTML;
-                button.disabled = false;
-            }, 5000);
-        });
-        
-        // Auto-focus first input
-        document.addEventListener('DOMContentLoaded', function() {
-            const emailInput = document.getElementById('email');
-            if (emailInput && !emailInput.value) {
-                emailInput.focus();
-            }
-        });
-        
-        // Dark Mode Toggle Function
-        function toggleDarkMode() {
-            const html = document.documentElement;
-            const isDark = html.classList.toggle('dark');
-            const icon = document.getElementById('darkModeIcon');
-            
-            // Atualizar ícone
-            if (isDark) {
-                icon.classList.remove('fa-moon');
-                icon.classList.add('fa-sun');
-            } else {
-                icon.classList.remove('fa-sun');
-                icon.classList.add('fa-moon');
-            }
-            
-            // Salvar preferência
-            localStorage.setItem('darkMode', isDark ? 'true' : 'false');
-        }
-        
-        // Inicializar ícone do dark mode
-        document.addEventListener('DOMContentLoaded', function() {
-            const isDark = document.documentElement.classList.contains('dark');
-            const icon = document.getElementById('darkModeIcon');
-            if (icon) {
-                if (isDark) {
-                    icon.classList.remove('fa-moon');
-                    icon.classList.add('fa-sun');
-                } else {
-                    icon.classList.remove('fa-sun');
-                    icon.classList.add('fa-moon');
-                }
-            }
-        });
-    </script>
+</div>
+
+<script>
+    // Language selector
+    document.getElementById('languageSelector').addEventListener('change', function () {
+        const csrf = document.querySelector('meta[name="csrf-token"]').content;
+        fetch('/change-locale', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' },
+            body: JSON.stringify({ locale: this.value })
+        }).then(r => r.json()).then(d => { if (d.success) window.location.reload(); });
+    });
+
+    // Password toggle
+    const toggleBtn = document.getElementById('togglePassword');
+    const passInput = document.getElementById('password');
+    const eyeIcon   = document.getElementById('eyeIcon');
+    toggleBtn.addEventListener('click', () => {
+        const isHidden = passInput.type === 'password';
+        passInput.type = isHidden ? 'text' : 'password';
+        eyeIcon.className = isHidden ? 'fas fa-eye-slash' : 'fas fa-eye';
+    });
+
+    // Submit loading state
+    document.getElementById('loginForm').addEventListener('submit', function () {
+        const btn = document.getElementById('submitBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {{ __("auth.logging_in") }}';
+        setTimeout(() => {
+            btn.disabled = false;
+            btn.innerHTML = '{{ __("auth.login_button") }} <i class="fas fa-arrow-right btn-arrow"></i>';
+        }, 5000);
+    });
+
+    // Auto-focus email
+    document.addEventListener('DOMContentLoaded', () => {
+        const email = document.getElementById('email');
+        if (email && !email.value) email.focus();
+    });
+</script>
 </body>
 </html>

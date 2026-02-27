@@ -1,1845 +1,885 @@
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}">
+<html lang="{{ app()->getLocale() }}" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ __('app.name') }} - {{ __('landing.hero_title') }}</title>
+    <title>{{ __('app.name') }} — {{ __('landing.hero_title') }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Favicon - Logo da Plataforma -->
-    <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('assets/images/lopgosDASHBOARD.png') }}?v=2">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('assets/images/lopgosDASHBOARD.png') }}?v=2">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('assets/images/lopgosDASHBOARD.png') }}?v=2">
-    <link rel="shortcut icon" type="image/png" href="{{ asset('assets/images/lopgosDASHBOARD.png') }}?v=2">
+    <link rel="icon" type="image/png" href="{{ asset('assets/images/lopgosDASHBOARD.png') }}?v=2">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('assets/images/lopgosDASHBOARD.png') }}?v=2">
-    
-    <!-- Dark Mode Script - Previne Flash -->
-    <script>
-        (function() {
-            const savedMode = localStorage.getItem('darkMode');
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            if (savedMode === 'true' || (savedMode === null && prefersDark)) {
-                document.documentElement.classList.add('dark');
-            }
-        })();
-    </script>
-    
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --purple:      #7c3aed;
+            --purple-l:    #8b5cf6;
+            --purple-dim:  rgba(124, 58, 237, .1);
+            --ink:         #09090b;
+            --text:        #18181b;
+            --muted:       #71717a;
+            --faint:       #a1a1aa;
+            --border:      #e4e4e7;
+            --surface:     #ffffff;
+            --surface-2:   #f4f4f5;
+            --nav-h:       66px;
+            --max:         1120px;
+            --r:           12px;
         }
-        
+
+        html { scroll-behavior: smooth; }
+
         body {
-            background-color: #f9fafb;
-            color: #111827;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            background: var(--surface);
+            color: var(--text);
             line-height: 1.6;
             overflow-x: hidden;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            transition: background .25s, color .25s;
         }
-        
-        /* Dark Mode */
-        .dark body {
-            background-color: #111827;
-            color: #f9fafb;
+
+        /* ── DARK MODE ────────────────────────────── */
+        .dark body            { --text: #fafafa; --muted: #a1a1aa; --faint: #71717a; --border: #27272a; --surface: #09090b; --surface-2: #18181b; background: var(--surface); color: var(--text); }
+
+        /* ── NAV ──────────────────────────────────── */
+        .nav {
+            position: fixed; inset: 0 0 auto;
+            z-index: 200; height: var(--nav-h);
+            display: flex; align-items: center;
+            transition: background .3s, border-color .3s, backdrop-filter .3s;
         }
-        
-        /* Header */
-        .header {
-            background: white;
-            border-bottom: 1px solid #e5e7eb;
-            padding: 1.5rem 0;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            transition: background-color 0.3s ease, border-color 0.3s ease;
+        .nav.scrolled {
+            background: rgba(255,255,255,.88);
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
         }
-        
-        .dark .header {
-            background: #1f2937;
-            border-bottom-color: #374151;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        .dark .nav.scrolled { background: rgba(9,9,11,.9); border-color: var(--border); }
+
+        .nav-inner {
+            width: 100%; max-width: var(--max);
+            margin: 0 auto; padding: 0 2rem;
+            display: flex; align-items: center; justify-content: space-between; gap: 1rem;
         }
-        
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 2rem;
+        .nav-logo { display: flex; align-items: center; gap: .55rem; text-decoration: none; }
+        .nav-logo img { height: 30px; width: auto; }
+        .nav-logo-name {
+            font-size: 1rem; font-weight: 700; color: var(--text);
+            letter-spacing: -.025em;
         }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
+        /* logo is white when nav is NOT scrolled (sits on dark hero) */
+        .nav:not(.scrolled) .nav-logo-name { color: #fff; }
+        .nav:not(.scrolled) .lang-select { color: rgba(255,255,255,.6); border-color: rgba(255,255,255,.18); }
+
+        .nav-right { display: flex; align-items: center; gap: .4rem; }
+
+        .lang-select {
+            appearance: none; background: transparent;
+            border: 1px solid var(--border); border-radius: 8px;
+            padding: .38rem .6rem; font-size: .82rem; font-weight: 500;
+            color: var(--muted); cursor: pointer;
+            transition: border-color .15s, color .15s;
         }
-        
-        .logo img {
-            height: 40px;
-            width: auto;
+        .lang-select:focus { outline: none; border-color: var(--purple-l); }
+
+        .btn-nav {
+            background: var(--purple); color: #fff; border: none;
+            border-radius: 8px; padding: .45rem 1rem;
+            font-size: .82rem; font-weight: 600; letter-spacing: -.01em;
+            cursor: pointer; text-decoration: none;
+            display: inline-flex; align-items: center; gap: .35rem;
+            transition: background .15s, transform .15s;
         }
-        
-        .logo-text {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: #1f2937;
-            transition: color 0.3s ease;
-        }
-        
-        .dark .logo-text {
-            color: #f9fafb;
-        }
-        
-        /* Language Selector */
-        .language-selector {
-            position: relative;
-            margin-right: 1rem;
-        }
-        
-        .language-selector select {
-            appearance: none;
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.5rem;
-            padding: 0.5rem 2rem 0.5rem 1rem;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: #374151;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .dark .language-selector select {
-            background: #1f2937;
-            border-color: #374151;
-            color: #d1d5db;
-        }
-        
-        .language-selector select:hover {
-            border-color: #8b5cf6;
-            background: #f9fafb;
-        }
-        
-        .dark .language-selector select:hover {
-            background: #374151;
-        }
-        
-        .language-selector select:focus {
-            outline: none;
-            border-color: #8b5cf6;
-            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
-        }
-        
-        .language-selector::after {
-            content: '\f078';
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            position: absolute;
-            right: 0.75rem;
-            top: 50%;
-            transform: translateY(-50%);
-            pointer-events: none;
-            color: #6b7280;
-            font-size: 0.75rem;
-            transition: color 0.3s ease;
-        }
-        
-        .dark .language-selector::after {
-            color: #9ca3af;
-        }
-        
-        .btn-login {
-            background: #8b5cf6;
-            color: white;
-            padding: 0.75rem 2rem;
-            border-radius: 0.75rem;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .btn-login:hover {
-            background: #7c3aed;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.25);
-        }
-        
-        /* Dark Mode Toggle Button */
-        .dark-mode-toggle {
-            background: transparent;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.5rem;
-            padding: 0.5rem 0.75rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #374151;
-        }
-        
-        .dark .dark-mode-toggle {
-            border-color: #374151;
-            color: #d1d5db;
-        }
-        
-        .dark-mode-toggle:hover {
-            background: #f9fafb;
-            border-color: #8b5cf6;
-            color: #8b5cf6;
-        }
-        
-        .dark .dark-mode-toggle:hover {
-            background: #374151;
-        }
-        
-        .dark-mode-toggle i {
-            font-size: 1rem;
-        }
-        
-        /* Hero Section */
+        .btn-nav:hover { background: #6d28d9; transform: translateY(-1px); }
+
+        /* ── HERO ─────────────────────────────────── */
         .hero {
-            background: white;
-            padding: 140px 2rem 80px;
-            text-align: center;
-            border-bottom: 1px solid #e5e7eb;
-            transition: background-color 0.3s ease, border-color 0.3s ease;
+            background: var(--ink);
+            min-height: 100svh;
+            display: flex; align-items: center;
+            padding: calc(var(--nav-h) + 5rem) 2rem 6rem;
+            position: relative; overflow: hidden;
         }
-        
-        .dark .hero {
-            background: #1f2937;
-            border-bottom-color: #374151;
-        }
-        
-        .hero-content {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-        
-        .hero h1 {
-            font-size: 3.5rem;
-            font-weight: 900;
-            margin-bottom: 1.5rem;
-            line-height: 1.2;
-            color: #111827;
-            animation: fadeInUp 0.8s ease;
-            transition: color 0.3s ease;
-        }
-        
-        .dark .hero h1 {
-            color: #f9fafb;
-        }
-        
-        .hero p {
-            font-size: 1.25rem;
-            margin-bottom: 2.5rem;
-            color: #4b5563;
-            animation: fadeInUp 0.8s ease 0.2s both;
-            transition: color 0.3s ease;
-        }
-        
-        .dark .hero p {
-            color: #d1d5db;
-        }
-        
-        /* Prize Draw Section */
-        .prize-draw {
-            padding: 4rem 2rem;
-            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-            text-align: center;
-            color: white;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .prize-draw::before {
+        .hero::before {
             content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-            animation: pulse 3s ease-in-out infinite;
+            position: absolute; inset: 0;
+            background:
+                radial-gradient(ellipse 70% 65% at 65% 105%, rgba(124,58,237,.4) 0%, transparent 68%),
+                radial-gradient(ellipse 45% 35% at 8% 15%, rgba(124,58,237,.13) 0%, transparent 60%);
+            pointer-events: none;
         }
-        
-        @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-                opacity: 0.5;
-            }
-            50% {
-                transform: scale(1.1);
-                opacity: 0.3;
-            }
+
+        .hero-inner {
+            position: relative; z-index: 1;
+            max-width: var(--max); margin: 0 auto; width: 100%;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center;
         }
-        
-        .prize-draw-container {
-            max-width: 900px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
+
+        .hero-kicker {
+            display: inline-flex; align-items: center; gap: .5rem;
+            font-size: .7rem; font-weight: 600;
+            letter-spacing: .14em; text-transform: uppercase;
+            color: rgba(255,255,255,.38); margin-bottom: 1.4rem;
         }
-        
-        .prize-draw-content {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 3rem 2rem;
-            border-radius: 1.5rem;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        .hero-kicker-line { width: 20px; height: 1.5px; background: var(--purple-l); border-radius: 2px; }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 4.5vw, 3.75rem);
+            font-weight: 800; line-height: 1.07; letter-spacing: -.045em;
+            color: #fff; margin-bottom: 1.25rem;
         }
-        
-        .prize-draw-icon {
-            width: 80px;
-            height: 80px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1.5rem;
-            border: 3px solid rgba(255, 255, 255, 0.3);
+        .hero h1 em { font-style: normal; color: var(--purple-l); }
+
+        .hero-lead {
+            font-size: 1.05rem; color: rgba(255,255,255,.5);
+            line-height: 1.7; max-width: 29rem; margin-bottom: 2.25rem;
         }
-        
-        .prize-draw-icon i {
-            font-size: 2.5rem;
-            color: #ffd700;
-            animation: bounce 2s ease-in-out infinite;
-        }
-        
-        @keyframes bounce {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-        
-        .prize-draw h2 {
-            font-size: 2rem;
-            font-weight: 800;
-            margin-bottom: 1rem;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-        }
-        
-        .prize-amount {
-            font-size: 3.5rem;
-            font-weight: 900;
-            margin: 1rem 0;
-            color: #ffd700;
-            text-shadow: 0 4px 20px rgba(255, 215, 0, 0.5);
-            line-height: 1;
-        }
-        
-        .prize-description {
-            font-size: 1.25rem;
-            margin: 1.5rem 0;
-            opacity: 0.95;
-            line-height: 1.6;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .prize-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.75rem;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 0.75rem 1.5rem;
-            border-radius: 2rem;
-            margin-top: 1.5rem;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            font-weight: 600;
-        }
-        
-        .prize-badge i {
-            color: #ffd700;
-        }
-        
-        @media (max-width: 768px) {
-            .prize-draw {
-                padding: 3rem 1.5rem;
-            }
-            
-            .prize-draw-content {
-                padding: 2rem 1.5rem;
-            }
-            
-            .prize-draw h2 {
-                font-size: 1.5rem;
-            }
-            
-            .prize-amount {
-                font-size: 2.5rem;
-            }
-            
-            .prize-description {
-                font-size: 1.1rem;
-            }
-        }
-        
-        /* Contact Form Modal */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
-            z-index: 9999;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .modal-overlay.active {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 1;
-        }
-        
-        .modal-content {
-            background: white;
-            border-radius: 1.5rem;
-            max-width: 600px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
-            position: relative;
-            transform: scale(0.9);
-            transition: transform 0.3s ease;
-        }
-        
-        .dark .modal-content {
-            background: #1f2937;
-        }
-        
-        .modal-overlay.active .modal-content {
-            transform: scale(1);
-        }
-        
-        .modal-header {
-            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-            padding: 2rem;
-            border-radius: 1.5rem 1.5rem 0 0;
-            text-align: center;
-            color: white;
-            position: relative;
-        }
-        
-        .modal-close {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.3s ease;
-        }
-        
-        .modal-close:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-        
-        .modal-header h2 {
-            font-size: 1.75rem;
-            font-weight: 800;
-            margin-bottom: 0.5rem;
-        }
-        
-        .modal-header p {
-            font-size: 1rem;
-            opacity: 0.95;
-        }
-        
-        .modal-body {
-            padding: 2rem;
-        }
-        
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        .form-label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: #374151;
-        }
-        
-        .dark .form-label {
-            color: #d1d5db;
-        }
-        
-        .form-input {
-            width: 100%;
-            padding: 0.875rem 1rem;
-            border: 2px solid #e5e7eb;
-            border-radius: 0.75rem;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            background: white;
-            color: #111827;
-        }
-        
-        .dark .form-input {
-            background: #374151;
-            border-color: #4b5563;
-            color: #f9fafb;
-        }
-        
-        .form-input:focus {
-            outline: none;
-            border-color: #8b5cf6;
-            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
-        }
-        
-        .form-input::placeholder {
-            color: #9ca3af;
-        }
-        
-        .dark .form-input::placeholder {
-            color: #6b7280;
-        }
-        
-        .btn-submit {
-            width: 100%;
-            background: #8b5cf6;
-            color: white;
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 0.75rem;
-            font-weight: 700;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-        
-        .btn-submit:hover {
-            background: #7c3aed;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3);
-        }
-        
-        .btn-submit:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        .success-message {
-            display: none;
-            text-align: center;
-            padding: 2rem;
-        }
-        
-        .success-message.active {
-            display: block;
-        }
-        
-        .success-icon {
-            width: 80px;
-            height: 80px;
-            background: #10b981;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1.5rem;
-        }
-        
-        .success-icon i {
-            font-size: 2.5rem;
-            color: white;
-        }
-        
-        .success-message h3 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #111827;
-            margin-bottom: 1rem;
-        }
-        
-        .dark .success-message h3 {
-            color: #f9fafb;
-        }
-        
-        .success-message p {
-            color: #6b7280;
-            font-size: 1rem;
-        }
-        
-        .dark .success-message p {
-            color: #9ca3af;
-        }
-        
-        @media (max-width: 768px) {
-            .modal-content {
-                width: 95%;
-            }
-            
-            .modal-header {
-                padding: 1.5rem;
-            }
-            
-            .modal-header h2 {
-                font-size: 1.5rem;
-            }
-            
-            .modal-body {
-                padding: 1.5rem;
-            }
-        }
-        
-        .hero-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            animation: fadeInUp 0.8s ease 0.4s both;
-        }
-        
+
+        .hero-cta { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; margin-bottom: 3rem; }
+
         .btn-primary {
-            background: #8b5cf6;
-            color: white;
-            padding: 1rem 3rem;
-            border-radius: 0.75rem;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
+            background: var(--purple); color: #fff; border: none;
+            border-radius: var(--r); padding: .8rem 1.6rem;
+            font-size: .92rem; font-weight: 600; letter-spacing: -.01em;
+            cursor: pointer; text-decoration: none;
+            display: inline-flex; align-items: center; gap: .4rem;
+            transition: background .15s, transform .15s, box-shadow .15s;
         }
-        
-        .btn-primary:hover {
-            background: #7c3aed;
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.25);
+        .btn-primary:hover { background: #6d28d9; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(124,58,237,.4); }
+
+        .btn-outline {
+            background: transparent; color: rgba(255,255,255,.6);
+            border: 1px solid rgba(255,255,255,.17); border-radius: var(--r);
+            padding: .8rem 1.6rem; font-size: .92rem; font-weight: 500;
+            cursor: pointer; text-decoration: none;
+            display: inline-flex; align-items: center; gap: .4rem;
+            transition: border-color .15s, color .15s, background .15s;
         }
-        
-        .btn-secondary {
-            background: white;
-            color: #6b7280;
-            padding: 1rem 3rem;
-            border-radius: 0.75rem;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            border: 2px solid #e5e7eb;
+        .btn-outline:hover { border-color: rgba(255,255,255,.38); color: #fff; background: rgba(255,255,255,.05); }
+
+        .hero-numbers {
+            display: flex; gap: 2.5rem;
+            padding-top: 2rem; border-top: 1px solid rgba(255,255,255,.1);
         }
-        
-        .dark .btn-secondary {
-            background: #1f2937;
-            color: #d1d5db;
-            border-color: #374151;
+        .hero-num-val  { font-size: 1.6rem; font-weight: 700; letter-spacing: -.04em; color: #fff; display: block; }
+        .hero-num-label { font-size: .72rem; color: rgba(255,255,255,.38); display: block; margin-top: .1rem; letter-spacing: .02em; }
+
+        /* ── HERO VISUAL (dashboard mock) ─────────── */
+        .hero-visual { display: flex; flex-direction: column; gap: 1rem; align-items: flex-end; }
+
+        .mock-card {
+            width: 100%; max-width: 380px;
+            background: rgba(255,255,255,.06);
+            border: 1px solid rgba(255,255,255,.1);
+            border-radius: var(--r);
+            padding: 1.4rem 1.6rem;
+            backdrop-filter: blur(10px);
         }
-        
-        .btn-secondary:hover {
-            background: #f9fafb;
-            border-color: #8b5cf6;
-            color: #8b5cf6;
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        .mock-card-label {
+            font-size: .68rem; font-weight: 600;
+            text-transform: uppercase; letter-spacing: .1em;
+            color: rgba(255,255,255,.32); margin-bottom: 1rem; display: block;
         }
-        
-        .dark .btn-secondary:hover {
-            background: #374151;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        .mock-rating-row { display: flex; align-items: baseline; gap: .7rem; margin-bottom: .9rem; }
+        .mock-rating-num { font-size: 2.4rem; font-weight: 700; letter-spacing: -.06em; color: #fff; }
+        .mock-stars { color: #facc15; font-size: .85rem; letter-spacing: .06em; }
+
+        .mock-bars { display: flex; flex-direction: column; gap: .45rem; }
+        .mock-bar-row { display: flex; align-items: center; gap: .6rem; }
+        .mock-bar-lbl { font-size: .68rem; color: rgba(255,255,255,.3); width: .8rem; text-align: right; }
+        .mock-bar-track { flex: 1; height: 5px; background: rgba(255,255,255,.07); border-radius: 99px; overflow: hidden; }
+        .mock-bar-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--purple-l), #a78bfa); }
+
+        .mock-badges { display: flex; gap: .75rem; max-width: 380px; width: 100%; }
+        .mock-badge {
+            flex: 1;
+            background: rgba(255,255,255,.06);
+            border: 1px solid rgba(255,255,255,.1);
+            border-radius: var(--r);
+            padding: .85rem 1rem;
+            display: flex; align-items: center; gap: .75rem;
         }
-        
-        /* Stats Section */
-        .stats {
-            padding: 4rem 2rem;
-            background: #f9fafb;
-            transition: background-color 0.3s ease;
+        .mock-badge-icon {
+            width: 34px; height: 34px; border-radius: 9px;
+            background: var(--purple-dim); border: 1px solid rgba(139,92,246,.2);
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
         }
-        
-        .dark .stats {
-            background: #111827;
+        .mock-badge-icon i { font-size: .85rem; color: var(--purple-l); }
+        .mock-badge strong { font-size: .8rem; font-weight: 600; color: #fff; display: block; }
+        .mock-badge span   { font-size: .7rem; color: rgba(255,255,255,.35); }
+
+        /* ── STRIP ────────────────────────────────── */
+        .strip {
+            background: var(--surface-2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+            padding: 2.25rem 2rem;
+            transition: background .25s, border-color .25s;
         }
-        
-        .stats-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
+        .dark .strip { background: #111113; border-color: var(--border); }
+        .strip-inner {
+            max-width: var(--max); margin: 0 auto;
+            display: flex; align-items: center; justify-content: center;
+            gap: 4.5rem; flex-wrap: wrap;
         }
-        
-        .stat-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 0.75rem;
-            border: 1px solid #e5e7eb;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .dark .stat-card {
-            background: #1f2937;
-            border-color: #374151;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
-        }
-        
-        .dark .stat-card:hover {
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
-        }
-        
-        .stat-info h3 {
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: #6b7280;
-            margin-bottom: 0.5rem;
-            transition: color 0.3s ease;
-        }
-        
-        .dark .stat-info h3 {
-            color: #9ca3af;
-        }
-        
-        .stat-info p {
-            font-size: 2rem;
-            font-weight: 800;
-            color: #8b5cf6;
-        }
-        
-        .stat-icon {
-            width: 48px;
-            height: 48px;
-            background: #ede9fe;
-            border-radius: 0.75rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.3s ease;
-        }
-        
-        .dark .stat-icon {
-            background: rgba(139, 92, 246, 0.2);
-        }
-        
-        .stat-icon i {
-            font-size: 1.5rem;
-            color: #8b5cf6;
-        }
-        
-        /* Features Section */
-        .features {
-            padding: 6rem 2rem;
-            background: white;
-            transition: background-color 0.3s ease;
-        }
-        
-        .dark .features {
-            background: #1f2937;
-        }
-        
-        .section-title {
-            text-align: center;
-            margin-bottom: 4rem;
-        }
-        
-        .section-title h2 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: #111827;
-            margin-bottom: 1rem;
-            transition: color 0.3s ease;
-        }
-        
-        .dark .section-title h2 {
-            color: #f9fafb;
-        }
-        
-        .section-title p {
-            font-size: 1.2rem;
-            color: #6b7280;
-            max-width: 600px;
-            margin: 0 auto;
-            transition: color 0.3s ease;
-        }
-        
-        .dark .section-title p {
-            color: #d1d5db;
-        }
-        
+        .strip-item { text-align: center; }
+        .strip-num   { font-size: 1.75rem; font-weight: 700; letter-spacing: -.04em; color: var(--purple); display: block; }
+        .strip-lbl   { font-size: .75rem; color: var(--muted); display: block; margin-top: .1rem; }
+        .strip-sep   { width: 1px; height: 2.2rem; background: var(--border); }
+
+        /* ── SECTION CORE ─────────────────────────── */
+        .section { padding: 6rem 2rem; }
+        .section-inner { max-width: var(--max); margin: 0 auto; }
+        .section-tag  { font-size: .7rem; font-weight: 600; letter-spacing: .13em; text-transform: uppercase; color: var(--purple); display: block; margin-bottom: .85rem; }
+        .section-h    { font-size: clamp(1.85rem, 3.5vw, 2.6rem); font-weight: 700; letter-spacing: -.035em; line-height: 1.15; color: var(--text); margin-bottom: .85rem; }
+        .section-sub  { font-size: 1rem; color: var(--muted); line-height: 1.7; max-width: 36rem; }
+
+        .dark .section-h { color: #fafafa; }
+
+        /* ── FEATURES ─────────────────────────────── */
+        .features-bg { background: var(--surface); transition: background .25s; }
+        .dark .features-bg { background: #09090b; }
+
+        .features-head { margin-bottom: 3.5rem; }
+
         .features-grid {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2rem;
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 1px; background: var(--border);
+            border: 1px solid var(--border); border-radius: var(--r); overflow: hidden;
         }
-        
-        .feature-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 0.75rem;
-            border: 1px solid #e5e7eb;
-            transition: all 0.3s ease;
+        .feat {
+            background: var(--surface); padding: 1.75rem;
+            transition: background .2s;
         }
-        
-        .dark .feature-card {
-            background: #1f2937;
-            border-color: #374151;
+        .dark .feat { background: #0d0d10; }
+        .feat:hover { background: var(--surface-2); }
+        .dark .feat:hover { background: #18181b; }
+
+        .feat-icon {
+            width: 38px; height: 38px; border-radius: 9px;
+            background: var(--purple-dim); border: 1px solid rgba(139,92,246,.2);
+            display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;
         }
-        
-        .feature-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
-            border-color: #8b5cf6;
+        .feat-icon i { font-size: .88rem; color: var(--purple-l); }
+        .feat h3     { font-size: .88rem; font-weight: 600; letter-spacing: -.015em; color: var(--text); margin-bottom: .4rem; }
+        .feat p      { font-size: .82rem; color: var(--muted); line-height: 1.62; }
+        .dark .feat h3 { color: #e4e4e7; }
+
+        /* ── HOW IT WORKS ─────────────────────────── */
+        .how-bg { background: var(--surface-2); transition: background .25s; }
+        .dark .how-bg { background: #0c0c0f; }
+
+        .steps {
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 2.5rem; margin-top: 3.5rem; position: relative;
         }
-        
-        .dark .feature-card:hover {
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
+        .steps::before {
+            content: ''; position: absolute;
+            top: 1.45rem; left: calc(12.5% + .2rem); width: calc(75% - .4rem);
+            height: 1px; background: var(--border); z-index: 0;
         }
-        
-        .feature-icon {
-            width: 56px;
-            height: 56px;
-            background: #ede9fe;
-            border-radius: 0.75rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1.5rem;
-            transition: background-color 0.3s ease;
+        .step-item { position: relative; z-index: 1; }
+        .step-num {
+            width: 2.9rem; height: 2.9rem; border-radius: 50%;
+            border: 1px solid var(--border); background: var(--surface);
+            color: var(--muted); font-size: .8rem; font-weight: 600;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 1.25rem; transition: background .2s, border-color .2s, color .2s;
         }
-        
-        .dark .feature-icon {
-            background: rgba(139, 92, 246, 0.2);
+        .dark .step-num { background: #18181b; }
+        .step-item:hover .step-num { background: var(--purple); border-color: var(--purple); color: #fff; }
+        .step-item h3 { font-size: .88rem; font-weight: 600; letter-spacing: -.01em; color: var(--text); margin-bottom: .4rem; }
+        .step-item p  { font-size: .8rem; color: var(--muted); line-height: 1.65; }
+        .dark .step-item h3 { color: #e4e4e7; }
+
+        /* ── PRIZE ────────────────────────────────── */
+        .prize-section { background: var(--surface); padding: 3.5rem 2rem; transition: background .25s; }
+        .dark .prize-section { background: #09090b; }
+        .prize-inner {
+            max-width: var(--max); margin: 0 auto;
+            border: 1px solid var(--border); border-radius: calc(var(--r) + 4px);
+            padding: 2.75rem 3.25rem;
+            background: linear-gradient(135deg, rgba(124,58,237,.06) 0%, transparent 55%);
+            display: flex; align-items: center; justify-content: space-between; gap: 3rem;
         }
-        
-        .feature-icon i {
-            font-size: 1.75rem;
-            color: #8b5cf6;
+        .prize-tag   { font-size: .7rem; font-weight: 600; letter-spacing: .13em; text-transform: uppercase; color: var(--purple); display: block; margin-bottom: .65rem; }
+        .prize-title { font-size: 1.5rem; font-weight: 700; letter-spacing: -.03em; color: var(--text); line-height: 1.2; margin-bottom: .6rem; }
+        .prize-desc  { font-size: .85rem; color: var(--muted); line-height: 1.65; max-width: 26rem; }
+        .dark .prize-title { color: #fafafa; }
+
+        .prize-right { text-align: center; flex-shrink: 0; }
+        .prize-num   { font-size: 2.4rem; font-weight: 800; letter-spacing: -.05em; color: var(--purple); display: block; }
+        .prize-subl  { font-size: .72rem; color: var(--muted); display: block; margin-top: .15rem; }
+
+        /* ── CTA ──────────────────────────────────── */
+        .cta-section {
+            background: var(--ink); color: #fff;
+            padding: 7rem 2rem; text-align: center;
+            position: relative; overflow: hidden;
         }
-        
-        .feature-card h3 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: #111827;
-            transition: color 0.3s ease;
+        .cta-section::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(ellipse 60% 80% at 50% 120%, rgba(124,58,237,.5) 0%, transparent 68%);
+            pointer-events: none;
         }
-        
-        .dark .feature-card h3 {
-            color: #f9fafb;
+        .cta-inner { position: relative; z-index: 1; max-width: 600px; margin: 0 auto; }
+        .cta-section h2 { font-size: clamp(1.9rem, 4vw, 2.85rem); font-weight: 700; letter-spacing: -.04em; line-height: 1.1; margin-bottom: 1rem; }
+        .cta-section p  { font-size: .97rem; color: rgba(255,255,255,.5); line-height: 1.7; margin-bottom: 2.25rem; }
+        .btn-white {
+            background: #fff; color: var(--purple); border: none;
+            border-radius: var(--r); padding: .85rem 1.8rem;
+            font-size: .92rem; font-weight: 600; letter-spacing: -.01em;
+            cursor: pointer; text-decoration: none;
+            display: inline-flex; align-items: center; gap: .45rem;
+            transition: transform .15s, box-shadow .15s;
         }
-        
-        .feature-card p {
-            color: #4b5563;
-            line-height: 1.7;
-            transition: color 0.3s ease;
+        .btn-white:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(255,255,255,.12); }
+
+        /* ── FOOTER ───────────────────────────────── */
+        .footer { background: #08080a; padding: 3.5rem 2rem 2rem; color: rgba(255,255,255,.4); }
+        .footer-inner {
+            max-width: var(--max); margin: 0 auto;
+            display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 2.75rem;
         }
-        
-        .dark .feature-card p {
-            color: #d1d5db;
+        .footer-brand { font-size: .92rem; font-weight: 600; color: #fff; display: block; margin-bottom: .5rem; }
+        .footer-desc  { font-size: .78rem; line-height: 1.7; max-width: 17rem; }
+        .footer-col-h { font-size: .68rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.55); display: block; margin-bottom: .9rem; }
+        .footer-col a  { display: block; font-size: .8rem; color: rgba(255,255,255,.4); text-decoration: none; margin-bottom: .5rem; transition: color .15s; }
+        .footer-col a:hover { color: #fff; }
+        .footer-col p  { font-size: .8rem; margin-bottom: .5rem; }
+        .footer-bot {
+            max-width: var(--max); margin: 0 auto;
+            padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,.07);
+            display: flex; align-items: center; justify-content: space-between;
+            gap: .75rem; flex-wrap: wrap;
         }
-        
-        /* How It Works */
-        .how-it-works {
-            padding: 6rem 2rem;
-            background: #f9fafb;
-            transition: background-color 0.3s ease;
+        .footer-bot-txt { font-size: .74rem; }
+
+        /* ── MODAL ────────────────────────────────── */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,.55); backdrop-filter: blur(5px);
+            z-index: 9999; opacity: 0; transition: opacity .25s;
+            align-items: center; justify-content: center;
         }
-        
-        .dark .how-it-works {
-            background: #111827;
+        .modal-overlay.active { display: flex; opacity: 1; }
+        .modal-box {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: calc(var(--r) + 4px); max-width: 480px; width: 90%;
+            max-height: 90vh; overflow-y: auto;
+            box-shadow: 0 24px 60px rgba(0,0,0,.28);
+            transform: scale(.97) translateY(6px); transition: transform .25s;
         }
-        
-        .steps-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-top: 4rem;
+        .modal-overlay.active .modal-box { transform: scale(1) translateY(0); }
+        .modal-head {
+            padding: 1.6rem 1.75rem 1.1rem;
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: flex-start; justify-content: space-between; gap: .75rem;
         }
-        
-        .step {
-            text-align: center;
-            background: white;
-            padding: 2.5rem 2rem;
-            border-radius: 0.75rem;
-            border: 1px solid #e5e7eb;
-            transition: all 0.3s ease;
+        .modal-head h2 { font-size: 1.1rem; font-weight: 700; letter-spacing: -.02em; color: var(--text); margin-bottom: .15rem; }
+        .modal-head p  { font-size: .82rem; color: var(--muted); }
+        .dark .modal-head h2 { color: #fafafa; }
+        .modal-close-btn {
+            background: var(--surface-2); border: none; cursor: pointer;
+            width: 1.9rem; height: 1.9rem; border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--muted); font-size: .8rem; flex-shrink: 0;
+            transition: background .15s, color .15s;
         }
-        
-        .dark .step {
-            background: #1f2937;
-            border-color: #374151;
+        .modal-close-btn:hover { background: var(--border); color: var(--text); }
+        .modal-body { padding: 1.6rem 1.75rem; }
+        .form-group  { margin-bottom: 1.1rem; }
+        .form-label  { display: block; font-size: .8rem; font-weight: 500; color: var(--text); margin-bottom: .35rem; }
+        .dark .form-label { color: #d4d4d8; }
+        .form-input  {
+            width: 100%; padding: .65rem .85rem;
+            border: 1px solid var(--border); border-radius: 8px;
+            font-size: .88rem; background: var(--surface); color: var(--text);
+            transition: border-color .15s, box-shadow .15s;
         }
-        
-        .step:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
-            border-color: #8b5cf6;
+        .dark .form-input { background: #18181b; color: #fafafa; }
+        .form-input:focus { outline: none; border-color: var(--purple-l); box-shadow: 0 0 0 3px rgba(139,92,246,.12); }
+        .form-input::placeholder { color: var(--faint); }
+        .btn-submit {
+            width: 100%; background: var(--purple); color: #fff; border: none;
+            border-radius: 8px; padding: .75rem 1.5rem;
+            font-size: .88rem; font-weight: 600; cursor: pointer; margin-top: .25rem;
+            display: flex; align-items: center; justify-content: center; gap: .4rem;
+            transition: background .15s;
         }
-        
-        .dark .step:hover {
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
+        .btn-submit:hover { background: #6d28d9; }
+        .btn-submit:disabled { opacity: .55; cursor: not-allowed; }
+        .success-msg { display: none; text-align: center; padding: 2.5rem 1rem; }
+        .success-msg.active { display: block; }
+        .success-icon { width: 52px; height: 52px; background: #16a34a; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.1rem; }
+        .success-icon i { color: #fff; font-size: 1.3rem; }
+        .success-msg h3 { font-size: 1rem; font-weight: 600; color: var(--text); margin-bottom: .4rem; }
+        .success-msg p  { font-size: .82rem; color: var(--muted); }
+        .dark .success-msg h3 { color: #fafafa; }
+
+        /* ── REVEAL ANIMATION ─────────────────────── */
+        .reveal { opacity: 0; transform: translateY(18px); transition: opacity .55s ease, transform .55s ease; }
+        .reveal.visible { opacity: 1; transform: none; }
+
+        /* ── SCROLLBAR ────────────────────────────── */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(124,58,237,.25); border-radius: 99px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(124,58,237,.45); }
+
+        /* ── RESPONSIVE ───────────────────────────── */
+        @media (max-width: 1024px) {
+            .hero-inner  { grid-template-columns: 1fr; gap: 3.5rem; }
+            .hero-visual { align-items: flex-start; flex-direction: row; flex-wrap: wrap; }
+            .mock-card, .mock-badges { max-width: 100%; }
+            .features-grid { grid-template-columns: repeat(2, 1fr); }
+            .steps { grid-template-columns: repeat(2, 1fr); }
+            .steps::before { display: none; }
+            .footer-inner { grid-template-columns: 1fr 1fr; gap: 2rem; }
+            .prize-inner { flex-direction: column; align-items: flex-start; text-align: left; padding: 2rem 2.25rem; }
         }
-        
-        .step-number {
-            width: 64px;
-            height: 64px;
-            background: #8b5cf6;
-            color: white;
-            border-radius: 0.75rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.75rem;
-            font-weight: 800;
-            margin: 0 auto 1.5rem;
-        }
-        
-        .step h3 {
-            font-size: 1.25rem;
-            margin-bottom: 1rem;
-            font-weight: 700;
-            color: #111827;
-            transition: color 0.3s ease;
-        }
-        
-        .dark .step h3 {
-            color: #f9fafb;
-        }
-        
-        .step p {
-            color: #4b5563;
-            line-height: 1.7;
-            transition: color 0.3s ease;
-        }
-        
-        .dark .step p {
-            color: #d1d5db;
-        }
-        
-        /* Benefits */
-        .benefits {
-            padding: 6rem 2rem;
-            background: white;
-            transition: background-color 0.3s ease;
-        }
-        
-        .dark .benefits {
-            background: #1f2937;
-        }
-        
-        .benefits-grid {
-            max-width: 1200px;
-            margin: 3rem auto 0;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2rem;
-        }
-        
-        .benefit-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 0.75rem;
-            border: 1px solid #e5e7eb;
-            display: flex;
-            align-items: flex-start;
-            gap: 1.5rem;
-            transition: all 0.3s ease;
-        }
-        
-        .dark .benefit-card {
-            background: #1f2937;
-            border-color: #374151;
-        }
-        
-        .benefit-card:hover {
-            transform: translateX(8px);
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
-            border-color: #8b5cf6;
-        }
-        
-        .dark .benefit-card:hover {
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
-        }
-        
-        .benefit-icon {
-            width: 48px;
-            height: 48px;
-            background: #ede9fe;
-            border-radius: 0.75rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            transition: background-color 0.3s ease;
-        }
-        
-        .dark .benefit-icon {
-            background: rgba(139, 92, 246, 0.2);
-        }
-        
-        .benefit-icon i {
-            font-size: 1.5rem;
-            color: #8b5cf6;
-        }
-        
-        .benefit-content h4 {
-            font-size: 1.125rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: #111827;
-            transition: color 0.3s ease;
-        }
-        
-        .dark .benefit-content h4 {
-            color: #f9fafb;
-        }
-        
-        .benefit-content p {
-            color: #6b7280;
-            line-height: 1.6;
-            transition: color 0.3s ease;
-        }
-        
-        .dark .benefit-content p {
-            color: #d1d5db;
-        }
-        
-        /* CTA Section */
-        .cta {
-            padding: 6rem 2rem;
-            background: #8b5cf6;
-            text-align: center;
-            color: white;
-        }
-        
-        .cta h2 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 1rem;
-        }
-        
-        .cta p {
-            font-size: 1.25rem;
-            margin-bottom: 2.5rem;
-            opacity: 0.95;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .cta .btn-primary {
-            background: white;
-            color: #8b5cf6;
-        }
-        
-        .cta .btn-primary:hover {
-            background: #f9fafb;
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-        }
-        
-        /* Footer */
-        .footer {
-            background: #111827;
-            color: white;
-            padding: 3rem 2rem 1.5rem;
-            transition: background-color 0.3s ease;
-        }
-        
-        .dark .footer {
-            background: #0f172a;
-        }
-        
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 3rem;
-            margin-bottom: 2rem;
-        }
-        
-        .footer-section h4 {
-            font-size: 1.125rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .footer-section h4 i {
-            color: #8b5cf6;
-        }
-        
-        .footer-section p, .footer-section a {
-            color: #9ca3af;
-            text-decoration: none;
-            display: block;
-            margin-bottom: 0.5rem;
-            transition: color 0.3s ease;
-        }
-        
-        .footer-section a:hover {
-            color: #8b5cf6;
-        }
-        
-        .footer-bottom {
-            text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid #374151;
-            color: #9ca3af;
-        }
-        
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .fade-in {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s ease, transform 0.6s ease;
-        }
-        
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        /* Responsive */
+
         @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-            
-            .hero p {
-                font-size: 1.1rem;
-            }
-            
-            .hero-buttons {
-                flex-direction: column;
-            }
-            
-            .section-title h2 {
-                font-size: 2rem;
-            }
-            
-            .cta h2 {
-                font-size: 2rem;
-            }
-            
-            .header-content {
-                padding: 0 1rem;
-                flex-wrap: wrap;
-                gap: 1rem;
-            }
-            
-            .logo {
-                flex: 1 1 100%;
-                justify-content: center;
-            }
-            
-            .logo img {
-                height: 32px;
-            }
-            
-            .logo-text {
-                font-size: 1.25rem;
-            }
-            
-            .header-content > div {
-                flex: 1 1 100%;
-                justify-content: center;
-            }
-            
-            .language-selector {
-                margin-right: 0.5rem;
-            }
-            
-            .language-selector select {
-                padding: 0.5rem 1.5rem 0.5rem 0.75rem;
-                font-size: 0.8125rem;
-            }
-            
-            .btn-login {
-                padding: 0.625rem 1.5rem;
-                font-size: 0.875rem;
-            }
-            
-            .features-grid,
-            .benefits-grid,
-            .steps-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .benefit-card {
-                flex-direction: column;
-                text-align: center;
-            }
+            :root { --nav-h: 58px; }
+            .hero { padding: calc(var(--nav-h) + 3rem) 1.5rem 4rem; }
+            .section { padding: 4rem 1.5rem; }
+            .features-grid { grid-template-columns: 1fr; }
+            .steps { grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+            .strip-inner { gap: 2.25rem; }
+            .strip-sep   { display: none; }
+            .footer-inner { grid-template-columns: 1fr; gap: 1.75rem; }
+            .footer-bot   { flex-direction: column; text-align: center; }
+            .hero-numbers { gap: 1.5rem; }
+            .prize-inner  { padding: 1.75rem; }
+            .nav-inner { padding: 0 1.25rem; }
         }
-        
-        /* Scroll indicator */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: rgba(139, 92, 246, 0.3);
-            border-radius: 10px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(139, 92, 246, 0.5);
+
+        @media (max-width: 480px) {
+            .steps { grid-template-columns: 1fr; }
+            .hero-cta { flex-direction: column; align-items: stretch; }
+            .hero h1 { font-size: 2.25rem; }
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="header-content">
-            <div class="logo">
-                <img src="{{ asset('assets/images/lopgosDASHBOARD.png') }}" alt="{{ __('app.name') }}">
-                <span class="logo-text">{{ __('app.name') }}</span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 0.75rem;">
-                <div class="language-selector">
-                    <select id="languageSelector">
-                        <option value="pt_BR" {{ app()->getLocale() === 'pt_BR' ? 'selected' : '' }}>🇧🇷 PT</option>
-                        <option value="en_US" {{ app()->getLocale() === 'en_US' ? 'selected' : '' }}>🇬🇧 EN</option>
-                    </select>
-                </div>
-                <button id="darkModeToggle" onclick="toggleDarkMode()" class="dark-mode-toggle" title="Toggle Dark Mode">
-                    <i id="darkModeIcon" class="fas fa-moon"></i>
-                </button>
-                <a href="/login" class="btn-login">
-                    <i class="fas fa-sign-in-alt"></i>
-                    {{ __('landing.access_panel') }}
-                </a>
-            </div>
-        </div>
-    </header>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-content">
+<!-- ─── NAV ─────────────────────────────────────── -->
+<nav class="nav" id="mainNav">
+    <div class="nav-inner">
+        <a href="/" class="nav-logo">
+            <img src="{{ asset('assets/images/lopgosDASHBOARD.png') }}" alt="{{ __('app.name') }}">
+            <span class="nav-logo-name">{{ __('app.name') }}</span>
+        </a>
+        <div class="nav-right">
+            <select class="lang-select" id="languageSelector">
+                <option value="pt_BR" {{ app()->getLocale() === 'pt_BR' ? 'selected' : '' }}>🇧🇷 PT</option>
+                <option value="en_US" {{ app()->getLocale() === 'en_US' ? 'selected' : '' }}>🇬🇧 EN</option>
+            </select>
+            <a href="/login" class="btn-nav">{{ __('landing.access_panel') }}</a>
+        </div>
+    </div>
+</nav>
+
+<!-- ─── HERO ─────────────────────────────────────── -->
+<section class="hero">
+    <div class="hero-inner">
+
+        <div>
+            <div class="hero-kicker">
+                <span class="hero-kicker-line"></span>
+                {{ __('app.name') }}
+            </div>
             <h1>{{ __('landing.hero_title') }}</h1>
-            <p>{{ __('landing.hero_description') }}</p>
-            <div class="hero-buttons">
-                <button onclick="openContactModal()" class="btn-primary" style="border: none; cursor: pointer;">
-                    <i class="fas fa-rocket"></i>
+            <p class="hero-lead">{{ __('landing.hero_description') }}</p>
+            <div class="hero-cta">
+                <button onclick="openContactModal()" class="btn-primary">
                     {{ __('landing.start_now') }}
+                    <i class="fas fa-arrow-right" style="font-size:.75rem;"></i>
                 </button>
-                <a href="#como-funciona" class="btn-secondary">
-                    <i class="fas fa-play-circle"></i>
+                <a href="#como-funciona" class="btn-outline">
                     {{ __('landing.learn_more') }}
                 </a>
             </div>
-                                </div>
-    </section>
-
-    <!-- Prize Draw Section -->
-    <section class="prize-draw">
-        <div class="prize-draw-container">
-            <div class="prize-draw-content fade-in">
-                <div class="prize-draw-icon">
-                    <i class="fas fa-trophy"></i>
+            <div class="hero-numbers">
+                <div>
+                    <span class="hero-num-val">+10k</span>
+                    <span class="hero-num-label">{{ __('landing.reviews_processed') }}</span>
                 </div>
-                <h2>{{ __('landing.prize_draw_title') }}</h2>
-                <p class="prize-amount">R$ 10.000,00</p>
-                <p class="prize-description">{{ __('landing.prize_draw_description') }}</p>
-                <div class="prize-badge">
-                    <i class="fas fa-gift"></i>
-                    <span>{{ __('landing.prize_draw_badge') }}</span>
+                <div>
+                    <span class="hero-num-val">4,9 ★</span>
+                    <span class="hero-num-label">{{ __('landing.more_google_reviews') }}</span>
+                </div>
+                <div>
+                    <span class="hero-num-val">100%</span>
+                    <span class="hero-num-label">{{ app()->getLocale() === 'pt_BR' ? 'Controle total' : 'Full control' }}</span>
                 </div>
             </div>
         </div>
-    </section>
 
-    <!-- Stats Section -->
-    <section class="stats">
-        <div class="stats-container">
-            <div class="stat-card fade-in">
-                <div class="stat-info">
-                    <h3>{{ __('landing.reviews_processed') }}</h3>
-                    <p>+10k</p>
+        <div class="hero-visual">
+            <div class="mock-card">
+                <span class="mock-card-label">{{ app()->getLocale() === 'pt_BR' ? 'Avaliações · Google' : 'Reviews · Google' }}</span>
+                <div class="mock-rating-row">
+                    <span class="mock-rating-num">4,9</span>
+                    <span class="mock-stars">★★★★★</span>
                 </div>
-                <div class="stat-icon">
-                    <i class="fas fa-star"></i>
+                <div class="mock-bars">
+                    <div class="mock-bar-row">
+                        <span class="mock-bar-lbl">5</span>
+                        <div class="mock-bar-track"><div class="mock-bar-fill" style="width:92%"></div></div>
+                    </div>
+                    <div class="mock-bar-row">
+                        <span class="mock-bar-lbl">4</span>
+                        <div class="mock-bar-track"><div class="mock-bar-fill" style="width:6%;opacity:.55"></div></div>
+                    </div>
+                    <div class="mock-bar-row">
+                        <span class="mock-bar-lbl">3</span>
+                        <div class="mock-bar-track"><div class="mock-bar-fill" style="width:2%;opacity:.3"></div></div>
+                    </div>
                 </div>
             </div>
-            <div class="stat-card fade-in">
-                <div class="stat-info">
-                    <h3>{{ __('landing.more_google_reviews') }}</h3>
-                    <p>Up to 10x</p>
+
+            <div class="mock-badges">
+                <div class="mock-badge">
+                    <div class="mock-badge-icon"><i class="fas fa-shield-alt"></i></div>
+                    <div>
+                        <strong>{{ app()->getLocale() === 'pt_BR' ? 'Filtro ativo' : 'Filter active' }}</strong>
+                        <span>{{ app()->getLocale() === 'pt_BR' ? 'Negativas bloqueadas' : 'Negatives blocked' }}</span>
+                    </div>
                 </div>
-                <div class="stat-icon">
-                    <i class="fas fa-chart-line"></i>
+                <div class="mock-badge">
+                    <div class="mock-badge-icon"><i class="fas fa-bell"></i></div>
+                    <div>
+                        <strong>{{ app()->getLocale() === 'pt_BR' ? 'Alerta enviado' : 'Alert sent' }}</strong>
+                        <span>{{ app()->getLocale() === 'pt_BR' ? 'Agora mesmo' : 'Just now' }}</span>
+                    </div>
                 </div>
             </div>
         </div>
-    </section>
 
-    <!-- Features Section -->
-    <section class="features">
-        <div class="section-title">
-            <h2>{{ __('landing.features_title') }}</h2>
-            <p>{{ __('landing.features_description') }}</p>
+    </div>
+</section>
+
+<!-- ─── STRIP ─────────────────────────────────────── -->
+<div class="strip">
+    <div class="strip-inner">
+        <div class="strip-item">
+            <span class="strip-num">+10.000</span>
+            <span class="strip-lbl">{{ __('landing.reviews_processed') }}</span>
+        </div>
+        <div class="strip-sep"></div>
+        <div class="strip-item">
+            <span class="strip-num">10×</span>
+            <span class="strip-lbl">{{ __('landing.more_google_reviews') }}</span>
+        </div>
+        <div class="strip-sep"></div>
+        <div class="strip-item">
+            <span class="strip-num">100%</span>
+            <span class="strip-lbl">{{ app()->getLocale() === 'pt_BR' ? 'Reputação protegida' : 'Protected reputation' }}</span>
+        </div>
+        <div class="strip-sep"></div>
+        <div class="strip-item">
+            <span class="strip-num">&lt; 1 min</span>
+            <span class="strip-lbl">{{ app()->getLocale() === 'pt_BR' ? 'Para começar' : 'To get started' }}</span>
+        </div>
+    </div>
+</div>
+
+<!-- ─── FEATURES ─────────────────────────────────── -->
+<section class="section features-bg" id="features">
+    <div class="section-inner">
+        <div class="features-head reveal">
+            <span class="section-tag">{{ __('landing.features_title') }}</span>
+            <h2 class="section-h">{{ __('landing.features_description') }}</h2>
         </div>
         <div class="features-grid">
-            <div class="feature-card fade-in">
-                <div class="feature-icon">
-                    <i class="fas fa-crosshairs"></i>
-                </div>
+            <div class="feat reveal">
+                <div class="feat-icon"><i class="fas fa-crosshairs"></i></div>
                 <h3>{{ __('landing.feature_redirect_title') }}</h3>
                 <p>{{ __('landing.feature_redirect_desc') }}</p>
             </div>
-            <div class="feature-card fade-in">
-                <div class="feature-icon">
-                    <i class="fas fa-shield-alt"></i>
-                </div>
+            <div class="feat reveal">
+                <div class="feat-icon"><i class="fas fa-shield-alt"></i></div>
                 <h3>{{ __('landing.feature_protection_title') }}</h3>
                 <p>{{ __('landing.feature_protection_desc') }}</p>
             </div>
-            <div class="feature-card fade-in">
-                <div class="feature-icon">
-                    <i class="fas fa-chart-bar"></i>
-                </div>
+            <div class="feat reveal">
+                <div class="feat-icon"><i class="fas fa-chart-bar"></i></div>
                 <h3>{{ __('landing.feature_dashboard_title') }}</h3>
                 <p>{{ __('landing.feature_dashboard_desc') }}</p>
             </div>
-            <div class="feature-card fade-in">
-                <div class="feature-icon">
-                    <i class="fas fa-bell"></i>
-                </div>
+            <div class="feat reveal">
+                <div class="feat-icon"><i class="fas fa-bell"></i></div>
                 <h3>{{ __('landing.feature_notifications_title') }}</h3>
                 <p>{{ __('landing.feature_notifications_desc') }}</p>
             </div>
-            <div class="feature-card fade-in">
-                <div class="feature-icon">
-                    <i class="fas fa-mobile-alt"></i>
-                </div>
+            <div class="feat reveal">
+                <div class="feat-icon"><i class="fas fa-mobile-alt"></i></div>
                 <h3>{{ __('landing.feature_contacts_title') }}</h3>
                 <p>{{ __('landing.feature_contacts_desc') }}</p>
             </div>
-            <div class="feature-card fade-in">
-                <div class="feature-icon">
-                    <i class="fas fa-globe"></i>
-                </div>
+            <div class="feat reveal">
+                <div class="feat-icon"><i class="fas fa-globe"></i></div>
                 <h3>{{ __('landing.feature_multilang_title') }}</h3>
                 <p>{{ __('landing.feature_multilang_desc') }}</p>
             </div>
-            <div class="feature-card fade-in">
-                <div class="feature-icon">
-                    <i class="fas fa-download"></i>
-                </div>
+            <div class="feat reveal">
+                <div class="feat-icon"><i class="fas fa-file-export"></i></div>
                 <h3>{{ __('landing.feature_export_title') }}</h3>
                 <p>{{ __('landing.feature_export_desc') }}</p>
             </div>
-            <div class="feature-card fade-in">
-                <div class="feature-icon">
-                    <i class="fas fa-palette"></i>
-                </div>
+            <div class="feat reveal">
+                <div class="feat-icon"><i class="fas fa-palette"></i></div>
                 <h3>{{ __('landing.feature_customization_title') }}</h3>
                 <p>{{ __('landing.feature_customization_desc') }}</p>
             </div>
-            <div class="feature-card fade-in">
-                <div class="feature-icon">
-                    <i class="fas fa-moon"></i>
-                </div>
+            <div class="feat reveal">
+                <div class="feat-icon"><i class="fas fa-qrcode"></i></div>
                 <h3>{{ __('landing.feature_darkmode_title') }}</h3>
                 <p>{{ __('landing.feature_darkmode_desc') }}</p>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- How It Works -->
-    <section class="how-it-works" id="como-funciona">
-        <div class="section-title">
-            <h2>{{ __('landing.how_title') }}</h2>
-            <p>{{ __('landing.how_description') }}</p>
+<!-- ─── PRIZE ─────────────────────────────────────── -->
+<section class="prize-section">
+    <div class="prize-inner reveal">
+        <div>
+            <span class="prize-tag">{{ __('landing.prize_draw_title') }}</span>
+            <h2 class="prize-title">{{ __('landing.prize_draw_description') }}</h2>
+            <p class="prize-desc">{{ __('landing.prize_draw_badge') }}</p>
         </div>
-        <div class="steps-container">
-            <div class="step fade-in">
-                <div class="step-number">1</div>
+        <div class="prize-right">
+            <span class="prize-num">R$ 10.000</span>
+            <span class="prize-subl">{{ app()->getLocale() === 'pt_BR' ? 'em prêmio' : 'in prizes' }}</span>
+            <div style="margin-top:1.25rem;">
+                <button onclick="openContactModal()" class="btn-primary" style="border:none;">
+                    {{ __('landing.start_free') }}
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─── HOW IT WORKS ──────────────────────────────── -->
+<section class="section how-bg" id="como-funciona">
+    <div class="section-inner">
+        <div class="reveal">
+            <span class="section-tag">{{ __('landing.how_title') }}</span>
+            <h2 class="section-h">{{ __('landing.how_description') }}</h2>
+        </div>
+        <div class="steps">
+            <div class="step-item reveal">
+                <div class="step-num">01</div>
                 <h3>{{ __('landing.step1_title') }}</h3>
                 <p>{{ __('landing.step1_desc') }}</p>
             </div>
-            <div class="step fade-in">
-                <div class="step-number">2</div>
+            <div class="step-item reveal">
+                <div class="step-num">02</div>
                 <h3>{{ __('landing.step2_title') }}</h3>
                 <p>{{ __('landing.step2_desc') }}</p>
             </div>
-            <div class="step fade-in">
-                <div class="step-number">3</div>
+            <div class="step-item reveal">
+                <div class="step-num">03</div>
                 <h3>{{ __('landing.step3_title') }}</h3>
                 <p>{{ __('landing.step3_desc') }}</p>
             </div>
-            <div class="step fade-in">
-                <div class="step-number">4</div>
+            <div class="step-item reveal">
+                <div class="step-num">04</div>
                 <h3>{{ __('landing.step4_title') }}</h3>
                 <p>{{ __('landing.step4_desc') }}</p>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Benefits -->
-    <section class="benefits">
-        <div class="section-title">
-            <h2>{{ __('landing.benefits_title') }}</h2>
-            <p>{{ __('landing.benefits_description') }}</p>
-        </div>
-        <div class="benefits-grid">
-            <div class="benefit-card fade-in">
-                <div class="benefit-icon">
-                    <i class="fas fa-arrow-up"></i>
-                </div>
-                <div class="benefit-content">
-                    <h4>{{ __('landing.benefit1_title') }}</h4>
-                    <p>{{ __('landing.benefit1_desc') }}</p>
-                </div>
-            </div>
-            <div class="benefit-card fade-in">
-                <div class="benefit-icon">
-                    <i class="fas fa-shield-alt"></i>
-                </div>
-                <div class="benefit-content">
-                    <h4>{{ __('landing.benefit2_title') }}</h4>
-                    <p>{{ __('landing.benefit2_desc') }}</p>
-                </div>
-            </div>
-            <div class="benefit-card fade-in">
-                <div class="benefit-icon">
-                    <i class="fas fa-dollar-sign"></i>
-                </div>
-                <div class="benefit-content">
-                    <h4>{{ __('landing.benefit3_title') }}</h4>
-                    <p>{{ __('landing.benefit3_desc') }}</p>
-                </div>
-            </div>
-            <div class="benefit-card fade-in">
-                <div class="benefit-icon">
-                    <i class="fas fa-bolt"></i>
-                </div>
-                <div class="benefit-content">
-                    <h4>{{ __('landing.benefit4_title') }}</h4>
-                    <p>{{ __('landing.benefit4_desc') }}</p>
-                </div>
-            </div>
-            <div class="benefit-card fade-in">
-                <div class="benefit-icon">
-                    <i class="fas fa-chart-pie"></i>
-                </div>
-                <div class="benefit-content">
-                    <h4>{{ __('landing.benefit5_title') }}</h4>
-                    <p>{{ __('landing.benefit5_desc') }}</p>
-                </div>
-            </div>
-            <div class="benefit-card fade-in">
-                <div class="benefit-icon">
-                    <i class="fas fa-rocket"></i>
-                </div>
-                <div class="benefit-content">
-                    <h4>{{ __('landing.benefit6_title') }}</h4>
-                    <p>{{ __('landing.benefit6_desc') }}</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="cta">
+<!-- ─── CTA ───────────────────────────────────────── -->
+<section class="cta-section">
+    <div class="cta-inner">
         <h2>{{ __('landing.cta_title') }}</h2>
         <p>{{ __('landing.cta_description') }}</p>
-        <button onclick="openContactModal()" class="btn-primary" style="font-size: 1.2rem; padding: 1.2rem 3.5rem; border: none; cursor: pointer;">
-            <i class="fas fa-star"></i>
+        <button onclick="openContactModal()" class="btn-white">
             {{ __('landing.start_free') }}
+            <i class="fas fa-arrow-right" style="font-size:.75rem;"></i>
         </button>
-    </section>
+    </div>
+</section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h4>
-                    <i class="fas fa-star"></i>
-                    {{ __('app.name') }}
-                </h4>
-                <p>{{ __('landing.footer_description') }}</p>
-                <p style="margin-top: 1rem;">© 2025 {{ __('app.name') }}</p>
-                <p>{{ __('landing.all_rights') }}</p>
-            </div>
-            <div class="footer-section">
-                <h4>
-                    <i class="fas fa-box"></i>
-                    {{ __('landing.product') }}
-                </h4>
-                <a href="#como-funciona">{{ __('landing.how_works') }}</a>
-                <a href="/login">{{ __('landing.control_panel') }}</a>
-                <a href="/login">{{ __('landing.create_account') }}</a>
-                <a href="#features">{{ __('landing.features') }}</a>
-            </div>
-            <div class="footer-section">
-                <h4>
-                    <i class="fas fa-book"></i>
-                    {{ __('landing.resources') }}
-                </h4>
-                <a href="#">{{ __('landing.documentation') }}</a>
-                <a href="#">{{ __('landing.help_center') }}</a>
-                <a href="#">{{ __('landing.faq') }}</a>
-                <a href="#">{{ __('landing.tutorials') }}</a>
-            </div>
-            <div class="footer-section">
-                <h4>
-                    <i class="fas fa-envelope"></i>
-                    {{ __('landing.contact') }}
-                </h4>
-                <p><i class="fas fa-at"></i> contato@reviewsplatform.com</p>
-                <p><i class="fas fa-phone"></i> (11) 9 9999-9999</p>
-                <p><i class="fas fa-headset"></i> {{ __('landing.technical_support') }}</p>
-            </div>
+<!-- ─── FOOTER ────────────────────────────────────── -->
+<footer class="footer">
+    <div class="footer-inner">
+        <div>
+            <span class="footer-brand">{{ __('app.name') }}</span>
+            <p class="footer-desc">{{ __('landing.footer_description') }}</p>
         </div>
-        <div class="footer-bottom">
-            <p>{{ __('landing.developed_with') }} <i class="fas fa-heart" style="color: #8b5cf6;"></i> {{ __('landing.by') }} Iago Vilela & Mateus Bittencourt</p>
+        <div class="footer-col">
+            <span class="footer-col-h">{{ __('landing.product') }}</span>
+            <a href="#como-funciona">{{ __('landing.how_works') }}</a>
+            <a href="/login">{{ __('landing.control_panel') }}</a>
+            <a href="/login">{{ __('landing.create_account') }}</a>
+            <a href="#features">{{ __('landing.features') }}</a>
         </div>
-    </footer>
+        <div class="footer-col">
+            <span class="footer-col-h">{{ __('landing.resources') }}</span>
+            <a href="#">{{ __('landing.documentation') }}</a>
+            <a href="#">{{ __('landing.help_center') }}</a>
+            <a href="#">{{ __('landing.faq') }}</a>
+            <a href="#">{{ __('landing.tutorials') }}</a>
+        </div>
+        <div class="footer-col">
+            <span class="footer-col-h">{{ __('landing.contact') }}</span>
+            <p>contato@reviewsplatform.com</p>
+            <p>(11) 9 9999-9999</p>
+            <p>{{ __('landing.technical_support') }}</p>
+        </div>
+    </div>
+    <div class="footer-bot">
+        <span class="footer-bot-txt">© 2025 {{ __('app.name') }}. {{ __('landing.all_rights') }}</span>
+        <span class="footer-bot-txt">{{ __('landing.developed_with') }} ♥ {{ __('landing.by') }} Iago Vilela & Mateus Bittencourt</span>
+    </div>
+</footer>
 
-    <!-- Contact Form Modal -->
-    <div id="contactModal" class="modal-overlay" onclick="closeModalOnOutsideClick(event)">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button class="modal-close" onclick="closeContactModal()">
-                    <i class="fas fa-times"></i>
-                </button>
+<!-- ─── MODAL ─────────────────────────────────────── -->
+<div id="contactModal" class="modal-overlay" onclick="closeModalOnOutsideClick(event)">
+    <div class="modal-box">
+        <div class="modal-head">
+            <div>
                 <h2>{{ __('landing.contact_form_title') }}</h2>
                 <p>{{ __('landing.contact_form_subtitle') }}</p>
             </div>
-            <div class="modal-body">
-                <form id="contactForm" onsubmit="handleContactSubmit(event)">
-                    <div class="form-group">
-                        <label class="form-label" for="contactName">
-                            {{ __('landing.contact_name') }}
-                        </label>
-                        <input 
-                            type="text" 
-                            id="contactName" 
-                            name="contact_name" 
-                            class="form-input" 
-                            placeholder="{{ __('landing.contact_name_placeholder') }}"
-                            required
-                        >
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="companyName">
-                            {{ __('landing.company_name') }}
-                        </label>
-                        <input 
-                            type="text" 
-                            id="companyName" 
-                            name="company_name" 
-                            class="form-input" 
-                            placeholder="{{ __('landing.company_name_placeholder') }}"
-                            required
-                        >
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="email">
-                            {{ __('landing.email') }}
-                        </label>
-                        <input 
-                            type="email" 
-                            id="email" 
-                            name="email" 
-                            class="form-input" 
-                            placeholder="{{ __('landing.email_placeholder') }}"
-                            required
-                        >
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="whatsapp">
-                            {{ __('landing.whatsapp') }}
-                        </label>
-                        <input 
-                            type="tel" 
-                            id="whatsapp" 
-                            name="whatsapp" 
-                            class="form-input" 
-                            placeholder="{{ __('landing.whatsapp_placeholder') }}"
-                            required
-                        >
-                    </div>
-                    
-                    <button type="submit" class="btn-submit">
-                        <i class="fas fa-paper-plane"></i>
-                        {{ __('landing.submit_button') }}
-                    </button>
-                </form>
-                
-                <div id="successMessage" class="success-message">
-                    <div class="success-icon">
-                        <i class="fas fa-check"></i>
-                    </div>
-                    <h3>{{ __('landing.success_title') }}</h3>
-                    <p>{{ __('landing.success_message') }}</p>
+            <button class="modal-close-btn" onclick="closeContactModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form id="contactForm" onsubmit="handleContactSubmit(event)">
+                <div class="form-group">
+                    <label class="form-label" for="contactName">{{ __('landing.contact_name') }}</label>
+                    <input type="text" id="contactName" name="contact_name" class="form-input"
+                           placeholder="{{ __('landing.contact_name_placeholder') }}" required>
                 </div>
+                <div class="form-group">
+                    <label class="form-label" for="companyName">{{ __('landing.company_name') }}</label>
+                    <input type="text" id="companyName" name="company_name" class="form-input"
+                           placeholder="{{ __('landing.company_name_placeholder') }}" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="email">{{ __('landing.email') }}</label>
+                    <input type="email" id="email" name="email" class="form-input"
+                           placeholder="{{ __('landing.email_placeholder') }}" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="whatsapp">{{ __('landing.whatsapp') }}</label>
+                    <input type="tel" id="whatsapp" name="whatsapp" class="form-input"
+                           placeholder="{{ __('landing.whatsapp_placeholder') }}" required>
+                </div>
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-paper-plane"></i>
+                    {{ __('landing.submit_button') }}
+                </button>
+            </form>
+            <div id="successMessage" class="success-msg">
+                <div class="success-icon"><i class="fas fa-check"></i></div>
+                <h3>{{ __('landing.success_title') }}</h3>
+                <p>{{ __('landing.success_message') }}</p>
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-        // Force favicon reload
-        (function() {
-            const faviconUrl = '{{ asset("assets/images/lopgosDASHBOARD.png") }}?v=' + Date.now();
-            const link = document.createElement('link');
-            link.rel = 'icon';
-            link.type = 'image/png';
-            link.href = faviconUrl;
-            
-            // Remove existing favicon links
-            const existingLinks = document.querySelectorAll('link[rel="icon"]');
-            existingLinks.forEach(l => l.remove());
-            
-            // Add new favicon
-            document.head.appendChild(link);
-        })();
-        
-        // Language Selector
-        document.getElementById('languageSelector').addEventListener('change', function() {
-            const locale = this.value;
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-            
-            fetch('/change-locale', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken,
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({ locale: locale })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    window.location.reload();
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+<script>
+    // Favicon
+    (function () {
+        document.querySelectorAll('link[rel="icon"]').forEach(l => l.remove());
+        const l = document.createElement('link');
+        l.rel = 'icon'; l.type = 'image/png';
+        l.href = '{{ asset("assets/images/lopgosDASHBOARD.png") }}?v=' + Date.now();
+        document.head.appendChild(l);
+    })();
+
+    // Nav scroll glass effect
+    const nav = document.getElementById('mainNav');
+    window.addEventListener('scroll', () => {
+        nav.classList.toggle('scrolled', window.scrollY > 24);
+    }, { passive: true });
+
+    // Language selector
+    document.getElementById('languageSelector').addEventListener('change', function () {
+        const csrf = document.querySelector('meta[name="csrf-token"]').content;
+        fetch('/change-locale', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' },
+            body: JSON.stringify({ locale: this.value })
+        }).then(r => r.json()).then(d => { if (d.success) window.location.reload(); });
+    });
+
+    // Reveal on scroll
+    const revealObs = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.07, rootMargin: '0px 0px -30px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', e => {
+            e.preventDefault();
+            const t = document.querySelector(a.getAttribute('href'));
+            if (t) window.scrollTo({ top: t.getBoundingClientRect().top + window.pageYOffset - 80, behavior: 'smooth' });
         });
-        
-        // Scroll Animation
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
+    });
+
+    // Modal
+    function openContactModal() {
+        document.getElementById('contactModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeContactModal() {
+        document.getElementById('contactModal').classList.remove('active');
+        document.body.style.overflow = '';
+        setTimeout(() => {
+            document.getElementById('contactForm').reset();
+            document.getElementById('contactForm').style.display = '';
+            document.getElementById('successMessage').classList.remove('active');
+        }, 260);
+    }
+    function closeModalOnOutsideClick(e) { if (e.target.id === 'contactModal') closeContactModal(); }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeContactModal(); });
+
+    // Form submit
+    function handleContactSubmit(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const data = {
+            contact_name:  formData.get('contact_name'),
+            company_name:  formData.get('company_name'),
+            email:         formData.get('email'),
+            whatsapp:      formData.get('whatsapp')
         };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.fade-in').forEach(el => {
-            observer.observe(el);
+        const btn = event.target.querySelector('.btn-submit');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {{ __("landing.sending") }}';
+        const csrf = document.querySelector('meta[name="csrf-token"]').content;
+        fetch('/contact-trial', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' },
+            body: JSON.stringify(data)
+        })
+        .then(r => r.json())
+        .then(() => {
+            document.getElementById('contactForm').style.display = 'none';
+            document.getElementById('successMessage').classList.add('active');
+            setTimeout(closeContactModal, 3000);
+        })
+        .catch(() => {
+            alert('{{ __("landing.error_message") }}');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-paper-plane"></i> {{ __("landing.submit_button") }}';
         });
-
-        // Smooth scroll for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    const headerOffset = 80;
-                    const elementPosition = target.getBoundingClientRect().top;
-                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
-                    window.scrollTo({
-                        top: offsetPosition,
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-        
-        // Dark Mode Toggle Function
-        function toggleDarkMode() {
-            const html = document.documentElement;
-            const isDark = html.classList.toggle('dark');
-            const icon = document.getElementById('darkModeIcon');
-            
-            // Atualizar ícone
-            if (isDark) {
-                icon.classList.remove('fa-moon');
-                icon.classList.add('fa-sun');
-            } else {
-                icon.classList.remove('fa-sun');
-                icon.classList.add('fa-moon');
-            }
-            
-            // Salvar preferência
-            localStorage.setItem('darkMode', isDark ? 'true' : 'false');
-        }
-        
-        // Inicializar ícone do dark mode
-        document.addEventListener('DOMContentLoaded', function() {
-            const isDark = document.documentElement.classList.contains('dark');
-            const icon = document.getElementById('darkModeIcon');
-            if (icon) {
-                if (isDark) {
-                    icon.classList.remove('fa-moon');
-                    icon.classList.add('fa-sun');
-                } else {
-                    icon.classList.remove('fa-sun');
-                    icon.classList.add('fa-moon');
-                }
-            }
-        });
-        
-        // Contact Modal Functions
-        function openContactModal() {
-            const modal = document.getElementById('contactModal');
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-        
-        function closeContactModal() {
-            const modal = document.getElementById('contactModal');
-            modal.classList.remove('active');
-            document.body.style.overflow = '';
-            
-            // Reset form after closing
-            setTimeout(() => {
-                document.getElementById('contactForm').reset();
-                document.getElementById('contactForm').style.display = 'block';
-                document.getElementById('successMessage').classList.remove('active');
-            }, 300);
-        }
-        
-        function closeModalOnOutsideClick(event) {
-            if (event.target.id === 'contactModal') {
-                closeContactModal();
-            }
-        }
-        
-        // Handle form submission
-        function handleContactSubmit(event) {
-            event.preventDefault();
-            
-            const formData = new FormData(event.target);
-            const data = {
-                contact_name: formData.get('contact_name'),
-                company_name: formData.get('company_name'),
-                email: formData.get('email'),
-                whatsapp: formData.get('whatsapp')
-            };
-            
-            // Disable submit button
-            const submitBtn = event.target.querySelector('.btn-submit');
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {{ __("landing.sending") }}';
-            
-            // Send to backend (you'll need to create this route)
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-            
-            fetch('/contact-trial', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken,
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(result => {
-                // Show success message
-                document.getElementById('contactForm').style.display = 'none';
-                document.getElementById('successMessage').classList.add('active');
-                
-                // Close modal after 3 seconds
-                setTimeout(() => {
-                    closeContactModal();
-                }, 3000);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('{{ __("landing.error_message") }}');
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> {{ __("landing.submit_button") }}';
-            });
-        }
-        
-        // Close modal with Escape key
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                closeContactModal();
-            }
-        });
-    </script>
+    }
+</script>
 </body>
 </html>
