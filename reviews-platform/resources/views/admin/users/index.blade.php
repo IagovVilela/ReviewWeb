@@ -198,7 +198,7 @@
                 <div class="flex items-center space-x-4 flex-1 min-w-0">
                     <!-- Avatar -->
                     @if($user->photo)
-                        <img src="{{ asset('storage/' . $user->photo) }}" 
+                        <img src="{{ $user->photo_url }}" 
                              alt="{{ $user->name }}" 
                              class="flex-shrink-0 h-12 w-12 lg:h-14 lg:w-14 rounded-xl object-cover shadow-md border-2 border-purple-200">
                     @else

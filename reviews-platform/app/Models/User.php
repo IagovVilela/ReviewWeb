@@ -51,4 +51,18 @@ class User extends Authenticatable
     {
         return $this->hasMany(Company::class);
     }
+
+    /**
+     * Get the photo URL (Cloudinary or local storage)
+     */
+    public function getPhotoUrlAttribute(): ?string
+    {
+        if (!$this->photo) {
+            return null;
+        }
+        if (str_starts_with($this->photo, 'http')) {
+            return $this->photo;
+        }
+        return asset('storage/' . ltrim(str_replace('storage/', '', $this->photo), '/'));
+    }
 }

@@ -397,8 +397,8 @@
                     </div>
                 </div>
                 
-                <!-- User Filter (Admin only) -->
-                @if(in_array(Auth::user()->role, ['admin', 'proprietario']))
+                <!-- User Filter (apenas proprietário) -->
+                @if(Auth::user()->role === 'proprietario')
                 <div>
                     <label class="block text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 md:mb-2">
                         <i class="fas fa-user mr-1"></i>
@@ -679,7 +679,7 @@
             
             async loadUsers() {
                 try {
-                    @if(Auth::user()->role === 'admin' || Auth::user()->role === 'proprietario')
+                    @if(Auth::user()->role === 'proprietario')
                     const response = await fetch('/api/users/with-companies', {
                         credentials: 'include',
                         headers: {

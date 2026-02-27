@@ -34,9 +34,10 @@ class CloudinaryService
             return null;
         }
 
+        $uploadFolder = trim($this->folder . '/' . $folderPrefix, '/');
         $timestamp = (string) time();
         $params = [
-            'folder' => $this->folder,
+            'folder' => $uploadFolder,
             'timestamp' => $timestamp,
         ];
         ksort($params);
@@ -52,7 +53,7 @@ class CloudinaryService
                 'api_key' => $this->apiKey,
                 'timestamp' => $timestamp,
                 'signature' => $signature,
-                'folder' => $this->folder,
+                'folder' => $uploadFolder,
             ]);
 
             if ($response->successful()) {
@@ -76,9 +77,10 @@ class CloudinaryService
             return null;
         }
 
+        $uploadFolder = trim($this->folder . '/' . $folderPrefix, '/');
         $timestamp = (string) time();
         $params = [
-            'folder' => $this->folder,
+            'folder' => $uploadFolder,
             'timestamp' => $timestamp,
         ];
         ksort($params);
@@ -92,7 +94,7 @@ class CloudinaryService
                     'api_key' => $this->apiKey,
                     'timestamp' => $timestamp,
                     'signature' => $signature,
-                    'folder' => $this->folder,
+                    'folder' => $uploadFolder,
                 ]);
 
             if ($response->successful()) {

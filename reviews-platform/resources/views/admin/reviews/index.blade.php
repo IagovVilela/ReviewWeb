@@ -342,8 +342,8 @@
                 </div>
             </div>
             
-            <!-- User Filter (Admin only) -->
-            @if(in_array(Auth::user()->role, ['admin', 'proprietario']))
+            <!-- User Filter (apenas proprietário) -->
+            @if(Auth::user()->role === 'proprietario')
             <div class="flex-1 min-w-[150px] w-full md:w-auto">
                 <label class="block text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ __('reviews.filter_by_user') }}</label>
                 <select id="userFilter" class="w-full px-2 md:px-3 py-1.5 md:py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-purple-500 focus:border-transparent" style="font-size: 14px; min-height: 36px;">
@@ -673,7 +673,7 @@
             
             async loadUsers() {
                 try {
-                    @if(in_array(Auth::user()->role, ['admin', 'proprietario']))
+                    @if(Auth::user()->role === 'proprietario')
                     const response = await fetch('/api/users/with-companies', {
                         credentials: 'include',
                         headers: {

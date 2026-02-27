@@ -1117,7 +1117,7 @@
                 </a>
                 <a href="/companies" class="nav-item {{ request()->is('companies*') ? 'active' : '' }} flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-700">
                     <i class="fas fa-building w-5 h-5 mr-3"></i>
-                    {{ in_array(Auth::user()->role, ['admin', 'proprietario']) ? __('app.companies') : 'Minha Empresa' }}
+                    {{ Auth::user()->role === 'proprietario' ? __('app.companies') : 'Minha Empresa' }}
                 </a>
                 
                 <a href="/reviews" class="nav-item {{ request()->is('reviews*') && !request()->is('reviews/negative') ? 'active' : '' }} flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-700">
@@ -1200,7 +1200,7 @@
             <div class="p-3 sm:p-4 border-t border-gray-200">
                 <div class="flex items-center space-x-2 sm:space-x-3 mb-2 sm:mb-3">
                     @if(Auth::user()->photo)
-                        <img src="{{ asset('storage/' . Auth::user()->photo) }}" 
+                        <img src="{{ Auth::user()->photo_url }}" 
                              alt="{{ Auth::user()->name }}" 
                              class="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover border-2 border-purple-200 flex-shrink-0">
                     @else

@@ -47,8 +47,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', function () {
         $user = auth()->user();
         
-        if ($user->role === 'admin') {
-            // Dashboard de administrador - com visual moderno igual aos usuários
+        if ($user->role === 'proprietario') {
+            // Dashboard do proprietário - vê todas as empresas e avaliações
             $allReviews = \App\Models\Review::all();
             $allCompanies = \App\Models\Company::orderBy('created_at', 'desc')->get();
             
@@ -68,7 +68,7 @@ Route::middleware(['auth'])->group(function () {
             
             return view('dashboard', compact('negativeCount', 'stats', 'allCompanies'));
         } else {
-            // Dashboard de usuário comum
+            // Dashboard para admin e user - cada um vê apenas suas empresas
             $companies = $user->companies()->orderBy('created_at', 'desc')->get();
             $hasCompany = $companies->count() > 0;
             
@@ -176,11 +176,10 @@ Route::middleware(['auth'])->group(function () {
                     ], 401);
                 }
                 
-                if ($user->role === 'admin') {
-                    // Admin sees all companies
+                if ($user->role === 'proprietario') {
                     $companies = \App\Models\Company::select('id', 'name', 'token')->get();
                 } else {
-                    // Regular users see only their companies
+                    // Admin e user veem apenas suas empresas
                     $companies = \App\Models\Company::select('id', 'name', 'token')
                         ->where('user_id', $user->id)
                         ->get();

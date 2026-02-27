@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\CloudinaryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -10,6 +11,24 @@ use Illuminate\Validation\Rule;
 
 class ProfileController extends Controller
 {
+    private function cloudinary(): CloudinaryService
+    {
+        return app(CloudinaryService::class);
+    }
+
+    private function deletePhotoStorage(?string $path): void
+    {
+        if (!$path) {
+            return;
+        }
+        if (CloudinaryService::isCloudinaryUrl($path)) {
+            $this->cloudinary()->deleteByUrl($path);
+            return;
+        }
+        if (Storage::disk('public')->exists($path)) {
+            Storage::disk('public')->delete($path);
+        }
+    }
     /**
      * Show the user profile page
      */
@@ -50,12 +69,21 @@ class ProfileController extends Controller
         // Handle photo upload
         if ($request->hasFile('photo')) {
             // Delete old photo if exists
-            if ($user->photo) {
-                Storage::disk('public')->delete($user->photo);
-            }
+            $this->deletePhotoStorage($user->photo);
 
-            $path = $request->file('photo')->store('profile-photos', 'public');
-            $user->photo = $path;
+            $cloudinary = $this->cloudinary();
+            if ($cloudinary->isConfigured()) {
+                $url = $cloudinary->upload($request->file('photo'), 'profile-photos');
+                if ($url !== null) {
+                    $user->photo = $url;
+                } else {
+                    $path = $request->file('photo')->store('profile-photos', 'public');
+                    $user->photo = $path;
+                }
+            } else {
+                $path = $request->file('photo')->store('profile-photos', 'public');
+                $user->photo = $path;
+            }
         }
 
         $user->save();
@@ -71,7 +99,7 @@ class ProfileController extends Controller
         $user = Auth::user();
 
         if ($user->photo) {
-            Storage::disk('public')->delete($user->photo);
+            $this->deletePhotoStorage($user->photo);
             $user->photo = null;
             $user->save();
         }

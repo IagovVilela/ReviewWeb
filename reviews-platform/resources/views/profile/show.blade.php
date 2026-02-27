@@ -22,7 +22,7 @@
                     <!-- Current Photo -->
                     <div class="relative">
                         @if($user->photo)
-                            <img src="{{ asset('storage/' . $user->photo) }}" 
+                            <img src="{{ $user->photo_url }}" 
                                  alt="{{ $user->name }}" 
                                  class="w-32 h-32 rounded-full object-cover border-4 border-purple-100"
                                  id="profilePhotoPreview">

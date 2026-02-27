@@ -241,8 +241,8 @@ class ReviewController extends Controller
             $user = auth()->user();
             $query = Review::with('company');
 
-            // If user is not admin or owner, filter by user's companies only
-            if (!in_array($user->role, ['admin', 'proprietario'])) {
+            // Apenas proprietário vê todas; admin e user filtram pelas suas empresas
+            if ($user->role !== 'proprietario') {
                 $userCompanyIds = \App\Models\Company::where('user_id', $user->id)->pluck('id');
                 $query->whereIn('company_id', $userCompanyIds);
             }
@@ -252,8 +252,8 @@ class ReviewController extends Controller
                 $query->where('company_id', $request->company_id);
             }
 
-            // Filter by user (company owner) - only for admin and owner
-            if ($request->has('user_id') && $request->user_id && in_array($user->role, ['admin', 'proprietario'])) {
+            // Filter by user (company owner) - only for proprietário
+            if ($request->has('user_id') && $request->user_id && $user->role === 'proprietario') {
                 $companyIds = \App\Models\Company::where('user_id', $request->user_id)->pluck('id');
                 if ($companyIds->isNotEmpty()) {
                     $query->whereIn('company_id', $companyIds);
@@ -313,8 +313,8 @@ class ReviewController extends Controller
             $user = auth()->user();
             $query = Review::with('company')->where('is_positive', false);
 
-            // If user is not admin or owner, filter by user's companies only
-            if (!in_array($user->role, ['admin', 'proprietario'])) {
+            // Apenas proprietário vê todas; admin e user filtram pelas suas empresas
+            if ($user->role !== 'proprietario') {
                 $userCompanyIds = \App\Models\Company::where('user_id', $user->id)->pluck('id');
                 $query->whereIn('company_id', $userCompanyIds);
             }
@@ -324,8 +324,8 @@ class ReviewController extends Controller
                 $query->where('company_id', $request->company_id);
             }
 
-            // Filter by user (company owner) - only for admin and owner
-            if ($request->has('user_id') && $request->user_id && $request->user_id !== 'all' && in_array($user->role, ['admin', 'proprietario'])) {
+            // Filter by user (company owner) - only for proprietário
+            if ($request->has('user_id') && $request->user_id && $request->user_id !== 'all' && $user->role === 'proprietario') {
                 $companyIds = \App\Models\Company::where('user_id', $request->user_id)->pluck('id');
                 if ($companyIds->isNotEmpty()) {
                     $query->whereIn('company_id', $companyIds);
@@ -490,6 +490,10 @@ class ReviewController extends Controller
     {
         try {
             $company = Company::findOrFail($companyId);
+            $user = auth()->user();
+            if ($user->role !== 'proprietario' && $company->user_id !== $user->id) {
+                return response()->json(['success' => false, 'message' => 'Sem permissão para exportar contatos desta empresa.'], 403);
+            }
             $reviews = $company->reviews()->get();
 
             $contacts = $reviews->map(function ($review) {
