@@ -46,272 +46,190 @@
             -moz-osx-font-smoothing: grayscale;
         }
         
-        /* Paleta de Cores Unificada */
+        /* ── Paleta de Cores ────────────────────── */
         :root {
-            --primary-color: #8b5cf6;
-            --primary-dark: #7c3aed;
-            --primary-light: #a78bfa;
+            --primary-color:  #7c3aed;
+            --primary-dark:   #6d28d9;
+            --primary-light:  #8b5cf6;
             --secondary-color: #3b82f6;
-            --secondary-dark: #2563eb;
-            --success-color: #10b981;
-            --success-dark: #059669;
-            --error-color: #ef4444;
-            --error-dark: #dc2626;
-            --warning-color: #f59e0b;
-            --warning-dark: #d97706;
-            --neutral-color: #6b7280;
-            --neutral-dark: #4b5563;
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            
-            /* Light Mode Colors */
-            --bg-primary: #ffffff;
-            --bg-secondary: #f9fafb;
-            --bg-tertiary: #f3f4f6;
-            --text-primary: #111827;
-            --text-secondary: #4b5563;
-            --text-tertiary: #6b7280;
-            --border-color: #e5e7eb;
-            --border-color-light: #f3f4f6;
-            --card-bg: #ffffff;
-            --sidebar-bg: #fafafa;
-            --header-bg: #ffffff;
+            --secondary-dark:  #2563eb;
+            --success-color:  #16a34a;
+            --success-dark:   #15803d;
+            --error-color:    #dc2626;
+            --error-dark:     #b91c1c;
+            --warning-color:  #d97706;
+            --warning-dark:   #b45309;
+            --neutral-color:  #71717a;
+            --neutral-dark:   #52525b;
+            --shadow-sm:      0 1px 2px 0 rgba(0,0,0,.05);
+            --shadow-md:      0 4px 6px -1px rgba(0,0,0,.08);
+            --shadow-lg:      0 10px 15px -3px rgba(0,0,0,.1);
+            --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+            /* Light Mode */
+            --bg-primary:        #ffffff;
+            --bg-secondary:      #f4f4f5;
+            --bg-tertiary:       #e4e4e7;
+            --text-primary:      #18181b;
+            --text-secondary:    #52525b;
+            --text-tertiary:     #71717a;
+            --border-color:      #e4e4e7;
+            --border-color-light:#f4f4f5;
+            --card-bg:           #ffffff;
+            --sidebar-bg:        #ffffff;
+            --header-bg:         #ffffff;
         }
-        
+
         /* Dark Mode Colors */
         .dark {
-            --primary-color: #a78bfa;
-            --primary-dark: #8b5cf6;
-            
-            /* Dark Mode Colors */
-            --bg-primary: #111827;
-            --bg-secondary: #1f2937;
-            --bg-tertiary: #374151;
-            --text-primary: #f9fafb;
-            --text-secondary: #d1d5db;
-            --text-tertiary: #9ca3af;
-            --border-color: #374151;
-            --border-color-light: #4b5563;
-            --card-bg: #1f2937;
-            --sidebar-bg: #1f2937;
-            --header-bg: #1f2937;
-            
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            --primary-color:  #8b5cf6;
+            --primary-dark:   #7c3aed;
+
+            --bg-primary:        #18181b;
+            --bg-secondary:      #09090b;
+            --bg-tertiary:       #27272a;
+            --text-primary:      #fafafa;
+            --text-secondary:    #a1a1aa;
+            --text-tertiary:     #71717a;
+            --border-color:      #27272a;
+            --border-color-light:#3f3f46;
+            --card-bg:           #18181b;
+            --sidebar-bg:        #0f0f12;
+            --header-bg:         #0f0f12;
+
+            --shadow-sm: 0 1px 2px 0 rgba(0,0,0,.4);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,.4);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,.4);
         }
         
-        html {
-            scroll-behavior: smooth;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-        
+        html { scroll-behavior: smooth; }
+
         body {
             background-color: var(--bg-secondary);
             color: var(--text-primary);
-            transition: background-color 0.3s ease, color 0.3s ease;
+            transition: background-color .25s, color .25s;
         }
-        
-        /* Apply dark mode to Tailwind classes */
-        .dark .bg-white {
-            background-color: var(--card-bg) !important;
-        }
-        
-        .dark .bg-gray-50 {
-            background-color: var(--bg-secondary) !important;
-        }
-        
-        .dark .bg-gray-100 {
-            background-color: var(--bg-tertiary) !important;
-        }
-        
-        .dark .text-gray-800 {
-            color: var(--text-primary) !important;
-        }
-        
-        .dark .text-gray-700 {
-            color: var(--text-secondary) !important;
-        }
-        
-        .dark .text-gray-600 {
-            color: var(--text-tertiary) !important;
-        }
-        
-        .dark .text-gray-500 {
-            color: #9ca3af !important;
-        }
-        
-        .dark .border-gray-200 {
-            border-color: var(--border-color) !important;
-        }
-        
-        .dark .border-gray-300 {
-            border-color: var(--border-color-light) !important;
-        }
-        
+
+        /* ── Tailwind dark overrides ──────────────── */
+        .dark .bg-white        { background-color: var(--card-bg) !important; }
+        .dark .bg-gray-50      { background-color: var(--bg-secondary) !important; }
+        .dark .bg-gray-100     { background-color: var(--bg-tertiary) !important; }
+        .dark .bg-gray-800     { background-color: var(--card-bg) !important; }
+        .dark .text-gray-800   { color: var(--text-primary) !important; }
+        .dark .text-gray-700   { color: var(--text-secondary) !important; }
+        .dark .text-gray-600   { color: var(--text-tertiary) !important; }
+        .dark .text-gray-500   { color: #71717a !important; }
+        .dark .text-gray-400   { color: #71717a !important; }
+        .dark .text-gray-100   { color: #fafafa !important; }
+        .dark .border-gray-200 { border-color: var(--border-color) !important; }
+        .dark .border-gray-300 { border-color: var(--border-color-light) !important; }
+        .dark .border-gray-700 { border-color: var(--border-color) !important; }
+
         .dark input:not([type="checkbox"]):not([type="radio"]),
-        .dark select,
-        .dark textarea {
+        .dark select, .dark textarea {
             background-color: var(--bg-tertiary);
             border-color: var(--border-color);
             color: var(--text-primary);
         }
-        
         .dark input:focus:not([type="checkbox"]):not([type="radio"]),
-        .dark select:focus,
-        .dark textarea:focus {
+        .dark select:focus, .dark textarea:focus {
             background-color: var(--bg-tertiary);
             border-color: var(--primary-color);
         }
-        
-        /* Sidebar */
-        .sidebar-gradient {
-            background: var(--sidebar-bg);
-        }
-        
-        /* Language Selector na Sidebar */
-        .sidebar-gradient .language-selector-wrapper {
-            position: relative;
-        }
-        
+
+        /* ── Sidebar ──────────────────────────────── */
+        .sidebar-gradient { background: var(--sidebar-bg); }
+
+        .sidebar-gradient .language-selector-wrapper { position: relative; }
         .sidebar-gradient .language-selector-element {
             width: 100%;
             background-color: var(--bg-primary);
             border-color: var(--border-color);
             color: var(--text-primary);
         }
-        
         .sidebar-gradient .language-selector-element:hover {
-            background-color: rgba(139, 92, 246, 0.08);
+            background-color: rgba(124,58,237,.07);
             border-color: var(--primary-color);
         }
-        
         .sidebar-gradient .language-selector-element:focus {
-            background-color: rgba(139, 92, 246, 0.12);
+            background-color: rgba(124,58,237,.1);
             border-color: var(--primary-color);
             outline: none;
-            box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+            box-shadow: 0 0 0 2px rgba(124,58,237,.18);
         }
-        
-        /* Navigation Items */
+
+        /* ── Nav Items ────────────────────────────── */
         .nav-item {
             transition: var(--transition-smooth);
             position: relative;
             overflow: hidden;
+            color: var(--text-secondary);
+            border-radius: 8px;
         }
-        
         .nav-item::before {
             content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 3px;
-            background: var(--primary-color);
+            position: absolute; left: 0; top: 0; bottom: 0;
+            width: 2.5px; background: var(--primary-color);
             transform: scaleY(0);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform .2s cubic-bezier(0.4,0,0.2,1);
+            border-radius: 0 2px 2px 0;
         }
-        
         .nav-item:hover {
-            background-color: rgba(139, 92, 246, 0.08);
+            background-color: rgba(124,58,237,.07);
             color: var(--primary-color);
-            transform: translateX(2px);
         }
-        
         .nav-item.active {
-            background-color: rgba(139, 92, 246, 0.12);
+            background-color: rgba(124,58,237,.1);
             color: var(--primary-color);
             font-weight: 600;
         }
-        
         .nav-item.active::before,
-        .nav-item:hover::before {
-            transform: scaleY(1);
-        }
-        
-        .nav-item i {
-            transition: transform 0.3s ease;
-        }
-        
-        .nav-item:hover i {
-            transform: scale(1.1);
-        }
-        
-        /* Logo */
-        .logo-gradient {
-            background: var(--primary-color);
-        }
-        
-        /* Logo sem fundo branco */
-        .logo-no-bg {
-            background: transparent !important;
-        }
-        
-        /* Buttons */
+        .nav-item:hover::before { transform: scaleY(1); }
+
+        .nav-item i { transition: color .2s; }
+
+        /* ── Logo ─────────────────────────────────── */
+        .logo-gradient { background: var(--primary-color); }
+        .logo-no-bg    { background: transparent !important; }
+
+        /* ── Buttons ──────────────────────────────── */
         .btn-primary {
             background: var(--primary-color);
             transition: var(--transition-smooth);
         }
-        
         .btn-primary:hover {
             background: var(--primary-dark);
             transform: translateY(-1px);
-            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.25);
+            box-shadow: 0 6px 18px rgba(124,58,237,.3);
         }
-        
-        .btn-primary:active {
-            transform: translateY(0);
-        }
-        
+        .btn-primary:active { transform: translateY(0); }
+
         .btn-secondary {
             background: var(--neutral-color);
             transition: var(--transition-smooth);
         }
-        
         .btn-secondary:hover {
             background: var(--neutral-dark);
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(107, 114, 128, 0.2);
         }
-        
-        /* Cards */
+
+        /* ── Cards ────────────────────────────────── */
         .card-hover {
             transition: var(--transition-smooth);
             position: relative;
             background-color: var(--card-bg);
         }
-        
-        .card-hover::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: inherit;
-            background: rgba(139, 92, 246, 0.03);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-        }
-        
         .card-hover:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 24px rgba(0,0,0,.08);
         }
-        
         .dark .card-hover:hover {
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 10px 24px rgba(0,0,0,.45);
         }
-        
-        .card-hover:hover::after {
-            opacity: 1;
-        }
-        
-        /* Icon Backgrounds */
-        .icon-gradient {
-            background: var(--primary-color);
-        }
+
+        /* ── Icon backgrounds ─────────────────────── */
+        .icon-gradient { background: var(--primary-color); }
         
         /* Animations */
         .fade-in {
@@ -1085,230 +1003,203 @@
 <body class="bg-gray-50">
     <!-- Mobile Sidebar Overlay -->
     <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 sidebar-overlay transition-opacity duration-300 lg:hidden"></div>
-    
+
     <div class="flex h-screen page-container overflow-hidden">
-        <!-- Sidebar -->
-        <div id="sidebar" class="fixed lg:static inset-y-0 left-0 z-50 w-64 sidebar-gradient border-r border-gray-200 flex flex-col transform transition-transform duration-300 ease-in-out sidebar-mobile-hidden lg:translate-x-0 lg:z-auto">
+
+        <!-- ── SIDEBAR ────────────────────────────── -->
+        <div id="sidebar" class="fixed lg:static inset-y-0 left-0 z-50 w-60 sidebar-gradient border-r border-gray-200 dark:border-gray-800 flex flex-col transform transition-transform duration-300 ease-in-out sidebar-mobile-hidden lg:translate-x-0 lg:z-auto">
+
             <!-- Logo -->
-            <div class="p-4 border-b border-gray-200 relative flex items-center justify-center gap-3">
-                <div class="flex-shrink-0 w-12 h-12 flex items-center justify-center">
-                    <img src="{{ asset('assets/images/lopgosDASHBOARD.png') }}" alt="{{ __('app.name') }}" class="w-full h-full object-contain logo-no-bg">
-                </div>
-                <div class="flex-1 min-w-0">
-                    <span class="text-gray-800 dark:text-white font-bold text-lg truncate block">{{ __('app.name') }}</span>
-                </div>
-                <!-- Close button for mobile -->
-                <button 
+            <div class="h-14 px-4 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between flex-shrink-0">
+                <a href="/dashboard" class="flex items-center gap-2.5 min-w-0">
+                    <img src="{{ asset('assets/images/lopgosDASHBOARD.png') }}" alt="{{ __('app.name') }}" class="w-7 h-7 object-contain logo-no-bg flex-shrink-0">
+                    <span class="font-semibold text-sm text-gray-900 dark:text-white truncate tracking-tight">{{ __('app.name') }}</span>
+                </a>
+                <button
                     onclick="toggleMobileSidebar(); event.stopPropagation(); return false;"
                     type="button"
-                    class="lg:hidden absolute top-3 right-3 p-2 rounded-lg hover:bg-gray-100 transition-colors text-gray-600 z-10"
+                    class="lg:hidden p-1.5 rounded-md text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                     aria-label="Close menu"
                     id="sidebarCloseBtn"
                 >
-                    <i class="fas fa-times text-xl"></i>
+                    <i class="fas fa-times text-sm"></i>
                 </button>
             </div>
-            
+
             <!-- Navigation -->
-            <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
-                <a href="/dashboard" class="nav-item {{ request()->is('dashboard') ? 'active' : '' }} flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-700">
-                    <i class="fas fa-home w-5 h-5 mr-3"></i>
-                    {{ __('app.dashboard') }}
+            <nav class="flex-1 px-3 py-3 space-y-0.5 overflow-y-auto">
+
+                <!-- Main -->
+                <a href="/dashboard" class="nav-item {{ request()->is('dashboard') ? 'active' : '' }} flex items-center gap-2.5 px-3 py-2 text-sm font-medium">
+                    <i class="fas fa-home w-4 text-center flex-shrink-0"></i>
+                    <span>{{ __('app.dashboard') }}</span>
                 </a>
-                <a href="/companies" class="nav-item {{ request()->is('companies*') ? 'active' : '' }} flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-700">
-                    <i class="fas fa-building w-5 h-5 mr-3"></i>
-                    {{ Auth::user()->role === 'proprietario' ? __('app.companies') : 'Minha Empresa' }}
+                <a href="/companies" class="nav-item {{ request()->is('companies*') ? 'active' : '' }} flex items-center gap-2.5 px-3 py-2 text-sm font-medium">
+                    <i class="fas fa-building w-4 text-center flex-shrink-0"></i>
+                    <span>{{ Auth::user()->role === 'proprietario' ? __('app.companies') : 'Minha Empresa' }}</span>
                 </a>
-                
-                <a href="/reviews" class="nav-item {{ request()->is('reviews*') && !request()->is('reviews/negative') ? 'active' : '' }} flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-700">
-                    <i class="fas fa-star w-5 h-5 mr-3"></i>
-                    {{ __('app.reviews') }}
+                <a href="/reviews" class="nav-item {{ request()->is('reviews*') && !request()->is('reviews/negative') ? 'active' : '' }} flex items-center gap-2.5 px-3 py-2 text-sm font-medium">
+                    <i class="fas fa-star w-4 text-center flex-shrink-0"></i>
+                    <span>{{ __('app.reviews') }}</span>
                 </a>
-                <a href="/reviews/negative" class="nav-item {{ request()->is('reviews/negative') ? 'active' : '' }} flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-700">
-                    <i class="fas fa-exclamation-triangle w-5 h-5 mr-3"></i>
-                    {{ __('app.negative_reviews') }}
+                <a href="/reviews/negative" class="nav-item {{ request()->is('reviews/negative') ? 'active' : '' }} flex items-center gap-2.5 px-3 py-2 text-sm font-medium">
+                    <i class="fas fa-exclamation-triangle w-4 text-center flex-shrink-0"></i>
+                    <span>{{ __('app.negative_reviews') }}</span>
                 </a>
-                
-                <div class="pt-4 mt-4 border-t border-gray-200">
-                    <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">{{ __('app.settings') }}</p>
-                    
+
+                <!-- Settings -->
+                <div class="pt-4 mt-2 border-t border-gray-200 dark:border-gray-800">
+                    <p class="px-3 pb-1.5 text-xs font-semibold text-gray-400 dark:text-gray-600 uppercase tracking-wider">{{ __('app.settings') }}</p>
+
                     @if(in_array(Auth::user()->role, ['admin', 'proprietario']))
-                    <a href="{{ route('users.index') }}" class="nav-item {{ request()->is('users*') ? 'active' : '' }} flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-700">
-                        <i class="fas fa-users w-5 h-5 mr-3"></i>
-                        {{ __('users.title') }}
+                    <a href="{{ route('users.index') }}" class="nav-item {{ request()->is('users*') ? 'active' : '' }} flex items-center gap-2.5 px-3 py-2 text-sm font-medium">
+                        <i class="fas fa-users w-4 text-center flex-shrink-0"></i>
+                        <span>{{ __('users.title') }}</span>
                     </a>
                     @endif
-                    
-                    {{-- Subscription and Billing - Hidden for future use --}}
-                    {{-- 
-                    <a href="/subscription" class="nav-item flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-700">
-                        <i class="fas fa-crown w-5 h-5 mr-3"></i>
-                        {{ __('app.subscription') }}
-                    </a>
-                    <a href="/billing" class="nav-item flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-700">
-                        <i class="fas fa-credit-card w-5 h-5 mr-3"></i>
-                        {{ __('app.billing') }}
-                    </a>
-                    --}}
-                    <a href="/profile" class="nav-item {{ request()->is('profile') ? 'active' : '' }} flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-700">
-                        <i class="fas fa-user w-5 h-5 mr-3"></i>
-                        {{ __('app.profile') }}
+
+                    <a href="/profile" class="nav-item {{ request()->is('profile') ? 'active' : '' }} flex items-center gap-2.5 px-3 py-2 text-sm font-medium">
+                        <i class="fas fa-user w-4 text-center flex-shrink-0"></i>
+                        <span>{{ __('app.profile') }}</span>
                     </a>
                 </div>
-                
-                <div class="pt-4 mt-4 border-t border-gray-200">
-                    <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">{{ __('app.support') }}</p>
-                    
-                    <!-- Language Selector e Links de Suporte - Lado a lado no mobile -->
-                    <div class="flex flex-col sm:flex-row gap-2 px-3 mb-2">
-                        <!-- Language Selector -->
-                        <div class="relative language-selector-wrapper flex-1">
-                            <select 
-                                class="language-selector-element appearance-none bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg px-2 sm:px-3 py-2 pr-6 sm:pr-8 text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent cursor-pointer transition-colors w-full"
-                                style="min-height: 36px; font-size: 13px; -webkit-appearance: none; -moz-appearance: none;"
+
+                <!-- Support -->
+                <div class="pt-4 mt-2 border-t border-gray-200 dark:border-gray-800">
+                    <p class="px-3 pb-1.5 text-xs font-semibold text-gray-400 dark:text-gray-600 uppercase tracking-wider">{{ __('app.support') }}</p>
+
+                    <a href="{{ route('support.help-center') }}" class="nav-item {{ request()->is('support') ? 'active' : '' }} flex items-center gap-2.5 px-3 py-2 text-sm font-medium">
+                        <i class="fas fa-life-ring w-4 text-center flex-shrink-0"></i>
+                        <span>{{ __('app.help_center') }}</span>
+                    </a>
+                    <a href="{{ route('support.faqs') }}" class="nav-item {{ request()->is('faqs') ? 'active' : '' }} flex items-center gap-2.5 px-3 py-2 text-sm font-medium">
+                        <i class="fas fa-question-circle w-4 text-center flex-shrink-0"></i>
+                        <span>{{ __('app.faqs') }}</span>
+                    </a>
+
+                    <!-- Language Selector -->
+                    <div class="px-3 pt-2">
+                        <div class="relative language-selector-wrapper">
+                            <select
+                                class="language-selector-element appearance-none border rounded-lg px-3 py-1.5 pr-7 text-xs font-medium cursor-pointer transition-colors w-full"
+                                style="-webkit-appearance:none;-moz-appearance:none;font-size:12px;"
                             >
-                                <option value="pt_BR" {{ app()->getLocale() === 'pt_BR' ? 'selected' : '' }}>
-                                    🇧🇷 PT
-                                </option>
-                                <option value="en_US" {{ app()->getLocale() === 'en_US' ? 'selected' : '' }}>
-                                    🇬🇧 EN
-                                </option>
+                                <option value="pt_BR" {{ app()->getLocale() === 'pt_BR' ? 'selected' : '' }}>🇧🇷 Português</option>
+                                <option value="en_US" {{ app()->getLocale() === 'en_US' ? 'selected' : '' }}>🇬🇧 English</option>
                             </select>
-                            
-                            <!-- Ícone de seta customizado -->
-                            <div class="absolute inset-y-0 right-0 flex items-center pr-1.5 sm:pr-2 pointer-events-none">
-                                <i class="fas fa-chevron-down text-gray-500 text-xs"></i>
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                                <i class="fas fa-chevron-down text-gray-400 text-xs"></i>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Links de Suporte - Sempre um abaixo do outro -->
-                    <div class="flex flex-col gap-2 px-3">
-                        <a href="{{ route('support.help-center') }}" class="nav-item {{ request()->is('support') ? 'active' : '' }} flex items-center px-3 py-2 rounded-lg text-xs sm:text-sm font-medium text-gray-700 w-full justify-start">
-                            <i class="fas fa-life-ring w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3"></i>
-                            <span>{{ __('app.help_center') }}</span>
-                        </a>
-                        <a href="{{ route('support.faqs') }}" class="nav-item {{ request()->is('faqs') ? 'active' : '' }} flex items-center px-3 py-2 rounded-lg text-xs sm:text-sm font-medium text-gray-700 w-full justify-start">
-                            <i class="fas fa-question-circle w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3"></i>
-                            <span>{{ __('app.faqs') }}</span>
-                        </a>
-                    </div>
                 </div>
             </nav>
-            
+
             <!-- User Section -->
-            <div class="p-3 sm:p-4 border-t border-gray-200">
-                <div class="flex items-center space-x-2 sm:space-x-3 mb-2 sm:mb-3">
+            <div class="px-3 py-3 border-t border-gray-200 dark:border-gray-800 flex-shrink-0">
+                <div class="flex items-center gap-2.5 mb-2">
                     @if(Auth::user()->photo)
-                        <img src="{{ Auth::user()->photo_url }}" 
-                             alt="{{ Auth::user()->name }}" 
-                             class="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover border-2 border-purple-200 flex-shrink-0">
+                        <img src="{{ Auth::user()->photo_url }}"
+                             alt="{{ Auth::user()->name }}"
+                             class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-700 flex-shrink-0">
                     @else
-                        <div class="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
-                            <span class="text-white font-semibold text-xs">
+                        <div class="w-8 h-8 bg-violet-600 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="text-white font-semibold text-xs leading-none">
                                 {{ strtoupper(substr(Auth::user()->name ?? 'U', 0, 2)) }}
                             </span>
                         </div>
                     @endif
                     <div class="flex-1 min-w-0">
-                        <p class="text-xs sm:text-sm font-medium text-gray-800 truncate">{{ Auth::user()->name ?? __('app.user') }}</p>
-                        <p class="text-xs text-gray-500 truncate">{{ Auth::user()->email ?? 'user@example.com' }}</p>
+                        <p class="text-xs font-semibold text-gray-900 dark:text-white truncate leading-tight">{{ Auth::user()->name ?? __('app.user') }}</p>
+                        <p class="text-xs text-gray-400 truncate leading-tight">{{ Auth::user()->email ?? '' }}</p>
                     </div>
                 </div>
                 <form method="POST" action="/logout">
                     @csrf
-                    <button type="submit" class="w-full nav-item flex items-center justify-center px-3 py-2 rounded-lg text-xs sm:text-sm font-medium text-gray-700">
-                        <i class="fas fa-sign-out-alt w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3"></i>
-                        {{ __('app.logout') }}
+                    <button type="submit" class="w-full nav-item flex items-center gap-2.5 px-3 py-2 text-sm font-medium">
+                        <i class="fas fa-sign-out-alt w-4 text-center flex-shrink-0"></i>
+                        <span>{{ __('app.logout') }}</span>
                     </button>
                 </form>
             </div>
         </div>
-        
-        <!-- Main Content -->
+
+        <!-- ── MAIN CONTENT ────────────────────────── -->
         <div class="flex-1 flex flex-col overflow-hidden w-full lg:ml-0">
+
             <!-- Header -->
-            <header class="bg-white border-b border-gray-200 px-4 lg:px-6 py-3 lg:py-4 z-30 relative">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-3 flex-1 min-w-0">
-                        <!-- Mobile Menu Button -->
-                        <button 
+            <header class="h-14 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-4 lg:px-6 z-30 relative flex items-center">
+                <div class="flex items-center justify-between w-full gap-3">
+                    <!-- Left -->
+                    <div class="flex items-center gap-3 min-w-0 flex-1">
+                        <button
                             id="mobileMenuBtn"
                             onclick="toggleMobileSidebar(event); return false;"
                             type="button"
-                            class="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-300 flex-shrink-0 touch-manipulation"
-                            style="min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center;"
+                            class="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-500 dark:text-gray-400 flex-shrink-0 touch-manipulation"
+                            style="min-width:40px;min-height:40px;display:flex;align-items:center;justify-content:center;"
                             aria-label="Toggle menu"
                         >
-                            <i class="fas fa-bars text-xl"></i>
+                            <i class="fas fa-bars"></i>
                         </button>
-                        <div class="min-w-0 flex-1">
-                            <h1 class="text-xl lg:text-2xl font-bold text-gray-800 truncate">@yield('page-title', 'Dashboard')</h1>
-                            <p class="text-gray-600 text-xs lg:text-sm truncate hidden sm:block">@yield('page-description', 'Bem-vindo ao sistema')</p>
+                        <div class="min-w-0">
+                            <h1 class="text-base font-semibold text-gray-900 dark:text-white truncate leading-tight tracking-tight">@yield('page-title', 'Dashboard')</h1>
+                            <p class="text-xs text-gray-500 dark:text-gray-500 truncate hidden sm:block leading-tight">@yield('page-description', '')</p>
                         </div>
                     </div>
-                    <div class="flex items-center space-x-2 lg:space-x-3 flex-shrink-0">
-                        <!-- Dark Mode Toggle -->
-                        <button 
+                    <!-- Right -->
+                    <div class="flex items-center gap-1.5 flex-shrink-0">
+                        <button
                             id="darkModeToggle"
                             type="button"
-                            class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors touch-manipulation cursor-pointer"
-                            style="min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center;"
+                            class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-500 dark:text-gray-400 touch-manipulation"
+                            style="min-width:38px;min-height:38px;display:flex;align-items:center;justify-content:center;"
                             aria-label="Toggle dark mode"
                         >
-                            <i id="darkModeIcon" class="fas fa-moon text-gray-600 dark:text-gray-300 text-base lg:text-lg"></i>
+                            <i id="darkModeIcon" class="fas fa-moon text-sm"></i>
                         </button>
-                        <div class="hidden sm:block">
+                        <div class="hidden sm:flex items-center gap-2">
                             @yield('header-actions')
                         </div>
                     </div>
                 </div>
                 <!-- Mobile Header Actions -->
-                <div class="sm:hidden mt-2 pt-2 border-t border-gray-200">
-                    <div class="w-full">
-                        @yield('header-actions')
-                    </div>
+                <div class="sm:hidden absolute left-0 right-0 top-full border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-4 py-2" id="mobileHeaderActions" style="display:none;">
+                    @yield('header-actions')
                 </div>
             </header>
             
             <!-- Content -->
             <main class="flex-1 overflow-y-auto p-4 lg:p-6 content-area w-full">
-                <!-- Notifications -->
+
                 @if(session('success'))
-                    <div class="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg mb-6 fade-in">
-                        <div class="flex items-center">
-                            <i class="fas fa-check-circle mr-2"></i>
-                            <span>{{ session('success') }}</span>
-                        </div>
+                    <div class="flex items-center gap-2.5 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-800 dark:text-green-300 px-4 py-3 rounded-lg mb-5 text-sm fade-in">
+                        <i class="fas fa-check-circle flex-shrink-0"></i>
+                        <span>{{ session('success') }}</span>
                     </div>
                 @endif
-                
+
                 @if(session('error'))
-                    <div class="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg mb-6 fade-in">
-                        <div class="flex items-center">
-                            <i class="fas fa-exclamation-circle mr-2"></i>
-                            <span>{{ session('error') }}</span>
-                        </div>
+                    <div class="flex items-center gap-2.5 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg mb-5 text-sm fade-in">
+                        <i class="fas fa-exclamation-circle flex-shrink-0"></i>
+                        <span>{{ session('error') }}</span>
                     </div>
                 @endif
-                
+
                 @if($errors->any())
-                    <div class="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg mb-6 fade-in">
-                        <div class="flex items-start">
-                            <i class="fas fa-exclamation-circle mr-2 mt-1"></i>
-                            <div class="flex-1">
-                                <p class="font-medium mb-1">Por favor, corrija os seguintes erros:</p>
-                                <ul class="list-disc list-inside text-sm">
-                                    @foreach($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
+                    <div class="flex items-start gap-2.5 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg mb-5 text-sm fade-in">
+                        <i class="fas fa-exclamation-circle flex-shrink-0 mt-0.5"></i>
+                        <div>
+                            <p class="font-medium mb-1">Por favor, corrija os seguintes erros:</p>
+                            <ul class="list-disc list-inside space-y-0.5">
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
                         </div>
                     </div>
                 @endif
-                
-                <!-- Page Content -->
+
                 @yield('content')
             </main>
         </div>

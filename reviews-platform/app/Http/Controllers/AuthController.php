@@ -42,7 +42,9 @@ class AuthController extends Controller
                 'email' => $request->email
             ]);
 
-            return redirect()->intended('/dashboard');
+            // Usar o mesmo host da requisição para evitar perda de sessão (localhost vs 127.0.0.1)
+            $dashboardUrl = $request->getSchemeAndHttpHost() . '/dashboard';
+            return redirect()->intended($dashboardUrl);
         }
 
         Log::warning('Tentativa de login falhada', [
