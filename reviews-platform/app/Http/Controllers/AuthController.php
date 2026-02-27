@@ -2,16 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PasswordResetCode;
+use App\Models\User;
+use App\Services\TransactionalEmailService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Models\User;
-use App\Models\PasswordResetCode;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\View;
-use GuzzleHttp\Client;
-use App\Mail\PasswordResetCodeMail;
 use Illuminate\Support\Str;
 
 class AuthController extends Controller
@@ -249,97 +247,32 @@ class AuthController extends Controller
     }
 
     /**
-     * Send email notification for password reset
-     * Same logic as review email notifications
+     * Send email notification for password reset.
+     * Uses SendGrid first; if it fails, falls back to Resend.
      */
     private function sendEmailNotification($user, $code)
     {
-        try {
-            // Try SMTP first
-            Mail::to($user->email, $user->name)->send(new PasswordResetCodeMail($user, $code, 15));
-            Log::info('Email de recuperação de senha enviado via SMTP', [
-                'user_id' => $user->id,
-                'email' => $user->email
-            ]);
-        } catch (\Exception $e) {
-            // If SMTP fails (ports blocked), try SendGrid API via HTTP
-            Log::warning('SMTP falhou (portas bloqueadas), tentando API do SendGrid via HTTP', [
-                'error' => $e->getMessage(),
-                'user_id' => $user->id,
-                'email' => $user->email
-            ]);
-            
-            try {
-                $this->sendViaSendGridAPI($user, $code);
-            } catch (\Exception $apiError) {
-                Log::error('Erro ao enviar email de recuperação (SMTP e API falharam)', [
-                    'smtp_error' => $e->getMessage(),
-                    'api_error' => $apiError->getMessage(),
-                    'user_id' => $user->id,
-                    'email' => $user->email
-                ]);
-            }
-        }
-    }
-
-    /**
-     * Send email using SendGrid API via HTTP (using Guzzle)
-     * This bypasses SMTP port blocks common in cloud platforms
-     */
-    private function sendViaSendGridAPI($user, $code)
-    {
-        $apiKey = env('SENDGRID_API_KEY');
-        
-        if (!$apiKey) {
-            throw new \Exception('SENDGRID_API_KEY não configurada');
-        }
-
         $subject = 'Código de Recuperação de Senha - ' . config('app.name');
-
-        // Render email HTML using Laravel Views
         $htmlContent = View::make('emails.password-reset-code', [
             'user' => $user,
             'code' => $code,
-            'expiresIn' => 15
+            'expiresIn' => 15,
         ])->render();
 
-        // Prepare SendGrid API request
-        $client = new Client();
-        $response = $client->post('https://api.sendgrid.com/v3/mail/send', [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $apiKey,
-                'Content-Type' => 'application/json',
-            ],
-            'json' => [
-                'personalizations' => [
-                    [
-                        'to' => [
-                            ['email' => $user->email, 'name' => $user->name]
-                        ],
-                        'subject' => $subject
-                    ]
-                ],
-                'from' => [
-                    'email' => env('MAIL_FROM_ADDRESS', 'iagovventura@gmail.com'),
-                    'name' => env('MAIL_FROM_NAME', 'Avalie e Ganhe')
-                ],
-                'content' => [
-                    [
-                        'type' => 'text/html',
-                        'value' => $htmlContent
-                    ]
-                ]
-            ]
-        ]);
-
-        if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 300) {
-            Log::info('✅ Email de recuperação enviado com sucesso via SendGrid API (HTTP)', [
+        try {
+            app(TransactionalEmailService::class)->send(
+                $user->email,
+                $subject,
+                $htmlContent,
+                $user->name
+            );
+        } catch (\Exception $e) {
+            Log::error('Erro ao enviar email de recuperação de senha', [
+                'error' => $e->getMessage(),
                 'user_id' => $user->id,
                 'email' => $user->email,
-                'status_code' => $response->getStatusCode()
             ]);
-        } else {
-            throw new \Exception('SendGrid API retornou status: ' . $response->getStatusCode());
+            throw $e; // Re-throw para que o usuário veja mensagem de erro
         }
     }
 }

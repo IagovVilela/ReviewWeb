@@ -4,13 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Review;
 use App\Models\Company;
+use App\Services\TransactionalEmailService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\View;
-use GuzzleHttp\Client;
-use App\Mail\NewReviewNotification;
-use App\Mail\NegativeReviewAlert;
 
 class ReviewController extends Controller
 {
@@ -99,59 +96,11 @@ class ReviewController extends Controller
     }
 
     /**
-     * Send email notification to company owner
+     * Send email notification to company owner.
+     * Uses SendGrid first; if it fails, falls back to Resend.
      */
     private function sendEmailNotification($company, $review)
     {
-        try {
-            // Try SMTP first
-            if ($review->is_positive) {
-                Mail::to($company->negative_email)->send(new NewReviewNotification($company, $review));
-                Log::info('Email de avaliação positiva enviado via SMTP', [
-                    'company_id' => $company->id,
-                    'review_id' => $review->id
-                ]);
-            } else {
-                Mail::to($company->negative_email)->send(new NegativeReviewAlert($company, $review));
-                Log::info('Email de avaliação negativa enviado via SMTP', [
-                    'company_id' => $company->id,
-                    'review_id' => $review->id
-                ]);
-            }
-        } catch (\Exception $e) {
-            // If SMTP fails (ports blocked), try SendGrid API via HTTP
-            Log::warning('SMTP falhou (portas bloqueadas), tentando API do SendGrid via HTTP', [
-                'error' => $e->getMessage(),
-                'company_id' => $company->id,
-                'review_id' => $review->id
-            ]);
-            
-            try {
-                $this->sendViaSendGridAPI($company, $review);
-            } catch (\Exception $apiError) {
-                Log::error('Erro ao enviar email (SMTP e API falharam)', [
-                    'smtp_error' => $e->getMessage(),
-                    'api_error' => $apiError->getMessage(),
-                    'company_id' => $company->id,
-                    'review_id' => $review->id
-                ]);
-            }
-        }
-    }
-
-    /**
-     * Send email using SendGrid API via HTTP (using Guzzle)
-     * This bypasses SMTP port blocks common in cloud platforms
-     */
-    private function sendViaSendGridAPI($company, $review)
-    {
-        $apiKey = env('SENDGRID_API_KEY');
-        
-        if (!$apiKey) {
-            throw new \Exception('SENDGRID_API_KEY não configurada');
-        }
-
-        // Determine email type and get content
         if ($review->is_positive) {
             $subject = 'Nova Avaliação Positiva - ' . $company->name;
             $view = 'emails.new-review';
@@ -160,51 +109,24 @@ class ReviewController extends Controller
             $view = 'emails.negative-review-alert';
         }
 
-        // Render email HTML using Laravel Views
         $htmlContent = View::make($view, [
             'company' => $company,
             'review' => $review,
-            'isPositive' => $review->is_positive
+            'isPositive' => $review->is_positive,
         ])->render();
 
-        // Prepare SendGrid API request
-        $client = new Client();
-        $response = $client->post('https://api.sendgrid.com/v3/mail/send', [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $apiKey,
-                'Content-Type' => 'application/json',
-            ],
-            'json' => [
-                'personalizations' => [
-                    [
-                        'to' => [
-                            ['email' => $company->negative_email]
-                        ],
-                        'subject' => $subject
-                    ]
-                ],
-                'from' => [
-                    'email' => env('MAIL_FROM_ADDRESS', 'iagovventura@gmail.com'),
-                    'name' => env('MAIL_FROM_NAME', 'Avalie e Ganhe')
-                ],
-                'content' => [
-                    [
-                        'type' => 'text/html',
-                        'value' => $htmlContent
-                    ]
-                ]
-            ]
-        ]);
-
-        if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 300) {
-            Log::info('✅ Email enviado com sucesso via SendGrid API (HTTP)', [
+        try {
+            app(TransactionalEmailService::class)->send(
+                $company->negative_email,
+                $subject,
+                $htmlContent
+            );
+        } catch (\Exception $e) {
+            Log::error('Erro ao enviar email de avaliação', [
+                'error' => $e->getMessage(),
                 'company_id' => $company->id,
                 'review_id' => $review->id,
-                'status_code' => $response->getStatusCode(),
-                'is_positive' => $review->is_positive
             ]);
-        } else {
-            throw new \Exception('SendGrid API retornou status: ' . $response->getStatusCode());
         }
     }
 
