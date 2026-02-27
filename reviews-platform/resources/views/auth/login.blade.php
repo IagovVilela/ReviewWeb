@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="UTF-8">
+    <script>(function(){var t=localStorage.getItem('theme')||'dark';if(t==='dark')document.documentElement.classList.add('dark');}());</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ __('auth.title') }} — {{ __('app.name') }}</title>
@@ -14,26 +15,49 @@
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
+        /* ── LIGHT MODE (default) ─────────────────── */
         :root {
-            --purple:   #7c3aed;
-            --purple-l: #8b5cf6;
-            --ink:      #09090b;
-            --surface:  #0f0f12;
-            --card:     #141417;
-            --border:   rgba(255,255,255,.09);
-            --text:     #fafafa;
-            --muted:    #71717a;
-            --faint:    #52525b;
-            --r:        10px;
+            --purple:     #7c3aed;
+            --purple-l:   #8b5cf6;
+            --r:          10px;
+            --surface:    #f4f4f8;
+            --card:       #ffffff;
+            --border:     rgba(0,0,0,.08);
+            --text:       #09090b;
+            --muted:      #71717a;
+            --faint:      #a1a1aa;
+            --label-clr:  rgba(0,0,0,.5);
+            --input-bg:   rgba(0,0,0,.03);
+            --logo-name:  rgba(0,0,0,.45);
+            --card-shadow: 0 0 0 1px rgba(0,0,0,.04), 0 24px 48px rgba(0,0,0,.1);
+            --glow-a: rgba(124,58,237,.12);
+            --glow-b: rgba(124,58,237,.04);
+        }
+
+        /* ── DARK MODE ────────────────────────────── */
+        html.dark {
+            --surface:    #0f0f12;
+            --card:       #141417;
+            --border:     rgba(255,255,255,.09);
+            --text:       #fafafa;
+            --muted:      #71717a;
+            --faint:      #52525b;
+            --label-clr:  rgba(255,255,255,.45);
+            --input-bg:   rgba(255,255,255,.04);
+            --logo-name:  rgba(255,255,255,.5);
+            --card-shadow: 0 0 0 1px rgba(255,255,255,.03), 0 32px 64px rgba(0,0,0,.55);
+            --glow-a: rgba(124,58,237,.28);
+            --glow-b: rgba(124,58,237,.08);
         }
 
         html, body {
             height: 100%;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             -webkit-font-smoothing: antialiased;
-            background: var(--ink);
+            background: var(--surface);
             color: var(--text);
             overflow-x: hidden;
+            transition: background .25s, color .25s;
         }
 
         /* ── GLOW BACKGROUND ─────────────────────── */
@@ -41,8 +65,8 @@
             content: '';
             position: fixed; inset: 0; z-index: 0;
             background:
-                radial-gradient(ellipse 55% 45% at 50% 95%, rgba(124,58,237,.28) 0%, transparent 68%),
-                radial-gradient(ellipse 30% 20% at 15% 10%,  rgba(124,58,237,.08) 0%, transparent 60%);
+                radial-gradient(ellipse 55% 45% at 50% 95%, var(--glow-a) 0%, transparent 68%),
+                radial-gradient(ellipse 30% 20% at 15% 10%,  var(--glow-b) 0%, transparent 60%);
             pointer-events: none;
         }
 
@@ -75,7 +99,7 @@
         }
         .topbar-logo img { height: 26px; width: auto; opacity: .85; }
         .topbar-logo-name {
-            font-size: .88rem; font-weight: 600; color: rgba(255,255,255,.55);
+            font-size: .88rem; font-weight: 600; color: var(--logo-name);
             letter-spacing: -.01em;
         }
 
@@ -89,7 +113,7 @@
             transition: border-color .15s, color .15s;
         }
         .lang-select:focus { outline: none; border-color: var(--purple-l); color: var(--text); }
-        .lang-select:hover { color: var(--text); border-color: rgba(255,255,255,.2); }
+        .lang-select:hover { color: var(--text); border-color: var(--faint); }
 
         /* ── MAIN LAYOUT ─────────────────────────── */
         .page {
@@ -106,7 +130,8 @@
             border: 1px solid var(--border);
             border-radius: 18px;
             overflow: hidden;
-            box-shadow: 0 0 0 1px rgba(255,255,255,.03), 0 32px 64px rgba(0,0,0,.55);
+            box-shadow: var(--card-shadow);
+            transition: background .25s, border-color .25s, box-shadow .25s;
         }
 
         .card-head {
@@ -162,14 +187,14 @@
 
         .field-label {
             display: block; font-size: .75rem; font-weight: 500;
-            color: rgba(255,255,255,.5); margin-bottom: .4rem; letter-spacing: .01em;
+            color: var(--label-clr); margin-bottom: .4rem; letter-spacing: .01em;
         }
 
         .field-wrap { position: relative; }
 
         .field-input {
             width: 100%;
-            background: rgba(255,255,255,.04);
+            background: var(--input-bg);
             border: 1px solid var(--border);
             border-radius: var(--r);
             padding: .7rem .9rem .7rem 2.6rem;

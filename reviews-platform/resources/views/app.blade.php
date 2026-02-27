@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}" class="dark">
+<html lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="UTF-8">
+    <script>(function(){var t=localStorage.getItem('theme')||'dark';if(t==='dark')document.documentElement.classList.add('dark');}());</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ __('app.name') }} — {{ __('landing.hero_title') }}</title>
@@ -424,6 +425,57 @@
         .reveal { opacity: 0; transform: translateY(18px); transition: opacity .55s ease, transform .55s ease; }
         .reveal.visible { opacity: 1; transform: none; }
 
+        /* ── THEME TOGGLE ─────────────────────────── */
+        .theme-btn {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,.18);
+            border-radius: 8px;
+            width: 34px; height: 34px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; color: rgba(255,255,255,.6); font-size: .82rem;
+            transition: border-color .15s, color .15s;
+        }
+        .theme-btn:hover { border-color: rgba(255,255,255,.4); color: #fff; }
+        .nav.scrolled .theme-btn { border-color: var(--border); color: var(--muted); }
+        .nav.scrolled .theme-btn:hover { color: var(--text); border-color: var(--purple-l); }
+
+        /* ── LIGHT MODE: HERO & NAV ───────────────── */
+        html:not(.dark) .hero {
+            background: #f3f1ff;
+        }
+        html:not(.dark) .hero::before {
+            background:
+                radial-gradient(ellipse 70% 65% at 65% 105%, rgba(124,58,237,.28) 0%, transparent 68%),
+                radial-gradient(ellipse 45% 35% at 8% 15%,  rgba(124,58,237,.12) 0%, transparent 60%);
+        }
+        /* nav items on light hero (not scrolled) */
+        html:not(.dark) .nav:not(.scrolled) .nav-logo-name { color: var(--ink); }
+        html:not(.dark) .nav:not(.scrolled) .lang-select   { color: var(--muted); border-color: var(--border); }
+        html:not(.dark) .theme-btn                         { border-color: rgba(0,0,0,.14); color: rgba(0,0,0,.45); }
+        html:not(.dark) .theme-btn:hover                   { border-color: rgba(0,0,0,.28); color: var(--ink); }
+
+        /* hero text */
+        html:not(.dark) .hero-kicker    { color: rgba(0,0,0,.4); }
+        html:not(.dark) .hero h1        { color: #09090b; }
+        html:not(.dark) .hero-lead      { color: rgba(0,0,0,.5); }
+        html:not(.dark) .hero-numbers   { border-top-color: rgba(0,0,0,.1); }
+        html:not(.dark) .hero-num-val   { color: #09090b; }
+        html:not(.dark) .hero-num-label { color: rgba(0,0,0,.42); }
+
+        /* outline button on light hero */
+        html:not(.dark) .btn-outline       { color: rgba(0,0,0,.55); border-color: rgba(0,0,0,.15); }
+        html:not(.dark) .btn-outline:hover { color: #09090b; border-color: rgba(0,0,0,.3); background: rgba(0,0,0,.04); }
+
+        /* mock card */
+        html:not(.dark) .mock-card        { background: #fff; border-color: rgba(0,0,0,.08); box-shadow: 0 4px 20px rgba(0,0,0,.07); }
+        html:not(.dark) .mock-card-label  { color: rgba(0,0,0,.38); }
+        html:not(.dark) .mock-rating-num  { color: #09090b; }
+        html:not(.dark) .mock-bar-track   { background: rgba(0,0,0,.07); }
+        html:not(.dark) .mock-bar-lbl     { color: rgba(0,0,0,.32); }
+        html:not(.dark) .mock-badge       { background: #fff; border-color: rgba(0,0,0,.08); box-shadow: 0 2px 8px rgba(0,0,0,.05); }
+        html:not(.dark) .mock-badge strong { color: #09090b; }
+        html:not(.dark) .mock-badge span   { color: rgba(0,0,0,.45); }
+
         /* ── SCROLLBAR ────────────────────────────── */
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -474,6 +526,9 @@
             <span class="nav-logo-name">{{ __('app.name') }}</span>
         </a>
         <div class="nav-right">
+            <button id="themeToggle" class="theme-btn" aria-label="Alternar tema">
+                <i id="themeIcon" class="fas fa-sun"></i>
+            </button>
             <select class="lang-select" id="languageSelector">
                 <option value="pt_BR" {{ app()->getLocale() === 'pt_BR' ? 'selected' : '' }}>🇧🇷 PT</option>
                 <option value="en_US" {{ app()->getLocale() === 'en_US' ? 'selected' : '' }}>🇬🇧 EN</option>
@@ -792,6 +847,18 @@
 </div>
 
 <script>
+    // Theme toggle
+    function syncThemeIcon() {
+        const dark = document.documentElement.classList.contains('dark');
+        document.getElementById('themeIcon').className = dark ? 'fas fa-sun' : 'fas fa-moon';
+    }
+    document.getElementById('themeToggle').addEventListener('click', function () {
+        const isDark = document.documentElement.classList.toggle('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        syncThemeIcon();
+    });
+    syncThemeIcon();
+
     // Favicon
     (function () {
         document.querySelectorAll('link[rel="icon"]').forEach(l => l.remove());
