@@ -114,6 +114,43 @@
                     @enderror
                 </div>
 
+                <!-- Company Assignment -->
+                @if($companies->isNotEmpty())
+                <div>
+                    <label for="company_id" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-building text-gray-400 mr-1"></i>
+                        Empresa
+                        @if(Auth::user()->role === 'admin')
+                            <span class="text-xs text-gray-500 font-normal ml-1">(obrigatório)</span>
+                        @else
+                            <span class="text-xs text-gray-500 font-normal ml-1">(opcional)</span>
+                        @endif
+                    </label>
+                    <select
+                        name="company_id"
+                        id="company_id"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all @error('company_id') border-red-500 @enderror"
+                        @if(Auth::user()->role === 'admin') required @endif
+                    >
+                        <option value="">Selecione uma empresa...</option>
+                        @foreach($companies as $company)
+                            <option value="{{ $company->id }}" {{ old('company_id') == $company->id ? 'selected' : '' }}>
+                                {{ $company->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @if(Auth::user()->role === 'admin')
+                        <p class="mt-1 text-xs text-yellow-600">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>
+                            Você só pode atribuir empresas vinculadas à sua conta.
+                        </p>
+                    @endif
+                    @error('company_id')
+                        <p class="mt-1 text-sm text-red-600"><i class="fas fa-exclamation-circle mr-1"></i>{{ $message }}</p>
+                    @enderror
+                </div>
+                @endif
+
                 <!-- Password -->
                 <div>
                     <label for="password" class="block text-sm font-medium text-gray-700 mb-2">

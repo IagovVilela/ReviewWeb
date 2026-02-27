@@ -230,26 +230,26 @@
 
                     <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:space-x-2">
                         @if($company->status === 'published')
-                            <a href="{{ $company->public_url }}" target="_blank" class="flex-1 bg-blue-50 text-blue-600 px-3 py-2 rounded-lg text-sm font-medium hover:bg-blue-100 transition-colors text-center">
-                                <i class="fas fa-external-link-alt mr-1"></i>
+                            <a href="{{ $company->public_url }}" target="_blank" class="flex-1 inline-flex items-center justify-center gap-1 bg-blue-50 text-blue-600 px-3 py-2 rounded-lg text-sm font-medium hover:bg-blue-100 transition-colors whitespace-nowrap">
+                                <i class="fas fa-external-link-alt"></i>
                                 <span class="hidden sm:inline">{{ __('companies.view_page') }}</span>
                                 <span class="sm:hidden">{{ __('companies.view') }}</span>
                             </a>
-                            <a href="{{ route('companies.qrcode', $company->id) }}" class="flex-1 bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200 px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors text-center inline-flex items-center justify-center">
-                                <i class="fas fa-qrcode mr-1"></i>
+                            <a href="{{ route('companies.qrcode', $company->id) }}" class="flex-1 inline-flex items-center justify-center gap-1 bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200 px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors whitespace-nowrap">
+                                <i class="fas fa-qrcode"></i>
                                 {{ __('companies.download_qr') }}
                             </a>
                         @endif
-                        <a href="{{ route('companies.edit', $company->id) }}" class="flex-1 bg-purple-50 text-purple-600 px-3 py-2 rounded-lg text-sm font-medium hover:bg-purple-100 transition-colors text-center">
-                            <i class="fas fa-edit mr-1"></i>
+                        <a href="{{ route('companies.edit', $company->id) }}" class="flex-1 inline-flex items-center justify-center gap-1 bg-purple-50 text-purple-600 px-3 py-2 rounded-lg text-sm font-medium hover:bg-purple-100 transition-colors whitespace-nowrap">
+                            <i class="fas fa-edit"></i>
                             <span class="hidden sm:inline">{{ __('companies.edit_company') }}</span>
                             <span class="sm:hidden">{{ __('companies.edit') }}</span>
                         </a>
                         <form method="POST" action="{{ route('companies.destroy', $company->id) }}" class="inline sm:flex-shrink-0 delete-company-form" data-company-id="{{ $company->id }}" data-company-name="{{ $company->name }}">
                             @csrf
                             @method('DELETE')
-                            <button type="button" class="w-full sm:w-auto bg-red-50 text-red-600 px-3 py-2 rounded-lg text-sm font-medium hover:bg-red-100 transition-colors delete-company-btn">
-                                <i class="fas fa-trash mr-1 sm:mr-0"></i>
+                            <button type="button" class="w-full sm:w-auto inline-flex items-center justify-center gap-1 bg-red-50 text-red-600 px-3 py-2 rounded-lg text-sm font-medium hover:bg-red-100 transition-colors delete-company-btn whitespace-nowrap">
+                                <i class="fas fa-trash"></i>
                                 <span class="sm:hidden">{{ __('companies.delete') }}</span>
                             </button>
                         </form>
