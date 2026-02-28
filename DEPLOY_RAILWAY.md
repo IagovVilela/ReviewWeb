@@ -4,7 +4,8 @@
 
 O projeto já está configurado para rodar no Railway:
 
-- **Start command** (em `railway.json`): a cada deploy o container sobe com criação de pastas de storage, **migrações** (`php artisan migrate --force`), `storage:link` e depois o servidor. Tudo automático, sem precisar de Shell.
+- **Start command** (em `railway.json` e `nixpacks.toml`): a cada deploy o container sobe com criação de pastas de storage, **migrações** (`php artisan migrate --force`), `storage:link` e depois o servidor. Tudo automático, sem precisar de Shell.
+- **Fallback de sessão**: se `SESSION_DRIVER=database` estiver ativo mas a tabela `sessions` ainda não existir, o app usa temporariamente o driver `file` para evitar 500 (a página carrega; ao fazer um novo deploy, as migrações criam a tabela e o driver em banco passa a valer).
 - **Storage** (pastas e permissões) é criado no start.
 - **Build** usa Nixpacks (PHP 82, Composer, Node 18).
 
@@ -91,8 +92,13 @@ O Laravel tenta usar o driver de sessão em banco; se a tabela não existir, qua
 2. **Conferir a tabela `sessions`**
    - No banco usado pelo Railway (MySQL/Postgres), verifique se existe a tabela `sessions`. Se não existir, faça um novo deploy (o start com migrate vai criá-la).
 
-3. **Ver o erro real nos logs**
-   - Após dar 500, abra **Deployments** → deploy ativo → **Logs** e procure por **`LARAVEL_500`**. A linha seguinte mostra a exceção (ex.: “Table 'sessions' doesn't exist”, “SQLSTATE…”, “Trying to get property 'role' of null”). Copie essa mensagem para corrigir ou enviar a quem for debugar.
+3. **Ver o erro real na tela (diagnóstico rápido)**
+   - No Railway, em **Variables**, adicione temporariamente: **`APP_EXPOSE_500_MESSAGE=1`**.
+   - Faça **redeploy** e acesse de novo a página que dá 500 (ex.: `/companies`). A resposta mostrará a mensagem e o trace da exceção no corpo da página.
+   - Copie essa mensagem, **remova** a variável `APP_EXPOSE_500_MESSAGE` e faça um novo deploy (não deixe essa variável em produção).
+
+4. **Ver o erro nos logs**
+   - Após dar 500, abra **Deployments** → deploy ativo → **Logs** e procure por **`LARAVEL_500`**. A linha seguinte mostra a exceção. Copie essa mensagem para corrigir ou enviar a quem for debugar.
 
 **Alternativa temporária:** se não puder rodar migrações agora, volte o driver de sessão para arquivo no Railway: `SESSION_DRIVER=file`. O 401 ao adicionar usuário à empresa pode voltar, mas o 500 some. Depois que a tabela `sessions` existir, use de novo `SESSION_DRIVER=database`.
 

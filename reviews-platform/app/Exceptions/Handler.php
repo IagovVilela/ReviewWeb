@@ -43,6 +43,18 @@ class Handler extends ExceptionHandler
      *
      * @return void
      */
+    /**
+     * Render the exception (para diagnóstico: se APP_EXPOSE_500_MESSAGE=1, mostra o erro na resposta).
+     */
+    public function render($request, Throwable $e)
+    {
+        if (env('APP_EXPOSE_500_MESSAGE', false)) {
+            $msg = get_class($e) . ': ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine();
+            return response('<pre style="white-space:pre-wrap;font-size:12px;">' . htmlspecialchars($msg . "\n\n" . $e->getTraceAsString()) . '</pre>', 500);
+        }
+        return parent::render($request, $e);
+    }
+
     public function register()
     {
         $this->reportable(function (Throwable $e) {
