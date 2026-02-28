@@ -94,8 +94,10 @@ O Laravel tenta usar o driver de sessão em banco; se a tabela não existir, qua
 
 3. **Ver o erro real na tela (diagnóstico rápido)**
    - No Railway, em **Variables**, adicione temporariamente: **`APP_EXPOSE_500_MESSAGE=1`**.
-   - Faça **redeploy** e acesse de novo a página que dá 500 (ex.: `/companies`). A resposta mostrará a mensagem e o trace da exceção no corpo da página.
-   - Copie essa mensagem, **remova** a variável `APP_EXPOSE_500_MESSAGE` e faça um novo deploy (não deixe essa variável em produção).
+   - Faça **redeploy**.
+   - Acesse **https://www.avalieganhe.app/companies-debug** (faça login antes se precisar). O app devolve o erro com status 200, então o proxy não mostra a página genérica — o corpo da resposta mostra a exceção e o trace.
+   - Se ainda aparecer a página genérica de 500, tente acessar de novo **/companies** — com a variável ativa, qualquer exceção passa a ser devolvida com status 200 para o corpo não ser trocado.
+   - Copie a mensagem de erro, **remova** a variável `APP_EXPOSE_500_MESSAGE` e faça um novo deploy (não deixe essa variável em produção).
 
 4. **Ver o erro nos logs**
    - Após dar 500, abra **Deployments** → deploy ativo → **Logs** e procure por **`LARAVEL_500`**. A linha seguinte mostra a exceção. Copie essa mensagem para corrigir ou enviar a quem for debugar.

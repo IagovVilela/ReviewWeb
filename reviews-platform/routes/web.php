@@ -128,6 +128,8 @@ Route::middleware(['auth'])->group(function () {
 
 // Companies routes - accessible to all authenticated users (with controller-level restrictions)
 Route::middleware(['auth.diagnostics', 'auth'])->group(function () {
+    // Diagnóstico: com APP_EXPOSE_500_MESSAGE=1, acesse /companies-debug para ver o erro na tela (status 200)
+    Route::get('/companies-debug', [App\Http\Controllers\CompanyController::class, 'indexDebug'])->name('companies.index.debug');
     Route::get('/companies', [App\Http\Controllers\CompanyController::class, 'index'])->name('companies.index');
     Route::get('/companies/create', [App\Http\Controllers\CompanyController::class, 'create'])->name('companies.create');
     Route::post('/companies', [App\Http\Controllers\CompanyController::class, 'store'])->name('companies.store');

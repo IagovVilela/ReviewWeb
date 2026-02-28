@@ -50,7 +50,8 @@ class Handler extends ExceptionHandler
     {
         if (env('APP_EXPOSE_500_MESSAGE', false)) {
             $msg = get_class($e) . ': ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine();
-            return response('<pre style="white-space:pre-wrap;font-size:12px;">' . htmlspecialchars($msg . "\n\n" . $e->getTraceAsString()) . '</pre>', 500);
+            // Retorna 200 para o proxy (ex.: Railway) não trocar o corpo pela página genérica de 500
+            return response('<pre style="white-space:pre-wrap;font-size:12px;">' . htmlspecialchars($msg . "\n\n" . $e->getTraceAsString()) . '</pre>', 200);
         }
         return parent::render($request, $e);
     }

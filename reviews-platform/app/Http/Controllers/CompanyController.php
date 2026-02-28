@@ -57,6 +57,23 @@ class CompanyController extends Controller
         ];
     }
 
+    /**
+     * Rota de diagnóstico: quando APP_EXPOSE_500_MESSAGE=1, mostra o erro na página (status 200).
+     * Acesse /companies-debug após definir a variável e fazer redeploy.
+     */
+    public function indexDebug(Request $request)
+    {
+        if (!env('APP_EXPOSE_500_MESSAGE', false)) {
+            return redirect()->route('companies.index');
+        }
+        try {
+            return $this->index($request);
+        } catch (\Throwable $e) {
+            $msg = get_class($e) . ': ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine();
+            return response('<pre style="white-space:pre-wrap;font-size:12px;">' . htmlspecialchars($msg . "\n\n" . $e->getTraceAsString()) . '</pre>', 200);
+        }
+    }
+
     public function index(Request $request)
     {
         $user = auth()->user();
