@@ -3,7 +3,7 @@
 @section('title', __('companies.title') . ' - ' . __('app.name'))
 
 @section('page-title', __('companies.title'))
-@section('page-description', __('dashboard.companies_count') . ' • ' . $companies->where('status', 'published')->count() . ' ' . __('companies.count_active') . ' • ' . $companies->where('status', 'draft')->count() . ' ' . __('companies.count_draft'))
+@section('page-description', __('dashboard.companies_count') . ' • ' . ($totalPublished ?? 0) . ' ' . __('companies.count_active') . ' • ' . ($totalDraft ?? 0) . ' ' . __('companies.count_draft'))
 
 @section('header-actions')
     <a href="/companies/create" class="btn-primary text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-sm sm:text-base font-medium min-h-[36px] sm:min-h-[44px] flex items-center justify-center">

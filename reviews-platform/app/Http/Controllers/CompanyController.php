@@ -145,16 +145,20 @@ class CompanyController extends Controller
         // Order by
         $query->orderBy('status', 'asc')
               ->orderBy('created_at', 'desc');
-        
+
+        // Counts for page description (same filters, before paginate)
+        $totalPublished = (clone $query)->where('status', 'published')->count();
+        $totalDraft = (clone $query)->where('status', 'draft')->count();
+
         $companies = $query->paginate(12)->appends($request->query());
-        
+
         // Get users list for filter (only for proprietário)
         $users = collect();
         if ($user->role === 'proprietario') {
             $users = \App\Models\User::whereHas('companies')->orderBy('name')->get();
         }
-            
-        return view('companies', compact('companies', 'users'));
+
+        return view('companies', compact('companies', 'users', 'totalPublished', 'totalDraft'));
     }
 
     public function create()
