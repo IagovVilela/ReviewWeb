@@ -52,23 +52,31 @@ class Handler extends ExceptionHandler
 
     /**
      * Log detalhado para diagnóstico de 401 em /api/companies/*/members.
+     * Envolvido em try/catch para nunca causar 500.
      */
     protected function logAuthenticationFailure(Request $request): void
     {
-        $sessionId = $request->hasSession() ? $request->session()->getId() : null;
-        $sessionCookieName = config('session.cookie');
+        try {
+            $sessionId = $request->hasSession() ? $request->session()->getId() : null;
+            $sessionCookieName = config('session.cookie');
 
-        \Illuminate\Support\Facades\Log::channel('single')->warning('401 Unauthenticated on members API', [
-            'path' => $request->fullUrl(),
-            'method' => $request->method(),
-            'session_id' => $sessionId,
-            'session_id_short' => $sessionId ? substr($sessionId, 0, 12) . '...' : null,
-            'has_session' => $request->hasSession(),
-            'has_session_cookie' => $request->hasCookie($sessionCookieName),
-            'session_driver' => config('session.driver'),
-            'cookie_names' => array_keys($request->cookies->all()),
-            'user_agent' => $request->userAgent(),
-        ]);
+            \Illuminate\Support\Facades\Log::channel('single')->warning('401 Unauthenticated on members API', [
+                'path' => $request->fullUrl(),
+                'method' => $request->method(),
+                'session_id' => $sessionId,
+                'session_id_short' => $sessionId ? substr($sessionId, 0, 12) . '...' : null,
+                'has_session' => $request->hasSession(),
+                'has_session_cookie' => $request->hasCookie($sessionCookieName),
+                'session_driver' => config('session.driver'),
+                'cookie_names' => array_keys($request->cookies->all()),
+                'user_agent' => $request->userAgent(),
+            ]);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::channel('single')->warning('401 Unauthenticated on members API (log failed)', [
+                'path' => $request->fullUrl(),
+                'log_error' => $e->getMessage(),
+            ]);
+        }
     }
 
     /**

@@ -4,9 +4,9 @@
 
 O projeto já está configurado para rodar no Railway:
 
-- **Migrações** rodam automaticamente no start (`php artisan migrate --force`)
-- **Storage** (pastas e permissões) é criado no start
-- **Build** usa Nixpacks (PHP 82, Composer, Node 18)
+- **Start command** (em `railway.json`): a cada deploy o container sobe com criação de pastas de storage, **migrações** (`php artisan migrate --force`), `storage:link` e depois o servidor. Tudo automático, sem precisar de Shell.
+- **Storage** (pastas e permissões) é criado no start.
+- **Build** usa Nixpacks (PHP 82, Composer, Node 18).
 
 ---
 
@@ -75,6 +75,29 @@ Se ao clicar em "Adicionar usuário" na edição da empresa aparecer **401 Unaut
 
 ---
 
+## HTTP 500 em /companies (ou “Esta página não está funcionando”)
+
+Se ao acessar **/companies** (ou qualquer página após o login) aparecer **HTTP ERROR 500**, a causa mais comum é:
+
+**`SESSION_DRIVER=database` está ativo, mas a tabela `sessions` não existe no banco.**
+
+O Laravel tenta usar o driver de sessão em banco; se a tabela não existir, qualquer página que use sessão (incluindo /companies) quebra com 500.
+
+**O que fazer:**
+
+1. **Migrações no deploy**
+   - O comando de start do Railway (`railway.json`) já roda **`php artisan migrate --force`** antes de subir o servidor. Assim a tabela `sessions` (e as demais) é criada/atualizada a cada deploy. Não é preciso rodar nada manualmente.
+
+2. **Conferir a tabela `sessions`**
+   - No banco usado pelo Railway (MySQL/Postgres), verifique se existe a tabela `sessions`. Se não existir, faça um novo deploy (o start com migrate vai criá-la).
+
+3. **Ver o erro real nos logs**
+   - Railway → serviço → **Deployments** → deploy ativo → **Logs**. Procure a mensagem de exceção (ex.: “Table 'sessions' doesn't exist” ou “SQLSTATE…”). Assim você confirma se o problema é a tabela de sessões ou outro.
+
+**Alternativa temporária:** se não puder rodar migrações agora, volte o driver de sessão para arquivo no Railway: `SESSION_DRIVER=file`. O 401 ao adicionar usuário à empresa pode voltar, mas o 500 some. Depois que a tabela `sessions` existir, use de novo `SESSION_DRIVER=database`.
+
+---
+
 ## Logs para diagnosticar 401 (adicionar usuário à empresa)
 
 Quando o 401 continuar acontecendo, o backend passa a gravar logs detalhados. Use-os para entender a causa:
@@ -82,7 +105,7 @@ Quando o 401 continuar acontecendo, o backend passa a gravar logs detalhados. Us
 ### Onde ver os logs no Railway
 
 - No painel do Railway: abra o serviço → **Deployments** → clique no deploy ativo → aba **Logs** (ou **View Logs**).
-- Ou no **Shell** do serviço, se tiver: `cat storage/logs/laravel.log` (caminho pode variar).
+- Os logs do container aparecem na aba **Logs** do deploy; não é necessário Shell.
 
 ### O que aparece nos logs
 

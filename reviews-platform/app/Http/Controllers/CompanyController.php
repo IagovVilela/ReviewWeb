@@ -60,6 +60,9 @@ class CompanyController extends Controller
     public function index(Request $request)
     {
         $user = auth()->user();
+        if (!$user) {
+            abort(401);
+        }
         $query = Company::with('user')->withCount(['reviews', 'reviewPages']);
         
         // Apenas proprietário vê todas; admin e user veem as que têm acesso (owner ou membro)
