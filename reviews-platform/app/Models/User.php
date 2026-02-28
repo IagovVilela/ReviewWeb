@@ -23,6 +23,7 @@ class User extends Authenticatable
         'password',
         'role',
         'photo',
+        'created_by',
     ];
 
     /**
@@ -43,6 +44,22 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Usuário que criou este usuário (admin ou proprietário).
+     */
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /**
+     * Usuários criados por este usuário (para admin: só esses podem ser adicionados à empresa).
+     */
+    public function createdUsers()
+    {
+        return $this->hasMany(User::class, 'created_by');
+    }
 
     /**
      * Get the companies owned by the user

@@ -142,11 +142,11 @@ class CompanyController extends Controller
         $user = auth()->user();
         $users = null;
         
-        // Proprietário atribui a qualquer usuário; admin pode atribuir apenas a usuários comuns (role=user)
+        // Proprietário atribui a qualquer usuário; admin só pode atribuir a usuários criados por ele
         if ($user->role === 'proprietario') {
             $users = \App\Models\User::orderBy('name')->get();
         } elseif ($user->role === 'admin') {
-            $users = \App\Models\User::where('role', 'user')->orderBy('name')->get();
+            $users = \App\Models\User::where('role', 'user')->where('created_by', $user->id)->orderBy('name')->get();
         }
         
         return view('companies-create', compact('users'));
@@ -357,13 +357,22 @@ class CompanyController extends Controller
         if ($user->role === 'proprietario') {
             $users = \App\Models\User::orderBy('name')->get();
         } elseif ($company->user_id === $user->id) {
-            $users = \App\Models\User::where('role', 'user')->orderBy('name')->get();
+            $usersQuery = \App\Models\User::where('role', 'user');
+            if ($user->role === 'admin') {
+                $usersQuery->where('created_by', $user->id);
+            }
+            $users = $usersQuery->orderBy('name')->get();
         }
 
         $availableToAdd = collect();
         if ($canManageTeam) {
             $currentIds = $company->usersWithAccess()->pluck('id')->toArray();
-            $availableToAdd = \App\Models\User::whereNotIn('id', $currentIds)->orderBy('name')->get();
+            $query = \App\Models\User::whereNotIn('id', $currentIds);
+            // Admin só pode dar acesso à empresa para usuários criados por ele
+            if ($user->role === 'admin') {
+                $query->where('created_by', $user->id);
+            }
+            $availableToAdd = $query->orderBy('name')->get();
         }
 
         return view('companies-edit', compact('company', 'users', 'canManageTeam', 'availableToAdd'));

@@ -106,6 +106,7 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
+            'created_by' => $currentUser->id,
         ]);
 
         return redirect()->route('users.index')->with('success', 'Usuário criado com sucesso!');
