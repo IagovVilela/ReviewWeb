@@ -46,7 +46,32 @@ Confira no Railway (Settings → Variables) se existem:
 | `SENDGRID_API_KEY` | Envio de e-mail |
 | `MAIL_FROM_ADDRESS` | Ex: `no-reply@avalieganhe.app` |
 | `MAIL_FROM_NAME` | Ex: `Avalie e Ganhe` |
-| `SANCTUM_STATEFUL_DOMAINS` | Opcional. Ex: `www.avalieganhe.app,avalieganhe.app` (para sessão em chamadas /api no mesmo domínio) |
+| **`SESSION_DRIVER`** | **Use `database`** no Railway (obrigatório para evitar 401 ao adicionar usuário à empresa; ver abaixo) |
+| **`SESSION_DOMAIN`** | Opcional. Use `.avalieganhe.app` (com ponto na frente) para o cookie valer em todo o domínio |
+
+---
+
+## Erro 401 ao adicionar usuário à empresa
+
+Se ao clicar em "Adicionar usuário" na edição da empresa aparecer **401 Unauthenticated**, a sessão não está sendo reconhecida. No Railway isso costuma acontecer quando:
+
+1. **Sessão em arquivo** – Com mais de uma instância ou reinício do container, a sessão em arquivo se perde.
+2. **Cookie de sessão** – Domínio ou caminho do cookie incorreto.
+
+**O que fazer:**
+
+1. **Usar sessão em banco**
+   - No Railway, em **Variables**, adicione:
+     - `SESSION_DRIVER=database`
+   - A migração que cria a tabela `sessions` já existe e roda com `php artisan migrate --force`. Não é preciso comando extra.
+
+2. **Domínio do cookie (opcional)**
+   - Se o site for acessado por `www.avalieganhe.app`, adicione:
+     - `SESSION_DOMAIN=.avalieganhe.app`
+   - O ponto na frente faz o cookie valer para `www.avalieganhe.app` e `avalieganhe.app`.
+
+3. **Redeploy**
+   - Depois de alterar as variáveis, faça um novo deploy (ou reinicie o serviço) e teste de novo o "Adicionar usuário".
 
 ---
 
