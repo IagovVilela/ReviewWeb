@@ -46,7 +46,11 @@ class Handler extends ExceptionHandler
     public function register()
     {
         $this->reportable(function (Throwable $e) {
-            //
+            // Log para stderr para aparecer nos Logs do Railway (stdout/stderr são visíveis no painel)
+            $msg = 'LARAVEL_500 ' . get_class($e) . ': ' . $e->getMessage()
+                . ' in ' . $e->getFile() . ':' . $e->getLine();
+            @error_log($msg);
+            @error_log('Trace: ' . $e->getTraceAsString());
         });
     }
 

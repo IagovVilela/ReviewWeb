@@ -92,7 +92,7 @@ O Laravel tenta usar o driver de sessão em banco; se a tabela não existir, qua
    - No banco usado pelo Railway (MySQL/Postgres), verifique se existe a tabela `sessions`. Se não existir, faça um novo deploy (o start com migrate vai criá-la).
 
 3. **Ver o erro real nos logs**
-   - Railway → serviço → **Deployments** → deploy ativo → **Logs**. Procure a mensagem de exceção (ex.: “Table 'sessions' doesn't exist” ou “SQLSTATE…”). Assim você confirma se o problema é a tabela de sessões ou outro.
+   - Após dar 500, abra **Deployments** → deploy ativo → **Logs** e procure por **`LARAVEL_500`**. A linha seguinte mostra a exceção (ex.: “Table 'sessions' doesn't exist”, “SQLSTATE…”, “Trying to get property 'role' of null”). Copie essa mensagem para corrigir ou enviar a quem for debugar.
 
 **Alternativa temporária:** se não puder rodar migrações agora, volte o driver de sessão para arquivo no Railway: `SESSION_DRIVER=file`. O 401 ao adicionar usuário à empresa pode voltar, mas o 500 some. Depois que a tabela `sessions` existir, use de novo `SESSION_DRIVER=database`.
 

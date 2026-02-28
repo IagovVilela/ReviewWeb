@@ -46,7 +46,7 @@
         </div>
         <form id="filtersForm" method="GET" action="{{ route('companies.index') }}" class="hidden md:flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2 md:gap-3 lg:gap-4">
             <!-- User Filter (apenas proprietário) -->
-            @if(Auth::user()->role === 'proprietario' && $users && $users->count() > 0)
+            @if(optional(Auth::user())->role === 'proprietario' && $users && $users->count() > 0)
             <div class="flex-1 min-w-[200px] w-full md:w-auto">
                 <label class="block text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ __('companies.filter_by_user') }}</label>
                 <select name="user_id" id="userFilter" class="w-full px-2 md:px-3 py-1.5 md:py-2 text-sm md:text-base bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-purple-500 focus:border-transparent" style="min-height: 36px; font-size: 14px;">
@@ -183,7 +183,7 @@
                     </div>
 
                     <div class="space-y-3 mb-4">
-                        @if($company->user && (auth()->user()->role === 'admin' || auth()->user()->role === 'proprietario'))
+                        @if($company->user && (optional(auth()->user())->role === 'admin' || optional(auth()->user())->role === 'proprietario'))
                             <div class="flex items-center text-sm text-gray-600 bg-gray-50 px-3 py-2 rounded-lg">
                                 <i class="fas fa-user w-4 mr-2 text-purple-600"></i>
                                 <div class="flex-1 min-w-0">
