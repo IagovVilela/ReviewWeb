@@ -2051,7 +2051,15 @@ function addTeamMember() {
         credentials: 'include',
         body: JSON.stringify({ user_id: parseInt(select.value) }),
     })
-    .then(r => r.json())
+    .then(async (r) => {
+        const contentType = r.headers.get('Content-Type') || '';
+        const isJson = contentType.includes('application/json');
+        const body = isJson ? await r.json() : { message: r.status === 401 ? 'Sessão expirada ou não autenticado. Faça login novamente.' : 'Erro ao adicionar.' };
+        if (!r.ok) {
+            throw { status: r.status, ...body };
+        }
+        return body;
+    })
     .then(data => {
         if (data.success) {
             location.reload();
@@ -2059,7 +2067,10 @@ function addTeamMember() {
             showNotification(data.message || 'Erro ao adicionar.', 'error');
         }
     })
-    .catch(() => showNotification('Erro ao adicionar usuário.', 'error'));
+    .catch((err) => {
+        const msg = (err && err.message) || (err && err.status === 401 ? 'Sessão expirada. Faça login novamente.' : 'Erro ao adicionar usuário.');
+        showNotification(msg, 'error');
+    });
 }
 
 function removeTeamMember(userId, userName) {
@@ -2073,7 +2084,13 @@ function removeTeamMember(userId, userName) {
         },
         credentials: 'include',
     })
-    .then(r => r.json())
+    .then(async (r) => {
+        const contentType = r.headers.get('Content-Type') || '';
+        const isJson = contentType.includes('application/json');
+        const body = isJson ? await r.json() : { message: r.status === 401 ? 'Sessão expirada. Faça login novamente.' : 'Erro ao remover.' };
+        if (!r.ok) throw { status: r.status, ...body };
+        return body;
+    })
     .then(data => {
         if (data.success) {
             document.querySelector(`.team-member-row[data-user-id="${userId}"]`)?.remove();
@@ -2082,7 +2099,10 @@ function removeTeamMember(userId, userName) {
             showNotification(data.message || 'Erro ao remover.', 'error');
         }
     })
-    .catch(() => showNotification('Erro ao remover usuário.', 'error'));
+    .catch((err) => {
+        const msg = (err && err.message) || (err && err.status === 401 ? 'Sessão expirada. Faça login novamente.' : 'Erro ao remover usuário.');
+        showNotification(msg, 'error');
+    });
 }
 @endif
 

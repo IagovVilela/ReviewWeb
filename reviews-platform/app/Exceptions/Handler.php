@@ -2,7 +2,9 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Request;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -46,5 +48,38 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    /**
+     * Log detalhado para diagnóstico de 401 em /api/companies/*/members.
+     */
+    protected function logAuthenticationFailure(Request $request): void
+    {
+        $sessionId = $request->hasSession() ? $request->session()->getId() : null;
+        $sessionCookieName = config('session.cookie');
+
+        \Illuminate\Support\Facades\Log::channel('single')->warning('401 Unauthenticated on members API', [
+            'path' => $request->fullUrl(),
+            'method' => $request->method(),
+            'session_id' => $sessionId,
+            'session_id_short' => $sessionId ? substr($sessionId, 0, 12) . '...' : null,
+            'has_session' => $request->hasSession(),
+            'has_session_cookie' => $request->hasCookie($sessionCookieName),
+            'session_driver' => config('session.driver'),
+            'cookie_names' => array_keys($request->cookies->all()),
+            'user_agent' => $request->userAgent(),
+        ]);
+    }
+
+    /**
+     * Convertir AuthenticationException em resposta (redirect ou JSON).
+     */
+    protected function unauthenticated($request, AuthenticationException $exception)
+    {
+        if ($request->is('api/*')) {
+            $this->logAuthenticationFailure($request);
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+        return redirect()->guest($exception->redirectTo() ?? route('login'));
     }
 }
