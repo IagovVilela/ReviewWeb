@@ -5,6 +5,41 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ContactController;
 
+// Diagnostic route - uses web middleware (session, cookies) but NO auth
+Route::get('/web-debug', function () {
+    $info = [];
+    try {
+        $info['step'] = '1-config';
+        $info['session_driver'] = config('session.driver');
+        $info['session_connection'] = config('session.connection');
+        $info['session_table'] = config('session.table');
+        $info['app_key_set'] = !empty(config('app.key'));
+        $info['app_env'] = config('app.env');
+
+        $info['step'] = '2-session';
+        $info['session_id'] = session()->getId();
+        $info['session_started'] = session()->isStarted();
+
+        $info['step'] = '3-auth';
+        $info['auth_check'] = auth()->check();
+        $info['user_id'] = auth()->id();
+
+        $info['step'] = '4-db';
+        $usersCount = \App\Models\User::count();
+        $info['users_count'] = $usersCount;
+        $companiesCount = \App\Models\Company::count();
+        $info['companies_count'] = $companiesCount;
+
+        $info['step'] = 'DONE';
+        $info['status'] = 'ALL OK';
+    } catch (\Throwable $e) {
+        $info['error'] = get_class($e) . ': ' . $e->getMessage();
+        $info['file'] = $e->getFile() . ':' . $e->getLine();
+        $info['trace'] = substr($e->getTraceAsString(), 0, 2000);
+    }
+    return response()->json($info, 200, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+});
+
 // Public routes
 Route::get('/', function () {
     return view('app');
