@@ -45,6 +45,15 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Expose 500 error message in response (for debugging on production)
+    | When true, 500 errors return the exception message with HTTP 200 so it's visible.
+    | Set APP_EXPOSE_500_MESSAGE=1 in Railway Variables to see errors on /companies etc.
+    |--------------------------------------------------------------------------
+    */
+    'expose_500_message' => filter_var(env('APP_EXPOSE_500_MESSAGE', false), FILTER_VALIDATE_BOOLEAN),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application URL
     |--------------------------------------------------------------------------
     |

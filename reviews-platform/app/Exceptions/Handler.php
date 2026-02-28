@@ -48,9 +48,10 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $e)
     {
-        if (env('APP_EXPOSE_500_MESSAGE', false)) {
+        // Usar config() para respeitar cache; fallback para env() em tempo de execução
+        $expose = config('app.expose_500_message', false) || filter_var(env('APP_EXPOSE_500_MESSAGE', false), FILTER_VALIDATE_BOOLEAN);
+        if ($expose) {
             $msg = get_class($e) . ': ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine();
-            // Retorna 200 para o proxy (ex.: Railway) não trocar o corpo pela página genérica de 500
             return response('<pre style="white-space:pre-wrap;font-size:12px;">' . htmlspecialchars($msg . "\n\n" . $e->getTraceAsString()) . '</pre>', 200);
         }
         return parent::render($request, $e);

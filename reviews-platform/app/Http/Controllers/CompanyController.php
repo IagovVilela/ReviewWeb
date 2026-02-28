@@ -76,89 +76,105 @@ class CompanyController extends Controller
 
     public function index(Request $request)
     {
-        $user = auth()->user();
-        if (!$user) {
-            abort(401);
-        }
-        $query = Company::with('user')->withCount(['reviews', 'reviewPages']);
-        
-        // Apenas proprietário vê todas; admin e user veem as que têm acesso (owner ou membro)
-        if ($user->role !== 'proprietario') {
-            $query->accessibleBy($user->id);
-        }
-
-        // Filter by user (company owner) - only for proprietário
-        if ($request->has('user_id') && $request->user_id && $user->role === 'proprietario') {
-            $query->where('user_id', $request->user_id);
-        }
-        
-        // Filter by status
-        if ($request->has('status') && $request->status && $request->status !== 'all') {
-            $query->where('status', $request->status);
-        }
-        
-        // Filter by visibility (is_active)
-        if ($request->has('visibility') && $request->visibility && $request->visibility !== 'all') {
-            if ($request->visibility === 'visible') {
-                $query->where('is_active', true);
-            } elseif ($request->visibility === 'hidden') {
-                $query->where('is_active', false);
+        try {
+            $user = auth()->user();
+            if (!$user) {
+                abort(401);
             }
-        }
-        
-        // Filter by rating limit (positive_score)
-        if ($request->has('rating_limit') && $request->rating_limit && $request->rating_limit !== 'all') {
-            $query->where('positive_score', $request->rating_limit);
-        }
-        
-        // Filter by reviews count
-        if ($request->has('reviews_filter') && $request->reviews_filter && $request->reviews_filter !== 'all') {
-            if ($request->reviews_filter === 'with_reviews') {
-                $query->has('reviews');
-            } elseif ($request->reviews_filter === 'without_reviews') {
-                $query->doesntHave('reviews');
+            $query = Company::with('user')->withCount(['reviews', 'reviewPages']);
+
+            // Apenas proprietário vê todas; admin e user veem as que têm acesso (owner ou membro)
+            if ($user->role !== 'proprietario') {
+                $query->accessibleBy($user->id);
             }
-        }
-        
-        // Filter by date period
-        if ($request->has('period') && $request->period && $request->period !== 'all') {
-            $now = now();
-            switch ($request->period) {
-                case 'today':
-                    $query->whereDate('created_at', $now->toDateString());
-                    break;
-                case 'week':
-                    $query->where('created_at', '>=', $now->copy()->subWeek());
-                    break;
-                case 'month':
-                    $query->where('created_at', '>=', $now->copy()->subMonth());
-                    break;
+
+            // Filter by user (company owner) - only for proprietário
+            if ($request->has('user_id') && $request->user_id && $user->role === 'proprietario') {
+                $query->where('user_id', $request->user_id);
             }
+
+            // Filter by status
+            if ($request->has('status') && $request->status && $request->status !== 'all') {
+                $query->where('status', $request->status);
+            }
+
+            // Filter by visibility (is_active)
+            if ($request->has('visibility') && $request->visibility && $request->visibility !== 'all') {
+                if ($request->visibility === 'visible') {
+                    $query->where('is_active', true);
+                } elseif ($request->visibility === 'hidden') {
+                    $query->where('is_active', false);
+                }
+            }
+
+            // Filter by rating limit (positive_score)
+            if ($request->has('rating_limit') && $request->rating_limit && $request->rating_limit !== 'all') {
+                $query->where('positive_score', $request->rating_limit);
+            }
+
+            // Filter by reviews count
+            if ($request->has('reviews_filter') && $request->reviews_filter && $request->reviews_filter !== 'all') {
+                if ($request->reviews_filter === 'with_reviews') {
+                    $query->has('reviews');
+                } elseif ($request->reviews_filter === 'without_reviews') {
+                    $query->doesntHave('reviews');
+                }
+            }
+
+            // Filter by date period
+            if ($request->has('period') && $request->period && $request->period !== 'all') {
+                $now = now();
+                switch ($request->period) {
+                    case 'today':
+                        $query->whereDate('created_at', $now->toDateString());
+                        break;
+                    case 'week':
+                        $query->where('created_at', '>=', $now->copy()->subWeek());
+                        break;
+                    case 'month':
+                        $query->where('created_at', '>=', $now->copy()->subMonth());
+                        break;
+                }
+            }
+
+            // Search by name
+            if ($request->has('search') && $request->search) {
+                $searchTerm = '%' . $request->search . '%';
+                $query->where('name', 'LIKE', $searchTerm);
+            }
+
+            // Order by
+            $query->orderBy('status', 'asc')
+                  ->orderBy('created_at', 'desc');
+
+            // Counts for page description (same filters, before paginate)
+            $totalPublished = (clone $query)->where('status', 'published')->count();
+            $totalDraft = (clone $query)->where('status', 'draft')->count();
+
+            $companies = $query->paginate(12)->appends($request->query());
+
+            // Get users list for filter (only for proprietário)
+            $users = collect();
+            if ($user->role === 'proprietario') {
+                $users = \App\Models\User::whereHas('companies')->orderBy('name')->get();
+            }
+
+            return view('companies', compact('companies', 'users', 'totalPublished', 'totalDraft'));
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('CompanyController@index', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            @error_log('LARAVEL_500 /companies: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
+            $expose = config('app.expose_500_message', false) || filter_var(env('APP_EXPOSE_500_MESSAGE', false), FILTER_VALIDATE_BOOLEAN);
+            if ($expose) {
+                $msg = get_class($e) . ': ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine();
+                return response('<pre style="white-space:pre-wrap;font-size:12px;">' . htmlspecialchars($msg . "\n\n" . $e->getTraceAsString()) . '</pre>', 200);
+            }
+            throw $e;
         }
-        
-        // Search by name
-        if ($request->has('search') && $request->search) {
-            $searchTerm = '%' . $request->search . '%';
-            $query->where('name', 'LIKE', $searchTerm);
-        }
-        
-        // Order by
-        $query->orderBy('status', 'asc')
-              ->orderBy('created_at', 'desc');
-
-        // Counts for page description (same filters, before paginate)
-        $totalPublished = (clone $query)->where('status', 'published')->count();
-        $totalDraft = (clone $query)->where('status', 'draft')->count();
-
-        $companies = $query->paginate(12)->appends($request->query());
-
-        // Get users list for filter (only for proprietário)
-        $users = collect();
-        if ($user->role === 'proprietario') {
-            $users = \App\Models\User::whereHas('companies')->orderBy('name')->get();
-        }
-
-        return view('companies', compact('companies', 'users', 'totalPublished', 'totalDraft'));
     }
 
     public function create()
