@@ -7,8 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Se SESSION_DRIVER=database mas a tabela sessions não existir,
- * usa driver 'file' para esta requisição e evita 500.
+ * Se SESSION_DRIVER=database mas a tabela sessions não existir ou o BD falhar,
+ * usa driver 'cookie' (stateless) para esta requisição e evita 500.
  */
 class EnsureSessionDriverSafe
 {
@@ -21,10 +21,12 @@ class EnsureSessionDriverSafe
         try {
             $table = config('session.table', 'sessions');
             if (!Schema::hasTable($table)) {
-                config(['session.driver' => 'file']);
+                @error_log('SESSION_SAFE: tabela "' . $table . '" não encontrada, fallback para cookie');
+                config(['session.driver' => 'cookie']);
             }
         } catch (\Throwable $e) {
-            config(['session.driver' => 'file']);
+            @error_log('SESSION_SAFE: erro ao verificar tabela de sessions: ' . $e->getMessage());
+            config(['session.driver' => 'cookie']);
         }
 
         return $next($request);
