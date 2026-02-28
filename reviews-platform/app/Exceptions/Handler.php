@@ -48,8 +48,11 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $e)
     {
-        // Usar config() para respeitar cache; fallback para env() em tempo de execução
-        $expose = config('app.expose_500_message', false) || filter_var(env('APP_EXPOSE_500_MESSAGE', false), FILTER_VALIDATE_BOOLEAN);
+        $isDebugPath = str_contains($request->path(), '-debug') || $request->path() === 'api/healthcheck';
+        $expose = $isDebugPath
+            || config('app.expose_500_message', false)
+            || filter_var(env('APP_EXPOSE_500_MESSAGE', false), FILTER_VALIDATE_BOOLEAN);
+
         if ($expose) {
             $msg = get_class($e) . ': ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine();
             return response('<pre style="white-space:pre-wrap;font-size:12px;">' . htmlspecialchars($msg . "\n\n" . $e->getTraceAsString()) . '</pre>', 200);
