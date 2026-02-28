@@ -164,9 +164,6 @@ Route::middleware(['auth'])->group(function () {
             return (new \App\Http\Controllers\ReviewController)->exportContacts(request(), $companyId);
         });
 
-        Route::post('/companies/{companyId}/members', [App\Http\Controllers\CompanyController::class, 'addMember'])->name('companies.members.add');
-        Route::delete('/companies/{companyId}/members/{memberId}', [App\Http\Controllers\CompanyController::class, 'removeMember'])->name('companies.members.remove');
-        
         // Get companies (only user's companies if not admin)
         Route::get('/companies', function () {
             try {

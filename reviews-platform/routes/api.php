@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\CompanyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,6 +18,12 @@ use App\Http\Controllers\ReviewController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+// Rotas que exigem autenticação (sessão ou token) - mesmo domínio usa sessão via Sanctum stateful
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/companies/{companyId}/members', [CompanyController::class, 'addMember'])->name('api.companies.members.add');
+    Route::delete('/companies/{companyId}/members/{memberId}', [CompanyController::class, 'removeMember'])->name('api.companies.members.remove');
 });
 
 // Review API Routes (Public - for review submission from public pages)

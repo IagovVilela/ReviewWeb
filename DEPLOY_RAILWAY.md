@@ -46,6 +46,7 @@ Confira no Railway (Settings → Variables) se existem:
 | `SENDGRID_API_KEY` | Envio de e-mail |
 | `MAIL_FROM_ADDRESS` | Ex: `no-reply@avalieganhe.app` |
 | `MAIL_FROM_NAME` | Ex: `Avalie e Ganhe` |
+| `SANCTUM_STATEFUL_DOMAINS` | Opcional. Ex: `www.avalieganhe.app,avalieganhe.app` (para sessão em chamadas /api no mesmo domínio) |
 
 ---
 
