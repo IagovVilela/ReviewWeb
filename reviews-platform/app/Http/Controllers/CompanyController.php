@@ -63,11 +63,29 @@ class CompanyController extends Controller
      */
     public function indexDebug(Request $request)
     {
-        if (!env('APP_EXPOSE_500_MESSAGE', false)) {
-            return redirect()->route('companies.index');
-        }
         try {
-            return $this->index($request);
+            $user = auth()->user();
+            if (!$user) {
+                return response('<pre>ERROR: User not authenticated</pre>', 200);
+            }
+
+            $query = \App\Models\Company::with('user')->withCount(['reviews', 'reviewPages']);
+            if ($user->role !== 'proprietario') {
+                $query->accessibleBy($user->id);
+            }
+            $query->orderBy('status', 'asc')->orderBy('created_at', 'desc');
+
+            $totalPublished = (clone $query)->where('status', 'published')->count();
+            $totalDraft = (clone $query)->where('status', 'draft')->count();
+            $companies = $query->paginate(12)->appends($request->query());
+
+            $users = collect();
+            if ($user->role === 'proprietario') {
+                $users = \App\Models\User::whereHas('companies')->orderBy('name')->get();
+            }
+
+            $html = view('companies', compact('companies', 'users', 'totalPublished', 'totalDraft'))->render();
+            return response($html, 200);
         } catch (\Throwable $e) {
             $msg = get_class($e) . ': ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine();
             return response('<pre style="white-space:pre-wrap;font-size:12px;">' . htmlspecialchars($msg . "\n\n" . $e->getTraceAsString()) . '</pre>', 200);
@@ -159,7 +177,9 @@ class CompanyController extends Controller
                 $users = \App\Models\User::whereHas('companies')->orderBy('name')->get();
             }
 
-            return view('companies', compact('companies', 'users', 'totalPublished', 'totalDraft'));
+            $viewResponse = view('companies', compact('companies', 'users', 'totalPublished', 'totalDraft'));
+            $viewResponse->render();
+            return $viewResponse;
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error('CompanyController@index', [
                 'message' => $e->getMessage(),
