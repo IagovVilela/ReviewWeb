@@ -308,6 +308,11 @@ class CompanyController extends Controller
             \Log::info('Review page criada', ['review_page_id' => $reviewPage->id]);
 
             \Log::info('Empresa publicada com sucesso', ['token' => $company->token]);
+            $isFirstCompany = $user->companies()->count() === 1;
+            if ($isFirstCompany) {
+                return redirect()->route('companies.share', ['id' => $company->id])
+                    ->with('success', 'Empresa ativada com sucesso! Sua página pública está pronta!');
+            }
             return redirect()->route('companies.edit', ['id' => $company->id])
                 ->with('success', 'Empresa ativada com sucesso! Sua página pública está pronta!')
                 ->with('open_review_page', $company->public_url);
@@ -317,6 +322,19 @@ class CompanyController extends Controller
             return redirect()->route('companies.edit', ['id' => $company->id])
                 ->with('success', 'Empresa salva como rascunho! Você pode continuar editando e publicar quando estiver pronto.');
         }
+    }
+
+    /**
+     * Show "How do you want to share your link?" (first time after creating a page).
+     */
+    public function share($id)
+    {
+        $user = auth()->user();
+        $company = Company::findOrFail($id);
+        if (!$user->hasAccessTo($company)) {
+            return redirect()->route('companies.index')->with('error', 'Você não tem permissão.');
+        }
+        return view('companies-share', compact('company'));
     }
 
     public function show($token)
@@ -367,6 +385,41 @@ class CompanyController extends Controller
         }
 
         return view('companies-edit', compact('company', 'users', 'canManageTeam', 'availableToAdd'));
+    }
+
+    /**
+     * Transfer company ownership to another user (admin/proprietario only).
+     */
+    public function transfer(Request $request, $id)
+    {
+        $user = auth()->user();
+        if (!in_array($user->role, ['proprietario', 'admin'])) {
+            abort(403, 'Apenas administradores podem transferir empresas.');
+        }
+
+        $company = Company::findOrFail($id);
+
+        if ($user->role === 'admin' && !$user->hasAccessTo($company)) {
+            return redirect()->route('companies.index')
+                ->with('error', 'Você não tem permissão para transferir esta empresa.');
+        }
+
+        $request->validate([
+            'new_user_id' => 'required|integer|exists:users,id',
+        ]);
+
+        $newUserId = (int) $request->new_user_id;
+        if ($user->role === 'admin') {
+            $newUser = \App\Models\User::find($newUserId);
+            if (!$newUser || $newUser->role !== 'user') {
+                return redirect()->back()->with('error', 'Só é possível transferir para um usuário comum.');
+            }
+        }
+
+        $company->update(['user_id' => $newUserId]);
+
+        return redirect()->route('companies.edit', ['id' => $company->id])
+            ->with('success', 'Empresa transferida com sucesso.');
     }
 
     public function update(Request $request, $id)

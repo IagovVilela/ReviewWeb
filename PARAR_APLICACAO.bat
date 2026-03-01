@@ -84,10 +84,10 @@ echo ╚════════════════════════
 echo.
 echo Agora voce pode desligar o PC com seguranca.
 echo.
-echo 💡 DICAS:
+echo DICAS:
 echo    - O MySQL pode continuar rodando (nao ha problema)
-echo    - Para para-lo, use o XAMPP Control Panel
-echo    - Se quiser fazer backup antes, execute: .\backup_database.bat
+echo    - Para para-lo, use o Laragon (Menu ^> MySQL ^> Stop)
+echo    - Se quiser fazer backup antes, execute: .\scripts\backup_database.bat
 echo.
 pause
 

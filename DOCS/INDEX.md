@@ -26,9 +26,11 @@
 - **INSTALLATION.md** - Guia de instalação principal
 - **MYSQL_SETUP.md** - Configuração do MySQL
 - **WINDOWS_MYSQL_SETUP.md** - Setup MySQL no Windows
-- **MYSQL_CONFIG.md** - Configurações MySQL
 - **INICIO_RAPIDO.md** - Guia de início rápido
 - **README.md** - Documentação geral
+- **DEPLOY.md** - Deploy em produção
+- **CHECKLIST.md** - Checklist de instalação
+- **TROUBLESHOOTING.md** - Solução de problemas
 
 ### 02 - Configuração
 
@@ -36,55 +38,45 @@
 
 ### 03 - Desenvolvimento
 
-- **SISTEMA_PROTECAO_EMPRESAS_IMPLEMENTADO.md** - Sistema de proteção
-- **CORRECAO_GRAFICOS.md** - Correção de gráficos
-- **SOLUCAO_PROBLEMA_IMAGENS.md** - Problemas com imagens
+(Pasta para documentação de desenvolvimento)
 
 ### 04 - Sistema de Tradução
 
 - **SISTEMA_TRADUCAO.md** - ⭐ Documentação completa do sistema de tradução
 - **GUIA_RAPIDO_TRADUCAO.md** - Guia rápido de referência
 - **COMO_IMPLEMENTAR_TRADUCAO.md** - Guia de implementação
-- **SISTEMA_TRADUCAO_IMPLEMENTADO.md** - Status da implementação
+- **TRADUCAO_PAGINAS_PUBLICAS.md** - Tradução das páginas públicas
 
 ### 05 - Sistema Dark Mode
 
 - **DARK_MODE_GUIDE.md** - Guia completo do modo escuro
 - **COMO_TESTAR_DARK_MODE.md** - Como testar o dark mode
-- **MODO_ESCURO_IMPLEMENTADO.md** - Status da implementação
 
 ### 06 - Sistema de Email
 
-- **CONFIGURAR_EMAIL_SMTP.md** - ⭐ Configuração de email SMTP
-- **QUICK_START_EMAIL.md** - Início rápido com email
-- **EMAIL_CONFIG.md** - Configuração de email
+- **CONFIGURAR_EMAIL_SMTP.md** - ⭐ Configuração de email SMTP (LEIA PRIMEIRO)
 - **EMAIL_SETUP.md** - Setup de email
 
 ### 07 - Base de Dados
 
 - **GUIA_BASE_DADOS.md** - Guia da base de dados
-- **BANCO_CRIADO_COM_SUCESSO.md** - Status da criação
-- **database_sample_data.sql** - Dados de exemplo
-- **database_schema.sql** - Schema da base de dados
+- **README.md** - Documentação da base de dados
 
 ### 08 - Troubleshooting
 
 - **SOLUCAO_ERRO_PDO.md** - Solução de erros PDO
-- **COMO_RESOLVER_ERRO_LOGIN.txt** - Erros de login
-- **COMO_USAR.md** - Como usar o sistema
-- **COMO_USAR.txt** - Guia de uso
+- **README.md** - Guia de troubleshooting
 
 ### 09 - Design
 
 - **DESIGN_SYSTEM.md** - Sistema de design
-- **SUGESTOES_DESIGN_UX.md** - Sugestões de UX
+- **FIGMA_IMPLEMENTATION_GUIDE.md** - Guia de implementação Figma
 
 ### 10 - Referências
 
-- **ANALISE_BRIEFING_PROJETO.md** - Análise do briefing
-- **ANALISE_ESTRUTURA.md** - Análise da estrutura
-- **ESTRUTURA_NOVA.txt** - Nova estrutura
-- **LEIA-ME.txt** - Leia-me principal
+- **README.md** - Referências do projeto
+- **briefing.md** (em project/) - Briefing do projeto
+- **roadmap.md** (em project/) - Roadmap
 
 ---
 

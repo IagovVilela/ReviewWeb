@@ -126,14 +126,20 @@
                     @enderror
                 </div>
 
-                <!-- Role Display (Read Only) -->
+                <!-- Role Display (Read Only) - Hierarquia: proprietário (maior) > administrador > usuário -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         <i class="fas fa-user-tag text-gray-400 mr-1"></i>
                         {{ __('profile.role') }}
                     </label>
                     <div class="px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg">
-                        @if($user->role === 'admin')
+                        @if($user->role === 'proprietario')
+                            <span class="inline-flex items-center text-sm font-semibold text-amber-700 dark:text-amber-400">
+                                <i class="fas fa-crown mr-2"></i>
+                                {{ __('users.owner') }}
+                            </span>
+                            <span class="ml-2 text-xs text-amber-600 dark:text-amber-500">({{ __('users.highest_role') }})</span>
+                        @elseif($user->role === 'admin')
                             <span class="inline-flex items-center text-sm font-semibold text-purple-800 dark:text-purple-300">
                                 <i class="fas fa-user-shield mr-2"></i>
                                 {{ __('users.administrator') }}

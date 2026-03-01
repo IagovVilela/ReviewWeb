@@ -24,21 +24,29 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // Forçar HTTPS em produção (Railway)
-        // Importante para emails e URLs geradas fora de requisições HTTP
-        if (config('app.env') === 'production' || 
-            (app()->runningInConsole() === false && request()->secure())) {
-            URL::forceScheme('https');
+        $appUrl = config('app.url', '');
+        $isLocalhostByConfig = str_contains($appUrl, 'localhost') || str_contains($appUrl, '127.0.0.1');
+
+        // Em contexto web, tambem verificar o host da requisicao (evita problema com proxy/cache)
+        $isLocalhostByRequest = false;
+        if (!app()->runningInConsole() && request()) {
+            $host = request()->getHost();
+            $isLocalhostByRequest = in_array($host, ['localhost', '127.0.0.1'], true)
+                || str_ends_with($host, '.localhost');
         }
-        
-        // Garantir que APP_URL use HTTPS em produção
-        if (config('app.env') === 'production') {
-            $appUrl = config('app.url');
+
+        $isLocalhost = $isLocalhostByConfig || $isLocalhostByRequest;
+
+        if ($isLocalhost) {
+            URL::forceScheme('http');
+            if ($appUrl && str_starts_with($appUrl, 'https://')) {
+                config(['app.url' => str_replace('https://', 'http://', $appUrl)]);
+            }
+            config(['app.asset_url' => null]);
+        } elseif (config('app.env') === 'production') {
+            URL::forceScheme('https');
             if ($appUrl && !str_starts_with($appUrl, 'https://')) {
-                // Substituir http:// por https:// se não for localhost
-                if (str_starts_with($appUrl, 'http://') && !str_contains($appUrl, 'localhost')) {
-                    config(['app.url' => str_replace('http://', 'https://', $appUrl)]);
-                }
+                config(['app.url' => str_replace('http://', 'https://', $appUrl)]);
             }
         }
     }

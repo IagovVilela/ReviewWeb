@@ -7,11 +7,11 @@
     <title>{{ __('Recuperar Senha') }} - {{ __('app.name') }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ secure_asset('assets/images/lopgosDASHBOARD.png') }}?v=2">
-    <link rel="shortcut icon" type="image/png" href="{{ secure_asset('assets/images/lopgosDASHBOARD.png') }}?v=2">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('assets/images/lopgosDASHBOARD.png') }}?v=2">
+    <link rel="shortcut icon" type="image/png" href="{{ asset('assets/images/lopgosDASHBOARD.png') }}?v=2">
     {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
-    <link rel="stylesheet" href="{{ secure_asset('assets/css/modern-styles.css') }}">
-    <link rel="stylesheet" href="{{ secure_asset('assets/css/tailwind.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/modern-styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/tailwind.css') }}">
     
     <!-- Dark Mode Script - Previne Flash -->
     <script>
@@ -283,7 +283,7 @@
     <div class="login-container fade-in">
         <div class="logo-container">
             <div class="logo-wrapper">
-                <img src="{{ secure_asset('assets/images/lopgosDASHBOARD.png') }}" alt="{{ __('app.name') }}">
+                <img src="{{ asset('assets/images/lopgosDASHBOARD.png') }}" alt="{{ __('app.name') }}">
             </div>
             <h1>Recuperar Senha</h1>
             <p>Digite seu email para receber um código de recuperação</p>
@@ -310,7 +310,7 @@
             </div>
         @endif
         
-        <form method="POST" action="{{ secure_url(route('password.send-code', [], false)) }}">
+        <form method="POST" action="{{ url(route('password.send-code', [], false)) }}">
             @csrf
             
             <div class="input-group">

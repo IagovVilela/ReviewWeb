@@ -14,10 +14,10 @@ class CloudinaryService
 
     public function __construct()
     {
-        $this->cloudName = config('cloudinary.cloud_name', '');
-        $this->apiKey = config('cloudinary.api_key', '');
-        $this->apiSecret = config('cloudinary.api_secret', '');
-        $this->folder = rtrim(config('cloudinary.folder', 'avalieganhe'), '/');
+        $this->cloudName = (string) (config('cloudinary.cloud_name') ?? '');
+        $this->apiKey = (string) (config('cloudinary.api_key') ?? '');
+        $this->apiSecret = (string) (config('cloudinary.api_secret') ?? '');
+        $this->folder = rtrim((string) (config('cloudinary.folder') ?? 'avalieganhe'), '/');
     }
 
     public function isConfigured(): bool

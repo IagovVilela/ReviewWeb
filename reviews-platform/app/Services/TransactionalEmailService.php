@@ -65,6 +65,31 @@ class TransactionalEmailService
     }
 
     /**
+     * Send welcome email with temporary password and login link.
+     */
+    public function sendWelcomeWithTemporaryPassword(string $to, string $name, string $temporaryPassword): bool
+    {
+        $loginUrl = url('/login');
+        $subject = 'Sua conta foi criada - ' . $this->fromName;
+        $html = "
+        <!DOCTYPE html>
+        <html>
+        <head><meta charset=\"utf-8\"><title>Acesso à plataforma</title></head>
+        <body style=\"font-family: sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;\">
+            <h2 style=\"color: #8b5cf6;\">Bem-vindo(a), {$name}!</h2>
+            <p>Sua conta foi criada. Use os dados abaixo para acessar a plataforma:</p>
+            <p><strong>E-mail:</strong> {$to}</p>
+            <p><strong>Senha temporária:</strong> <code style=\"background: #f3f4f6; padding: 4px 8px; border-radius: 4px;\">{$temporaryPassword}</code></p>
+            <p><a href=\"{$loginUrl}\" style=\"display: inline-block; background: #8b5cf6; color: white; padding: 10px 20px; text-decoration: none; border-radius: 8px; margin-top: 10px;\">Acessar a plataforma</a></p>
+            <p style=\"color: #6b7280; font-size: 14px; margin-top: 24px;\">Recomendamos que você altere sua senha após o primeiro acesso (Perfil).</p>
+            <p style=\"color: #6b7280; font-size: 12px;\">— {$this->fromName}</p>
+        </body>
+        </html>
+        ";
+        return $this->send($to, $subject, $html, $name);
+    }
+
+    /**
      * Envia via API SendGrid
      */
     private function sendViaSendGrid(string $to, string $subject, string $htmlContent, ?string $toName = null): bool
@@ -111,6 +136,7 @@ class TransactionalEmailService
 
     /**
      * Envia via API Resend (fallback)
+     * Usa RESEND_FROM_ADDRESS / RESEND_FROM_NAME se definidos (dominio verificado no Resend).
      */
     private function sendViaResend(string $to, string $subject, string $htmlContent, ?string $toName = null): bool
     {
@@ -119,7 +145,9 @@ class TransactionalEmailService
             throw new \Exception('RESEND_API_KEY não configurada (necessária como fallback quando SendGrid falha)');
         }
 
-        $from = $this->fromName . ' <' . $this->fromEmail . '>';
+        $fromEmail = env('RESEND_FROM_ADDRESS') ?: $this->fromEmail;
+        $fromName = env('RESEND_FROM_NAME') ?: $this->fromName;
+        $from = $fromName . ' <' . $fromEmail . '>';
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $apiKey,
             'Content-Type' => 'application/json',

@@ -15,5 +15,13 @@ return [
     'logging_in' => 'Entrando...',
     'login_success' => 'Login realizado com sucesso!',
     'login_error' => 'Credenciais inválidas. Tente novamente.',
+
+    'register_title' => 'Criar conta',
+    'register_subtitle' => 'Preencha os dados para acessar a plataforma',
+    'name' => 'Nome',
+    'name_placeholder' => 'Seu nome completo',
+    'register_button' => 'Criar conta',
+    'already_have_account' => 'Já tem uma conta?',
+    'login_here' => 'Fazer login',
 ];
 

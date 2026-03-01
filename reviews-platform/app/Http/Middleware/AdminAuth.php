@@ -20,10 +20,10 @@ class AdminAuth
             return redirect('/login');
         }
 
-        // Check if user has admin or owner role
+        // Proprietário = cargo mais alto; admin = segundo nível. Apenas esses acessam a área admin.
         $user = Auth::user();
-        if (isset($user->role) && !in_array($user->role, ['admin', 'proprietario'])) {
-            abort(403, 'Acesso negado. Apenas administradores e proprietários podem acessar esta área.');
+        if (isset($user->role) && !$user->isAtLeastAdmin()) {
+            abort(403, 'Acesso negado. Apenas proprietários e administradores podem acessar esta área.');
         }
 
         return $next($request);

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ __('auth.title') }} - {{ __('app.name') }}</title>
+    <title>{{ __('auth.register_title') }} - {{ __('app.name') }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('assets/images/lopgosDASHBOARD.png') }}?v=2">
@@ -452,8 +452,8 @@
             <div class="logo-wrapper">
                 <img src="{{ asset('assets/images/lopgosDASHBOARD.png') }}" alt="{{ __('app.name') }}">
             </div>
-            <h1>{{ __('auth.welcome_back') }}</h1>
-            <p>{{ __('auth.login_subtitle') }}</p>
+            <h1>{{ __('auth.register_title') }}</h1>
+            <p>{{ __('auth.register_subtitle') }}</p>
         </div>
         
         <!-- Messages -->
@@ -478,9 +478,24 @@
             </div>
         @endif
         
-        <!-- Login Form -->
-        <form method="POST" action="{{ url('/login') }}">
+        <!-- Register Form -->
+        <form method="POST" action="{{ route('register') }}">
             @csrf
+            
+            <!-- Name Field -->
+            <div class="input-group">
+                <input 
+                    type="text" 
+                    id="name" 
+                    name="name" 
+                    value="{{ old('name') }}" 
+                    required
+                    autocomplete="name"
+                    class="input-field"
+                    placeholder="{{ __('auth.name_placeholder') }}"
+                >
+                <i class="fas fa-user input-icon"></i>
+            </div>
             
             <!-- Email Field -->
             <div class="input-group">
@@ -504,29 +519,40 @@
                     id="password" 
                     name="password" 
                     required
-                    autocomplete="current-password"
+                    autocomplete="new-password"
                     class="input-field"
                     placeholder="{{ __('auth.password_placeholder') }}"
                 >
                 <i class="fas fa-lock input-icon"></i>
             </div>
             
-            <!-- Login Button -->
+            <!-- Password Confirmation -->
+            <div class="input-group">
+                <input 
+                    type="password" 
+                    id="password_confirmation" 
+                    name="password_confirmation" 
+                    required
+                    autocomplete="new-password"
+                    class="input-field"
+                    placeholder="{{ __('auth.password_placeholder') }} (confirmar)"
+                >
+                <i class="fas fa-lock input-icon"></i>
+            </div>
+            
+            <!-- Register Button -->
             <button type="submit" class="btn-login">
-                <i class="fas fa-sign-in-alt"></i>
-                <span>{{ __('auth.login_button') }}</span>
+                <i class="fas fa-user-plus"></i>
+                <span>{{ __('auth.register_button') }}</span>
             </button>
         </form>
         
-        <!-- Forgot Password & Register Links -->
-        <div style="text-align: center; margin-top: 1rem; display: flex; flex-direction: column; gap: 0.5rem;">
-            <a href="{{ route('password.forgot') }}" class="back-link" style="margin-top: 0;">
-                <i class="fas fa-key"></i>
-                <span>Esqueceu sua senha?</span>
-            </a>
-            <a href="{{ route('register') }}" class="back-link" style="margin-top: 0;">
-                <i class="fas fa-user-plus"></i>
-                <span>{{ __('auth.register_title') }}</span>
+        <!-- Login Link -->
+        <div style="text-align: center; margin-top: 1rem;">
+            <span class="text-gray-600 dark:text-gray-400 text-sm">{{ __('auth.already_have_account') }}</span>
+            <a href="{{ route('login') }}" class="back-link" style="display: inline-flex; margin-top: 0.25rem;">
+                <i class="fas fa-sign-in-alt"></i>
+                <span>{{ __('auth.login_here') }}</span>
             </a>
         </div>
         
@@ -579,7 +605,7 @@
             const button = document.querySelector('.btn-login');
             const originalHTML = button.innerHTML;
             
-            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>{{ __('auth.logging_in') }}</span>';
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>{{ __('auth.register_button') }}...</span>';
             button.disabled = true;
             
             // Re-enable after 5 seconds (in case of error)
@@ -591,9 +617,9 @@
         
         // Auto-focus first input
         document.addEventListener('DOMContentLoaded', function() {
-            const emailInput = document.getElementById('email');
-            if (emailInput && !emailInput.value) {
-                emailInput.focus();
+            const nameInput = document.getElementById('name');
+            if (nameInput && !nameInput.value) {
+                nameInput.focus();
             }
         });
         
