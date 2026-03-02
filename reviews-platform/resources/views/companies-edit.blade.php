@@ -673,6 +673,7 @@
             </div>
             @endif
         </div>
+        @endif
 
         @if(in_array(Auth::user()->role, ['proprietario', 'admin']) && isset($users) && $users->count() > 0)
         <!-- Transferir empresa -->

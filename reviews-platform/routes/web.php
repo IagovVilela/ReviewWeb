@@ -150,6 +150,18 @@ Route::middleware(['auth', 'subscription'])->group(function () {
     Route::put('/companies/{id}', [App\Http\Controllers\CompanyController::class, 'update'])->name('companies.update');
     Route::put('/companies/{id}/transfer', [App\Http\Controllers\CompanyController::class, 'transfer'])->name('companies.transfer');
     Route::get('/store', [App\Http\Controllers\StoreController::class, 'index'])->name('store');
+    Route::post('/store/request', [App\Http\Controllers\StoreController::class, 'submitRequest'])->name('store.request');
+    // Loja: CRUD produtos e solicitações (apenas proprietário; checado no controller)
+    Route::get('/store/products', [App\Http\Controllers\StoreProductController::class, 'index'])->name('store.products.index');
+    Route::get('/store/products/create', [App\Http\Controllers\StoreProductController::class, 'create'])->name('store.products.create');
+    Route::post('/store/products', [App\Http\Controllers\StoreProductController::class, 'store'])->name('store.products.store');
+    Route::get('/store/products/{id}/edit', [App\Http\Controllers\StoreProductController::class, 'edit'])->name('store.products.edit');
+    Route::put('/store/products/{id}', [App\Http\Controllers\StoreProductController::class, 'update'])->name('store.products.update');
+    Route::delete('/store/products/{id}', [App\Http\Controllers\StoreProductController::class, 'destroy'])->name('store.products.destroy');
+    Route::get('/store/requests', [App\Http\Controllers\StoreProductController::class, 'requests'])->name('store.requests.index');
+    Route::put('/store/requests/{id}/status', [App\Http\Controllers\StoreProductController::class, 'updateRequestStatus'])->name('store.requests.update_status');
+    Route::get('/store/settings', [App\Http\Controllers\StoreProductController::class, 'settings'])->name('store.settings');
+    Route::put('/store/settings', [App\Http\Controllers\StoreProductController::class, 'updateSettings'])->name('store.settings.update');
     Route::post('/companies/{id}/auto-save-media', [App\Http\Controllers\CompanyController::class, 'autoSaveMedia'])
         ->name('companies.auto-save-media')
         ->withoutMiddleware(['auth']);

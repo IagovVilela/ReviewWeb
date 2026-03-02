@@ -5,6 +5,7 @@ return [
     'subscribe_subtitle' => 'Assinatura mensal de R$ 99 para acessar o dashboard e criar suas páginas de avaliação.',
     'subscribe_button' => 'Ir para pagamento',
     'checkout_error' => 'Não foi possível iniciar o pagamento. Tente novamente ou entre em contato.',
+    'invalid_email' => 'O e-mail da sua conta não é válido para pagamento. Atualize seu e-mail no Perfil (ex.: nome@dominio.com) e tente novamente.',
     'subscription_success' => 'Assinatura ativada com sucesso! Bem-vindo ao dashboard.',
     'checkout_canceled' => 'Pagamento cancelado. Você pode tentar novamente quando quiser.',
 ];

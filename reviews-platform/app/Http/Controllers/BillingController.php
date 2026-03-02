@@ -45,6 +45,11 @@ class BillingController extends Controller
             return redirect()->route('dashboard');
         }
 
+        if (!filter_var($user->email, FILTER_VALIDATE_EMAIL)) {
+            return redirect()->route('billing.subscribe')
+                ->with('error', __('billing.invalid_email'));
+        }
+
         $successUrl = route('billing.success') . '?session_id={CHECKOUT_SESSION_ID}';
         $cancelUrl = route('billing.subscribe');
 
@@ -59,13 +64,18 @@ class BillingController extends Controller
 
     /**
      * Success URL after Stripe Checkout (user returns here).
-     * Webhook will set subscription_status; we just redirect to dashboard.
+     * Syncs subscription status from session_id so the panel unblocks even if webhook is not set.
      */
     public function success(Request $request)
     {
         $user = Auth::user();
         if (!$user) {
             return redirect()->route('login');
+        }
+
+        $sessionId = $request->query('session_id');
+        if ($sessionId) {
+            $this->stripeService->syncSubscriptionFromCheckoutSession($sessionId, $user);
         }
 
         return redirect()->route('dashboard')

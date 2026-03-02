@@ -16,6 +16,7 @@
 8. [Troubleshooting](#08-troubleshooting)
 9. [Design](#09-design)
 10. [Referências](#10-referências)
+11. [Loja](#11-loja)
 
 ---
 
@@ -78,6 +79,10 @@
 - **briefing.md** (em project/) - Briefing do projeto
 - **roadmap.md** (em project/) - Roadmap
 
+### 11 - Loja
+
+- **README.md** - ⭐ Loja (material de coleta): como funciona, para o proprietário e para o usuário; notificação por e-mail
+
 ---
 
 ## 🚀 Início Rápido
@@ -132,7 +137,8 @@ documentacoes/
 ├── 07-BASE-DADOS/          # Base de dados e schemas
 ├── 08-TROUBLESHOOTING/     # Soluções de problemas
 ├── 09-DESIGN/              # Design system e UX
-└── 10-REFERENCIAS/         # Referências e análises
+├── 10-REFERENCIAS/         # Referências e análises
+└── 11-LOJA/                # Loja (material de coleta e solicitações)
 ```
 
 ---

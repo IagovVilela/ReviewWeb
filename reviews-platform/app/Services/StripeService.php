@@ -59,7 +59,11 @@ class StripeService
             $user->update(['stripe_customer_id' => $customer->id]);
             return $customer->id;
         } catch (\Throwable $e) {
-            Log::error('Stripe create customer failed', ['user_id' => $user->id, 'error' => $e->getMessage()]);
+            Log::error('Stripe create customer failed', [
+                'user_id' => $user->id,
+                'error' => $e->getMessage(),
+                'exception' => get_class($e),
+            ]);
             return null;
         }
     }
@@ -74,6 +78,11 @@ class StripeService
         if (!$priceId) {
             Log::warning('STRIPE_SUBSCRIPTION_PRICE_ID not set');
             return null;
+        }
+
+        $secret = config('stripe.secret');
+        if (str_starts_with((string) $secret, 'rk_')) {
+            Log::info('Stripe: usando chave restrita (rk_). Se o checkout falhar, use a chave secreta padrão (sk_test_) no .env.');
         }
 
         $customerId = $this->getOrCreateCustomer($user);
@@ -108,7 +117,11 @@ class StripeService
             $session = \Stripe\Checkout\Session::create($params);
             return $session->url;
         } catch (\Throwable $e) {
-            Log::error('Stripe checkout session failed', ['user_id' => $user->id, 'error' => $e->getMessage()]);
+            Log::error('Stripe checkout session failed', [
+                'user_id' => $user->id,
+                'error' => $e->getMessage(),
+                'exception' => get_class($e),
+            ]);
             return null;
         }
     }
@@ -135,5 +148,49 @@ class StripeService
     public function findUserByStripeSubscriptionId(string $subscriptionId): ?User
     {
         return User::where('stripe_subscription_id', $subscriptionId)->first();
+    }
+
+    /**
+     * Sync user subscription status from a Checkout Session (e.g. when user returns to success URL).
+     * Use when webhook is not configured so the panel unblocks after payment.
+     */
+    public function syncSubscriptionFromCheckoutSession(string $sessionId, User $user): bool
+    {
+        if (!config('stripe.secret') || !class_exists(\Stripe\Checkout\Session::class)) {
+            return false;
+        }
+
+        try {
+            $session = \Stripe\Checkout\Session::retrieve($sessionId, [
+                'expand' => ['subscription'],
+            ]);
+
+            if ($session->mode !== 'subscription' || !$session->subscription) {
+                return false;
+            }
+
+            $subscription = $session->subscription;
+            if (is_string($subscription)) {
+                $subscription = \Stripe\Subscription::retrieve($subscription);
+            }
+
+            $status = $subscription->status ?? null;
+            if ($status && in_array($status, ['active', 'trialing'], true)) {
+                $this->updateUserSubscriptionStatus($user, $subscription->id, 'active');
+                return true;
+            }
+
+            if ($status) {
+                $this->updateUserSubscriptionStatus($user, $subscription->id, $status);
+            }
+            return false;
+        } catch (\Throwable $e) {
+            Log::warning('Stripe sync from checkout session failed', [
+                'session_id' => $sessionId,
+                'user_id' => $user->id,
+                'error' => $e->getMessage(),
+            ]);
+            return false;
+        }
     }
 }

@@ -479,7 +479,7 @@
         @endif
         
         <!-- Login Form -->
-        <form method="POST" action="{{ url('/login') }}">
+        <form method="POST" action="{{ route('login', [], false) }}">
             @csrf
             
             <!-- Email Field -->
