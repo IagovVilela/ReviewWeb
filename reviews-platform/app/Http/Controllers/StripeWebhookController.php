@@ -83,9 +83,13 @@ class StripeWebhookController extends Controller
     private function handleSubscriptionUpdated(object $subscription): void
     {
         $user = $this->stripeService->findUserByStripeSubscriptionId($subscription->id);
-        if ($user) {
-            $this->stripeService->updateUserSubscriptionStatus($user, $subscription->id, $subscription->status);
+        if (!$user) {
+            return;
         }
+        // Usamos o status do Stripe como está: enquanto cancel_at_period_end, o status segue "active"
+        // e o cliente mantém acesso até o fim do período pago. Quando o período termina, o Stripe
+        // envia status "canceled" e aí barramos o acesso.
+        $this->stripeService->updateUserSubscriptionStatus($user, $subscription->id, $subscription->status);
     }
 
     private function handleInvoicePaid(object $invoice): void

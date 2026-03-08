@@ -17,6 +17,11 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         
+        // Sincronizar status das assinaturas com o Stripe a cada hora (fallback se o webhook falhar)
+        $schedule->command('billing:sync-all-subscriptions')
+                 ->hourly()
+                 ->withoutOverlapping(10);
+
         // Enviar relatório semanal de contatos toda segunda-feira às 9:00
         $schedule->command('reviews:send-contacts-export --period=weekly')
                  ->weeklyOn(1, '9:00')
