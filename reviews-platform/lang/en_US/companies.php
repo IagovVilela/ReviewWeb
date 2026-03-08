@@ -163,5 +163,20 @@ return [
     'media_auto_save_error' => 'Unable to auto-save. Please click Save to keep your changes.',
     'media_auto_save_no_file' => 'No image was sent to save.',
     'media_auto_save_unauthorized' => 'You do not have permission to update this company.',
+
+    'share_title' => 'How do you want to share your link?',
+    'share_subtitle' => 'Choose an option to promote your review page.',
+    'share_digital' => 'Digitally',
+    'share_digital_desc' => 'Copy the link or download the QR code to share online, on social media, or by message.',
+    'share_physical' => 'Physically',
+    'share_physical_desc' => 'See our store for review collection material (table stands, stickers, and more).',
+    'share_go_to_store' => 'View store',
+    'share_copy' => 'Copy link',
+    'share_download_qr' => 'Download QR code',
+    'share_continue' => 'Continue to dashboard',
+    'transfer_company' => 'Transfer company',
+    'transfer_company_desc' => 'Change the owner of this company. Admin/owner only.',
+    'transfer_to' => 'Transfer to',
+    'transfer_submit' => 'Transfer',
 ];
 

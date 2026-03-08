@@ -25,4 +25,18 @@ class TrustProxies extends Middleware
         Request::HEADER_X_FORWARDED_PORT |
         Request::HEADER_X_FORWARDED_PROTO |
         Request::HEADER_X_FORWARDED_AWS_ELB;
+
+    /**
+     * Em localhost/127.0.0.1 nao confiar em X-Forwarded-Proto para evitar
+     * que URLs sejam geradas como https e causem "Unsupported SSL request".
+     */
+    public function handle(Request $request, \Closure $next)
+    {
+        $host = $request->getHost();
+        if ($host === 'localhost' || $host === '127.0.0.1' || str_ends_with($host, '.localhost')) {
+            $this->proxies = [];
+        }
+
+        return parent::handle($request, $next);
+    }
 }

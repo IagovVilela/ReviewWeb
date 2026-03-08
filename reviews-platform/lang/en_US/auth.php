@@ -15,5 +15,13 @@ return [
     'logging_in' => 'Logging in...',
     'login_success' => 'Login successful!',
     'login_error' => 'Invalid credentials. Please try again.',
+
+    'register_title' => 'Create account',
+    'register_subtitle' => 'Fill in your details to access the platform',
+    'name' => 'Name',
+    'name_placeholder' => 'Your full name',
+    'register_button' => 'Create account',
+    'already_have_account' => 'Already have an account?',
+    'login_here' => 'Log in',
 ];
 

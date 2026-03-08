@@ -1,4 +1,5 @@
 @echo off
+title Reviews Platform - Iniciando...
 chcp 65001 >nul 2>&1
 setlocal enabledelayedexpansion
 
@@ -7,21 +8,88 @@ echo ========================================
 echo    INICIAR APLICACAO - Reviews Platform
 echo ========================================
 echo.
+echo NAO FECHE ESTA JANELA - Acompanhe o progresso abaixo.
+echo.
+
+REM --- Usar PHP do Laragon quando existir ---
+set "LARAGON_PHP="
+if defined LARAGON_ROOT (
+    for /d %%d in ("%LARAGON_ROOT%\bin\php\php-*") do (
+        set "LARAGON_PHP=%%d"
+        goto :laragon_path_done
+    )
+)
+REM Tentar C:\laragon - qualquer versao php-8.x
+if not defined LARAGON_PHP if exist "C:\laragon\bin\php\" (
+    for /d %%d in ("C:\laragon\bin\php\php-*") do (
+        set "LARAGON_PHP=%%d"
+        goto :laragon_path_done
+    )
+)
+REM Tentar D:\laragon
+if not defined LARAGON_PHP if exist "D:\laragon\bin\php\" (
+    for /d %%d in ("D:\laragon\bin\php\php-*") do (
+        set "LARAGON_PHP=%%d"
+        goto :laragon_path_done
+    )
+)
+REM Fallback: versoes fixas comuns
+if not defined LARAGON_PHP if exist "C:\laragon\bin\php\php-8.2.0" set "LARAGON_PHP=C:\laragon\bin\php\php-8.2.0"
+if not defined LARAGON_PHP if exist "C:\laragon\bin\php\php-8.1.0" set "LARAGON_PHP=C:\laragon\bin\php\php-8.1.0"
+if not defined LARAGON_PHP if exist "C:\laragon\bin\php\php-8.3.0" set "LARAGON_PHP=C:\laragon\bin\php\php-8.3.0"
+if not defined LARAGON_PHP if exist "C:\laragon\bin\php\php-8.4.0" set "LARAGON_PHP=C:\laragon\bin\php\php-8.4.0"
+:laragon_path_done
+if defined LARAGON_PHP (
+    set "PATH=%LARAGON_PHP%;%PATH%"
+    if defined LARAGON_ROOT set "PATH=%LARAGON_ROOT%\bin;%PATH%"
+    echo [INFO] PHP do Laragon: !LARAGON_PHP!
+) else (
+    echo [INFO] Usando PHP do PATH do sistema.
+)
+echo.
+
+REM Verificar se PHP esta disponivel antes de continuar
+php -v >nul 2>&1
+if errorlevel 1 (
+    echo [ERRO] PHP nao foi encontrado!
+    echo.
+    echo Se voce usa Laragon: abra o Laragon e clique em "Start All" antes de rodar este script.
+    echo Ou verifique se a pasta do Laragon existe em C:\laragon ou D:\laragon
+    echo.
+    echo Pressione qualquer tecla para fechar.
+    pause >nul
+    exit /b 1
+)
+echo.
 
 cd /d "%~dp0reviews-platform"
+if errorlevel 1 (
+    echo [ERRO] Nao foi possivel acessar a pasta reviews-platform.
+    echo Caminho tentado: %~dp0reviews-platform
+    echo.
+    echo Pressione qualquer tecla para fechar.
+    pause >nul
+    exit /b 1
+)
+echo [INFO] Diretorio: %cd%
+echo.
 
 echo [1/7] Verificando estrutura do projeto...
 
 if not exist "app" (
     echo [ERRO] Projeto nao encontrado!
     echo Diretorio atual: %cd%
-    pause
+    echo.
+    echo Pressione qualquer tecla para fechar.
+    pause >nul
     exit /b 1
 )
 
 if not exist ".env" (
     echo [ERRO] Arquivo .env nao encontrado!
-    pause
+    echo.
+    echo Pressione qualquer tecla para fechar.
+    pause >nul
     exit /b 1
 )
 
@@ -35,7 +103,9 @@ if not exist "vendor\autoload.php" (
     composer install --no-interaction --ignore-platform-reqs
     if errorlevel 1 (
         echo [ERRO] Falha ao instalar dependencias!
-        pause
+        echo.
+        echo Pressione qualquer tecla para fechar.
+        pause >nul
         exit /b 1
     )
 )
@@ -44,23 +114,20 @@ echo [OK] Dependencias verificadas!
 
 echo.
 echo [3/7] Verificando chave da aplicacao...
-
-php check_app_key.php >nul 2>&1
-if errorlevel 1 (
-    echo [AVISO] Gerando chave da aplicacao...
-    php artisan key:generate >nul 2>&1
-)
-
+php -v 2>&1
+php artisan key:generate --no-interaction 2>&1
 echo [OK] Chave da aplicacao verificada!
 
 echo.
 echo [4/7] Verificando conexao com MySQL...
 
-php test_mysql_connection.php >nul 2>&1
+php test_mysql_connection.php 2>&1
 if errorlevel 1 (
     echo [ERRO] Falha na conexao com MySQL!
-    echo Verifique se o XAMPP esta rodando e o MySQL esta ativo.
-    pause
+    echo Verifique se o Laragon esta com o MySQL ativo: Menu Laragon - MySQL - Start
+    echo.
+    echo Pressione qualquer tecla para fechar.
+    pause >nul
     exit /b 1
 )
 
@@ -68,9 +135,6 @@ echo [OK] Conexao com MySQL OK!
 
 echo.
 echo [5/7] Configurando banco de dados...
-
-REM Criar banco se nao existir
-php setup_database.php >nul 2>&1
 
 REM Executar migrations
 php artisan migrate --force >nul 2>&1
@@ -124,4 +188,7 @@ echo   - Ou pressione Ctrl+C na janela
 echo.
 echo Esta janela pode ser fechada agora.
 echo.
-pause
+echo ========================================
+echo Pressione qualquer tecla para FECHAR esta janela.
+echo ========================================
+pause >nul

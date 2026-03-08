@@ -7,6 +7,7 @@ return [
     'companies' => 'Empresas',
     'reviews' => 'Avaliações',
     'negative_reviews' => 'Avaliações Negativas',
+    'store' => 'Loja',
     'settings' => 'Configurações',
     'subscription' => 'Assinatura',
     'billing' => 'Cobrança',

@@ -7,11 +7,11 @@
     <title>{{ __('auth.title') }} - {{ __('app.name') }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ secure_asset('assets/images/lopgosDASHBOARD.png') }}?v=2">
-    <link rel="shortcut icon" type="image/png" href="{{ secure_asset('assets/images/lopgosDASHBOARD.png') }}?v=2">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('assets/images/lopgosDASHBOARD.png') }}?v=2">
+    <link rel="shortcut icon" type="image/png" href="{{ asset('assets/images/lopgosDASHBOARD.png') }}?v=2">
     {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
-    <link rel="stylesheet" href="{{ secure_asset('assets/css/modern-styles.css') }}">
-    <link rel="stylesheet" href="{{ secure_asset('assets/css/tailwind.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/modern-styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/tailwind.css') }}">
     
     <!-- Dark Mode Script - Previne Flash -->
     <script>
@@ -450,7 +450,7 @@
         <!-- Logo and Title -->
         <div class="logo-container">
             <div class="logo-wrapper">
-                <img src="{{ secure_asset('assets/images/lopgosDASHBOARD.png') }}" alt="{{ __('app.name') }}">
+                <img src="{{ asset('assets/images/lopgosDASHBOARD.png') }}" alt="{{ __('app.name') }}">
             </div>
             <h1>{{ __('auth.welcome_back') }}</h1>
             <p>{{ __('auth.login_subtitle') }}</p>
@@ -479,7 +479,7 @@
         @endif
         
         <!-- Login Form -->
-        <form method="POST" action="{{ secure_url('/login') }}">
+        <form method="POST" action="{{ route('login', [], false) }}">
             @csrf
             
             <!-- Email Field -->
@@ -518,11 +518,15 @@
             </button>
         </form>
         
-        <!-- Forgot Password Link -->
-        <div style="text-align: center; margin-top: 1rem;">
-            <a href="{{ route('password.forgot') }}" class="back-link">
+        <!-- Forgot Password & Register Links -->
+        <div style="text-align: center; margin-top: 1rem; display: flex; flex-direction: column; gap: 0.5rem;">
+            <a href="{{ route('password.forgot') }}" class="back-link" style="margin-top: 0;">
                 <i class="fas fa-key"></i>
                 <span>Esqueceu sua senha?</span>
+            </a>
+            <a href="{{ route('register') }}" class="back-link" style="margin-top: 0;">
+                <i class="fas fa-user-plus"></i>
+                <span>{{ __('auth.register_title') }}</span>
             </a>
         </div>
         

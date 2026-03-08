@@ -36,11 +36,16 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            
+            $user = Auth::user();
+
             Log::info('Login realizado com sucesso', [
-                'user_id' => Auth::id(),
+                'user_id' => $user->id,
                 'email' => $request->email
             ]);
+
+            if ($user->requiresPayment() && !$user->hasActiveSubscription()) {
+                return redirect()->intended(route('billing.subscribe'));
+            }
 
             return redirect()->intended('/dashboard');
         }
@@ -53,6 +58,39 @@ class AuthController extends Controller
         return back()->withErrors([
             'email' => 'As credenciais fornecidas não coincidem com nossos registros.',
         ])->onlyInput('email');
+    }
+
+    /**
+     * Show registration form
+     */
+    public function showRegisterForm()
+    {
+        return view('auth.register');
+    }
+
+    /**
+     * Handle registration request
+     */
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => 'user',
+            'payment_required' => true,
+        ]);
+
+        Auth::login($user);
+        $request->session()->regenerate();
+
+        return redirect()->route('billing.subscribe');
     }
 
     /**

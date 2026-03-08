@@ -163,5 +163,20 @@ return [
     'media_auto_save_error' => 'Não foi possível salvar automaticamente. Clique em Salvar para manter as alterações.',
     'media_auto_save_no_file' => 'Nenhuma imagem foi enviada para salvar.',
     'media_auto_save_unauthorized' => 'Você não tem permissão para atualizar esta empresa.',
+
+    'share_title' => 'Como deseja compartilhar seu link?',
+    'share_subtitle' => 'Escolha uma opção para divulgar sua página de avaliações.',
+    'share_digital' => 'Digitalmente',
+    'share_digital_desc' => 'Copie o link ou baixe o QR code para compartilhar na internet, redes sociais ou por mensagem.',
+    'share_physical' => 'Fisicamente',
+    'share_physical_desc' => 'Conheça nossa loja para material de coleta de avaliações (suportes de mesa, adesivos e mais).',
+    'share_go_to_store' => 'Ver loja',
+    'share_copy' => 'Copiar link',
+    'share_download_qr' => 'Baixar QR code',
+    'share_continue' => 'Continuar para o dashboard',
+    'transfer_company' => 'Transferir empresa',
+    'transfer_company_desc' => 'Alterar o proprietário desta empresa. Apenas admin/proprietário.',
+    'transfer_to' => 'Transferir para',
+    'transfer_submit' => 'Transferir',
 ];
 

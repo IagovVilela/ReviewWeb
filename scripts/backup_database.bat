@@ -14,7 +14,7 @@ REM Verificar se MySQL está rodando
 netstat -ano | findstr :3306 >nul 2>&1
 if errorlevel 1 (
     echo [ERRO] MySQL nao esta rodando!
-    echo Por favor, inicie o MySQL no XAMPP Control Panel primeiro.
+    echo Por favor, inicie o MySQL no Laragon (Menu ^> MySQL ^> Start) primeiro.
     echo.
     pause
     exit /b 1

@@ -26,6 +26,7 @@ return [
     'you' => 'You',
     'owner' => 'Owner',
     'owners' => 'Owners',
+    'highest_role' => 'highest role in the system',
     'administrator' => 'Administrator',
     'user' => 'User',
     'role_owner' => 'Owners',
@@ -83,5 +84,9 @@ return [
     'creating' => 'Creating...',
     'create_user' => 'Create User',
     'create_password_placeholder' => 'Minimum 6 characters',
+    'payment_required' => 'Require payment to access dashboard',
+    'payment_required_help' => 'If off, the user can access the dashboard without subscribing.',
+    'send_welcome_email' => 'Send welcome email with temporary password',
+    'send_welcome_email_help' => 'Generates a temporary password and sends it by email. Leave password blank when using this option.',
 ];
 

@@ -63,6 +63,8 @@ Route::post('/change-locale', function (Request $request) {
 // Auth routes
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
+Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout.get');
 
@@ -77,8 +79,19 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('
 // Create admin user (for initial setup)
 Route::get('/create-admin', [AuthController::class, 'createAdmin']);
 
-// Dashboard route - accessible to all authenticated users
+// Stripe webhook (no auth, no CSRF)
+Route::post('/stripe/webhook', [App\Http\Controllers\StripeWebhookController::class, 'handle'])->name('stripe.webhook');
+
+// Billing / subscription (auth required)
 Route::middleware(['auth'])->group(function () {
+    Route::get('/subscribe', [App\Http\Controllers\BillingController::class, 'subscribe'])->name('billing.subscribe');
+    Route::post('/billing/checkout', [App\Http\Controllers\BillingController::class, 'redirectToCheckout'])->name('billing.checkout');
+    Route::get('/billing/success', [App\Http\Controllers\BillingController::class, 'success'])->name('billing.success');
+    Route::get('/billing/cancel', [App\Http\Controllers\BillingController::class, 'cancel'])->name('billing.cancel');
+});
+
+// Dashboard route - accessible to all authenticated users (requires subscription if payment_required)
+Route::middleware(['auth', 'subscription'])->group(function () {
     Route::get('/dashboard', function () {
         $user = auth()->user();
         
@@ -162,15 +175,30 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // Companies routes - accessible to all authenticated users (with controller-level restrictions)
-Route::middleware(['auth.diagnostics', 'auth'])->group(function () {
+Route::middleware(['auth.diagnostics', 'auth', 'subscription'])->group(function () {
     // Diagnóstico: com APP_EXPOSE_500_MESSAGE=1, acesse /companies-debug para ver o erro na tela (status 200)
     Route::get('/companies-debug', [App\Http\Controllers\CompanyController::class, 'indexDebug'])->name('companies.index.debug');
     Route::get('/companies', [App\Http\Controllers\CompanyController::class, 'index'])->name('companies.index');
     Route::get('/companies/create', [App\Http\Controllers\CompanyController::class, 'create'])->name('companies.create');
     Route::post('/companies', [App\Http\Controllers\CompanyController::class, 'store'])->name('companies.store');
+    Route::get('/companies/{id}/share', [App\Http\Controllers\CompanyController::class, 'share'])->name('companies.share');
     Route::get('/companies/{id}/edit', [App\Http\Controllers\CompanyController::class, 'edit'])->name('companies.edit');
     Route::get('/companies/{id}/qrcode', [App\Http\Controllers\CompanyController::class, 'downloadQrCode'])->name('companies.qrcode');
     Route::put('/companies/{id}', [App\Http\Controllers\CompanyController::class, 'update'])->name('companies.update');
+    Route::put('/companies/{id}/transfer', [App\Http\Controllers\CompanyController::class, 'transfer'])->name('companies.transfer');
+    Route::get('/store', [App\Http\Controllers\StoreController::class, 'index'])->name('store');
+    Route::post('/store/request', [App\Http\Controllers\StoreController::class, 'submitRequest'])->name('store.request');
+    // Loja: CRUD produtos e solicitações (apenas proprietário; checado no controller)
+    Route::get('/store/products', [App\Http\Controllers\StoreProductController::class, 'index'])->name('store.products.index');
+    Route::get('/store/products/create', [App\Http\Controllers\StoreProductController::class, 'create'])->name('store.products.create');
+    Route::post('/store/products', [App\Http\Controllers\StoreProductController::class, 'store'])->name('store.products.store');
+    Route::get('/store/products/{id}/edit', [App\Http\Controllers\StoreProductController::class, 'edit'])->name('store.products.edit');
+    Route::put('/store/products/{id}', [App\Http\Controllers\StoreProductController::class, 'update'])->name('store.products.update');
+    Route::delete('/store/products/{id}', [App\Http\Controllers\StoreProductController::class, 'destroy'])->name('store.products.destroy');
+    Route::get('/store/requests', [App\Http\Controllers\StoreProductController::class, 'requests'])->name('store.requests.index');
+    Route::put('/store/requests/{id}/status', [App\Http\Controllers\StoreProductController::class, 'updateRequestStatus'])->name('store.requests.update_status');
+    Route::get('/store/settings', [App\Http\Controllers\StoreProductController::class, 'settings'])->name('store.settings');
+    Route::put('/store/settings', [App\Http\Controllers\StoreProductController::class, 'updateSettings'])->name('store.settings.update');
     Route::post('/companies/{id}/auto-save-media', [App\Http\Controllers\CompanyController::class, 'autoSaveMedia'])
         ->name('companies.auto-save-media')
         ->withoutMiddleware(['auth']);

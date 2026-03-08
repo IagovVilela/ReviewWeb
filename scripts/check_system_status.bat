@@ -17,7 +17,7 @@ echo [1/6] Verificando MySQL...
 netstat -ano | findstr :3306 >nul 2>&1
 if errorlevel 1 (
     echo    ❌ MySQL NAO esta rodando!
-    echo    💡 Solucao: Inicie o MySQL no XAMPP Control Panel
+    echo    Solucao: Inicie o MySQL no Laragon (Menu ^> MySQL ^> Start)
     set ALL_OK=0
 ) else (
     echo    ✅ MySQL esta rodando na porta 3306

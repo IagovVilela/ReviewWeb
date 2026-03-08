@@ -2,14 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\TransactionalEmailService;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
+    public function __construct(
+        private TransactionalEmailService $emailService
+    ) {
+    }
     /**
      * Check if current user can manage a specific user based on hierarchy
      */
@@ -86,13 +92,22 @@ class UserController extends Controller
     {
         $currentUser = Auth::user();
         $allowedRoles = $this->getAllowedRoles();
-        
-        $request->validate([
+        $sendWelcomeEmail = $request->boolean('send_welcome_email');
+
+        $rules = [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
-            'role' => ['required', Rule::in($allowedRoles)]
-        ]);
+            'role' => ['required', Rule::in($allowedRoles)],
+            'payment_required' => 'nullable|in:0,1',
+        ];
+
+        if ($sendWelcomeEmail) {
+            $rules['password'] = 'nullable|string|min:6|confirmed';
+        } else {
+            $rules['password'] = 'required|string|min:6|confirmed';
+        }
+
+        $request->validate($rules);
 
         // Se admin tentar criar admin/proprietario, bloquear
         if ($currentUser->role === 'admin' && in_array($request->role, ['admin', 'proprietario'])) {
@@ -101,13 +116,38 @@ class UserController extends Controller
                 ->withInput();
         }
 
-        User::create([
+        $password = $sendWelcomeEmail && !$request->filled('password')
+            ? Str::random(12)
+            : $request->password;
+
+        $paymentRequired = $request->boolean('payment_required');
+
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'password' => Hash::make($password),
             'role' => $request->role,
             'created_by' => $currentUser->id,
+            'payment_required' => $paymentRequired,
         ]);
+
+        if ($sendWelcomeEmail) {
+            try {
+                $this->emailService->sendWelcomeWithTemporaryPassword(
+                    $user->email,
+                    $user->name,
+                    $password
+                );
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::error('Failed to send welcome email', [
+                    'user_id' => $user->id,
+                    'error' => $e->getMessage(),
+                ]);
+                return redirect()->route('users.index')
+                    ->with('success', 'Usuário criado, mas o e-mail de boas-vindas não pôde ser enviado.')
+                    ->with('warning', $e->getMessage());
+            }
+        }
 
         return redirect()->route('users.index')->with('success', 'Usuário criado com sucesso!');
     }

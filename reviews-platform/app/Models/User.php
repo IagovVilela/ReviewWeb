@@ -12,6 +12,11 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    /** Hierarquia de cargos (maior = mais alto): proprietario > admin > user */
+    public const ROLE_PROPRIETARIO = 'proprietario';
+    public const ROLE_ADMIN = 'admin';
+    public const ROLE_USER = 'user';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -24,6 +29,10 @@ class User extends Authenticatable
         'role',
         'photo',
         'created_by',
+        'stripe_customer_id',
+        'stripe_subscription_id',
+        'subscription_status',
+        'payment_required',
     ];
 
     /**
@@ -43,6 +52,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'payment_required' => 'boolean',
     ];
 
     /**
@@ -59,6 +69,50 @@ class User extends Authenticatable
     public function createdUsers()
     {
         return $this->hasMany(User::class, 'created_by');
+    }
+
+    /**
+     * Whether the user has an active subscription (and can access dashboard when payment_required).
+     */
+    public function hasActiveSubscription(): bool
+    {
+        return $this->subscription_status === 'active';
+    }
+
+    /**
+     * Whether the user must pay before accessing the full dashboard.
+     */
+    public function requiresPayment(): bool
+    {
+        return (bool) $this->payment_required;
+    }
+
+    /**
+     * Proprietário = cargo mais alto do sistema (acesso total, pode gerenciar todos os usuários).
+     */
+    public function isProprietario(): bool
+    {
+        return $this->role === self::ROLE_PROPRIETARIO;
+    }
+
+    /**
+     * Verifica se tem pelo menos nível administrador (admin ou proprietário).
+     */
+    public function isAtLeastAdmin(): bool
+    {
+        return in_array($this->role, [self::ROLE_PROPRIETARIO, self::ROLE_ADMIN], true);
+    }
+
+    /**
+     * Nível do cargo para ordenação (3 = proprietário, 2 = admin, 1 = user).
+     */
+    public function roleLevel(): int
+    {
+        return match ($this->role) {
+            self::ROLE_PROPRIETARIO => 3,
+            self::ROLE_ADMIN => 2,
+            default => 1,
+        };
     }
 
     /**

@@ -7,6 +7,7 @@ return [
     'companies' => 'Companies',
     'reviews' => 'Reviews',
     'negative_reviews' => 'Negative Reviews',
+    'store' => 'Store',
     'settings' => 'Settings',
     'subscription' => 'Subscription',
     'billing' => 'Billing',

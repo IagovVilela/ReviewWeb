@@ -1128,6 +1128,16 @@
                     <i class="fas fa-exclamation-triangle w-5 h-5 mr-3"></i>
                     {{ __('app.negative_reviews') }}
                 </a>
+                <a href="{{ route('store') }}" class="nav-item {{ request()->is('store') && !request()->is('store/products*') && !request()->is('store/requests*') ? 'active' : '' }} flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-700">
+                    <i class="fas fa-store w-5 h-5 mr-3"></i>
+                    {{ __('app.store') }}
+                </a>
+                @if(Auth::user()->role === 'proprietario')
+                <a href="{{ route('store.products.index') }}" class="nav-item {{ request()->is('store/products*') || request()->is('store/requests*') ? 'active' : '' }} flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-700">
+                    <i class="fas fa-cog w-5 h-5 mr-3"></i>
+                    {{ __('store.manage_store') }}
+                </a>
+                @endif
                 
                 <div class="pt-4 mt-4 border-t border-gray-200">
                     <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">{{ __('app.settings') }}</p>

@@ -26,6 +26,7 @@ return [
     'you' => 'Você',
     'owner' => 'Proprietário',
     'owners' => 'Proprietários',
+    'highest_role' => 'cargo mais alto do sistema',
     'administrator' => 'Administrador',
     'user' => 'Usuário',
     'role_owner' => 'Proprietários',
@@ -83,5 +84,9 @@ return [
     'creating' => 'Criando...',
     'create_user' => 'Criar Usuário',
     'create_password_placeholder' => 'Mínimo 6 caracteres',
+    'payment_required' => 'Requer pagamento para acessar o dashboard',
+    'payment_required_help' => 'Se desligado, o usuário acessa o dashboard sem precisar assinar.',
+    'send_welcome_email' => 'Enviar e-mail de boas-vindas com senha temporária',
+    'send_welcome_email_help' => 'Gera uma senha temporária e envia por e-mail. Deixe a senha em branco ao marcar esta opção.',
 ];
 

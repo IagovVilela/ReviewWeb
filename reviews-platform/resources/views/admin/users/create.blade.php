@@ -114,11 +114,41 @@
                     @enderror
                 </div>
 
+                <!-- Require payment (slider) -->
+                <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                    <div>
+                        <label for="payment_required" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            {{ __('users.payment_required') }}
+                        </label>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ __('users.payment_required_help') }}</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="hidden" name="payment_required" value="0">
+                        <input type="checkbox" name="payment_required" id="payment_required" value="1" {{ old('payment_required', true) ? 'checked' : '' }} class="sr-only peer">
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-purple-500 rounded-full peer dark:bg-gray-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600"></div>
+                    </label>
+                </div>
+
+                <!-- Send welcome email (slider) -->
+                <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                    <div>
+                        <label for="send_welcome_email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            {{ __('users.send_welcome_email') }}
+                        </label>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ __('users.send_welcome_email_help') }}</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="hidden" name="send_welcome_email" value="0">
+                        <input type="checkbox" name="send_welcome_email" id="send_welcome_email" value="1" {{ old('send_welcome_email') ? 'checked' : '' }} class="sr-only peer">
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-purple-500 rounded-full peer dark:bg-gray-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600"></div>
+                    </label>
+                </div>
+
                 <!-- Password -->
-                <div>
+                <div id="password-fields">
                     <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
                         <i class="fas fa-lock text-gray-400 mr-1"></i>
-                        {{ __('app.password') }} <span class="text-red-500">*</span>
+                        {{ __('app.password') }} <span id="password-required-asterisk" class="text-red-500">*</span>
                     </label>
                     <input 
                         type="password" 
@@ -126,7 +156,6 @@
                         id="password" 
                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all @error('password') border-red-500 @enderror" 
                         placeholder="{{ __('users.create_password_placeholder') }}"
-                        required
                     >
                     @error('password')
                         <p class="mt-1 text-sm text-red-600"><i class="fas fa-exclamation-circle mr-1"></i>{{ $message }}</p>
@@ -134,10 +163,10 @@
                 </div>
 
                 <!-- Password Confirmation -->
-                <div>
+                <div id="password-confirmation-field">
                     <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-2">
                         <i class="fas fa-lock text-gray-400 mr-1"></i>
-                        {{ __('users.confirm_new_password') }} <span class="text-red-500">*</span>
+                        {{ __('users.confirm_new_password') }} <span id="password-confirm-asterisk" class="text-red-500">*</span>
                     </label>
                     <input 
                         type="password" 
@@ -145,7 +174,6 @@
                         id="password_confirmation" 
                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all" 
                         placeholder="{{ __('users.password_confirm_placeholder') }}"
-                        required
                     >
                 </div>
 
@@ -205,15 +233,29 @@
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>' + translations.creating;
     });
 
-    // Password strength indicator
+    // Toggle password required when "send welcome email" is checked
+    const sendWelcomeCheckbox = document.getElementById('send_welcome_email');
     const passwordInput = document.getElementById('password');
     const passwordConfirmInput = document.getElementById('password_confirmation');
 
+    function updatePasswordRequired() {
+        const optional = sendWelcomeCheckbox && sendWelcomeCheckbox.checked;
+        if (passwordInput) {
+            passwordInput.required = !optional;
+            passwordInput.placeholder = optional ? '{{ __("users.send_welcome_email_help") }}' : '{{ __("users.create_password_placeholder") }}';
+        }
+        if (passwordConfirmInput) passwordConfirmInput.required = !optional;
+        const asterisks = document.querySelectorAll('#password-required-asterisk, #password-confirm-asterisk');
+        asterisks.forEach(el => { if (el) el.style.visibility = optional ? 'hidden' : 'visible'; });
+    }
+    if (sendWelcomeCheckbox) {
+        sendWelcomeCheckbox.addEventListener('change', updatePasswordRequired);
+        updatePasswordRequired();
+    }
+
     passwordInput.addEventListener('input', function() {
         const strength = getPasswordStrength(this.value);
-        // You can add visual feedback here
     });
-
     passwordConfirmInput.addEventListener('input', function() {
         if (this.value !== passwordInput.value) {
             this.setCustomValidity(translations.passwordMismatch);

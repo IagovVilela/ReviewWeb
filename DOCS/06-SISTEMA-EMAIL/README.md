@@ -5,11 +5,7 @@ Documentação do sistema de email SMTP.
 ## 📁 Documentos
 
 - **CONFIGURAR_EMAIL_SMTP.md** - ⭐ Guia completo de configuração (LEIA PRIMEIRO)
-- **QUICK_START_EMAIL.md** - Início rápido
-- **EMAIL_CONFIG.md** - Configuração de email
 - **EMAIL_SETUP.md** - Setup de email
-- **FIX_EMAIL_LOGO.md** - Como corrigir logo nos emails
-- **RESUMO_CORRECAO_LOGO.md** - Resumo da correção da logo
 
 ## 🚀 Configuração Rápida
 
@@ -43,14 +39,7 @@ MAIL_FROM_NAME="${APP_NAME}"
 - **Erro de autenticação:** Veja senha de app em `CONFIGURAR_EMAIL_SMTP.md`
 - **Erro de conexão:** Verifique firewall/proxy
 - **Email não enviado:** Verifique logs em `storage/logs/`
-- **Logo não aparece nos emails:** Veja `FIX_EMAIL_LOGO.md` e `RESUMO_CORRECAO_LOGO.md`
-
-## 🔧 Correções Recentes
-
-### Logo nos Emails ✅
-- URLs absolutas implementadas
-- Campo contact_detail adicionado
-- Ver: `FIX_EMAIL_LOGO.md`
+- **Logo não aparece nos emails:** Use URLs absolutas para imagens no conteúdo do email.
 
 ## 📞 Mais Ajuda
 
