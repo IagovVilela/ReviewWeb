@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 /**
- * Loga detalhes da requisição e da sessão para diagnóstico de 401 em /api/companies/*/members.
+ * Loga detalhes da requisição e da sessão para diagnóstico de 401 em rotas /api/companies/{id}/members.
  */
 class LogAuthDiagnostics
 {

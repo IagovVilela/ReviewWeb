@@ -86,7 +86,7 @@ class Handler extends ExceptionHandler
     }
 
     /**
-     * Log detalhado para diagnóstico de 401 em /api/companies/*/members.
+     * Log detalhado para diagnóstico de 401 em rotas /api/companies/{id}/members.
      * Envolvido em try/catch para nunca causar 500.
      */
     protected function logAuthenticationFailure(Request $request): void
