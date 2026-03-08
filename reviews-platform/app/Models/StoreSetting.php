@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 
 class StoreSetting extends Model
 {
@@ -18,11 +20,19 @@ class StoreSetting extends Model
      */
     public static function getNotificationEmail(): ?string
     {
-        $email = Cache::remember('store_setting_' . self::KEY_NOTIFICATION_EMAIL, 300, function () {
-            $row = self::where('key', self::KEY_NOTIFICATION_EMAIL)->first();
-            return $row && $row->value ? trim($row->value) : null;
-        });
-        return $email !== '' ? $email : null;
+        try {
+            if (!Schema::hasTable('store_settings')) {
+                return null;
+            }
+            $email = Cache::remember('store_setting_' . self::KEY_NOTIFICATION_EMAIL, 300, function () {
+                $row = self::where('key', self::KEY_NOTIFICATION_EMAIL)->first();
+                return $row && $row->value ? trim($row->value) : null;
+            });
+            return $email !== '' ? $email : null;
+        } catch (\Throwable $e) {
+            Log::warning('StoreSetting::getNotificationEmail failed', ['error' => $e->getMessage()]);
+            return null;
+        }
     }
 
     /**
@@ -30,11 +40,18 @@ class StoreSetting extends Model
      */
     public static function setNotificationEmail(?string $email): void
     {
-        $value = $email !== null && $email !== '' ? trim($email) : null;
-        self::updateOrCreate(
-            ['key' => self::KEY_NOTIFICATION_EMAIL],
-            ['value' => $value]
-        );
-        Cache::forget('store_setting_' . self::KEY_NOTIFICATION_EMAIL);
+        try {
+            if (!Schema::hasTable('store_settings')) {
+                return;
+            }
+            $value = $email !== null && $email !== '' ? trim($email) : null;
+            self::updateOrCreate(
+                ['key' => self::KEY_NOTIFICATION_EMAIL],
+                ['value' => $value]
+            );
+            Cache::forget('store_setting_' . self::KEY_NOTIFICATION_EMAIL);
+        } catch (\Throwable $e) {
+            Log::warning('StoreSetting::setNotificationEmail failed', ['error' => $e->getMessage()]);
+        }
     }
 }

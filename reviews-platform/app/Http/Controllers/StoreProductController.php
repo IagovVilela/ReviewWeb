@@ -7,6 +7,7 @@ use App\Models\StoreRequest;
 use App\Models\StoreSetting;
 use App\Services\CloudinaryService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class StoreProductController extends Controller
 {
@@ -25,6 +26,11 @@ class StoreProductController extends Controller
     public function index()
     {
         $this->ensureProprietor();
+        if (!Schema::hasTable('store_products')) {
+            $products = collect();
+            $notificationEmail = null;
+            return view('store.products.index', compact('products', 'notificationEmail'));
+        }
         $products = StoreProduct::ordered()->get();
         $notificationEmail = StoreSetting::getNotificationEmail();
         return view('store.products.index', compact('products', 'notificationEmail'));
@@ -117,6 +123,9 @@ class StoreProductController extends Controller
     public function requests()
     {
         $this->ensureProprietor();
+        if (!Schema::hasTable('store_requests')) {
+            return view('store.requests.index', ['requests' => collect()]);
+        }
         $requests = StoreRequest::with('user')->latest()->get();
         return view('store.requests.index', compact('requests'));
     }

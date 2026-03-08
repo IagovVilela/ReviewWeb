@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Services\TransactionalEmailService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
 
 class StoreController extends Controller
@@ -18,7 +19,17 @@ class StoreController extends Controller
      */
     public function index()
     {
-        $products = StoreProduct::active()->ordered()->get();
+        try {
+            if (!Schema::hasTable('store_products')) {
+                $products = collect();
+                $storeUrl = config('store.url');
+                return view('store.index', compact('products', 'storeUrl'));
+            }
+            $products = StoreProduct::active()->ordered()->get();
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('Store index query failed', ['error' => $e->getMessage()]);
+            $products = collect();
+        }
         $storeUrl = config('store.url');
         return view('store.index', compact('products', 'storeUrl'));
     }

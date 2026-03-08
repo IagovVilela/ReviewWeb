@@ -48,14 +48,28 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $e)
     {
+        $msg = $e->getMessage();
+        $isTableOrColumnError = str_contains($msg, "doesn't exist")
+            || str_contains($msg, 'Unknown column')
+            || str_contains($msg, 'SQLSTATE[42S02]')
+            || str_contains($msg, 'Base table or view not found');
+
+        if ($isTableOrColumnError && !config('app.debug')) {
+            return response(
+                '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Banco desatualizado</title></head><body style="font-family:sans-serif;max-width:600px;margin:40px auto;padding:20px;"><h1>Banco de dados desatualizado</h1><p>Parece que faltam tabelas ou colunas. No servidor (Railway ou terminal), execute:</p><pre>php artisan migrate --force</pre><p>Se o projeto estiver na pasta <code>reviews-platform</code>, use: <code>cd reviews-platform &amp;&amp; php artisan migrate --force</code></p><p style="color:#666;font-size:14px;">Erro: ' . htmlspecialchars($msg) . '</p></body></html>',
+                503,
+                ['Content-Type' => 'text/html; charset=utf-8']
+            );
+        }
+
         $isDebugPath = str_contains($request->path(), '-debug') || $request->path() === 'api/healthcheck';
         $expose = $isDebugPath
             || config('app.expose_500_message', false)
             || filter_var(env('APP_EXPOSE_500_MESSAGE', false), FILTER_VALIDATE_BOOLEAN);
 
         if ($expose) {
-            $msg = get_class($e) . ': ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine();
-            return response('<pre style="white-space:pre-wrap;font-size:12px;">' . htmlspecialchars($msg . "\n\n" . $e->getTraceAsString()) . '</pre>', 200);
+            $fullMsg = get_class($e) . ': ' . $msg . ' in ' . $e->getFile() . ':' . $e->getLine();
+            return response('<pre style="white-space:pre-wrap;font-size:12px;">' . htmlspecialchars($fullMsg . "\n\n" . $e->getTraceAsString()) . '</pre>', 200);
         }
         return parent::render($request, $e);
     }

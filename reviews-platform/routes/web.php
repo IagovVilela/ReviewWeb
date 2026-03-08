@@ -206,11 +206,27 @@ Route::middleware(['auth.diagnostics', 'auth', 'subscription'])->group(function 
 
     // Reviews routes for ALL authenticated users (not just admin)
     Route::get('/reviews', function () {
-        return view('admin.reviews.index');
+        try {
+            return view('admin.reviews.index');
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('reviews.index view failed', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+            if (config('app.debug') || filter_var(env('APP_EXPOSE_500_MESSAGE'), FILTER_VALIDATE_BOOLEAN)) {
+                return response('<pre>' . htmlspecialchars($e->getMessage() . "\n" . $e->getFile() . ':' . $e->getLine()) . '</pre>', 200);
+            }
+            return response('Erro ao carregar a página de avaliações. Verifique os logs.', 500);
+        }
     })->name('reviews.index');
     
     Route::get('/reviews/negative', function () {
-        return view('admin.reviews.negative');
+        try {
+            return view('admin.reviews.negative');
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('reviews.negative view failed', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+            if (config('app.debug') || filter_var(env('APP_EXPOSE_500_MESSAGE'), FILTER_VALIDATE_BOOLEAN)) {
+                return response('<pre>' . htmlspecialchars($e->getMessage() . "\n" . $e->getFile() . ':' . $e->getLine()) . '</pre>', 200);
+            }
+            return response('Erro ao carregar a página de avaliações negativas. Verifique os logs.', 500);
+        }
     })->name('reviews.negative');
 
     // API Routes for Reviews (accessible to all authenticated users)
