@@ -127,6 +127,44 @@ class StripeService
     }
 
     /**
+     * Create a Billing Portal session so the customer can manage subscription, payment method, cancel, invoices.
+     * Returns the portal URL to redirect the user to, or null if not available.
+     * @see https://stripe.com/docs/customer-management/creating-customers#customer-portal
+     */
+    public function createBillingPortalSession(User $user, string $returnUrl): ?string
+    {
+        $customerId = $user->stripe_customer_id ?: $this->getOrCreateCustomer($user);
+        if (!$customerId) {
+            return null;
+        }
+
+        if (!class_exists(\Stripe\BillingPortal\Session::class)) {
+            Log::warning('Stripe BillingPortal\Session class not found. Update stripe/stripe-php if needed.');
+            return null;
+        }
+
+        $secret = config('stripe.secret');
+        if (!$secret) {
+            return null;
+        }
+
+        try {
+            $session = \Stripe\BillingPortal\Session::create([
+                'customer' => $customerId,
+                'return_url' => $returnUrl,
+            ]);
+            return $session->url ?? null;
+        } catch (\Throwable $e) {
+            Log::error('Stripe billing portal session failed', [
+                'user_id' => $user->id,
+                'error' => $e->getMessage(),
+                'exception' => get_class($e),
+            ]);
+            return null;
+        }
+    }
+
+    /**
      * Update user subscription status from Stripe subscription object.
      */
     public function updateUserSubscriptionStatus(User $user, string $subscriptionId, string $status): void

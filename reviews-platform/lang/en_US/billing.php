@@ -8,4 +8,7 @@ return [
     'invalid_email' => 'Your account email is not valid for payment. Update your email in Profile (e.g. name@domain.com) and try again.',
     'subscription_success' => 'Subscription activated successfully! Welcome to the dashboard.',
     'checkout_canceled' => 'Payment canceled. You can try again whenever you want.',
+    'manage_subscription' => 'Manage subscription',
+    'portal_no_customer' => 'You do not have a subscription yet. Complete payment to access the dashboard.',
+    'portal_error' => 'Could not open the management page. Please try again or contact support.',
 ];

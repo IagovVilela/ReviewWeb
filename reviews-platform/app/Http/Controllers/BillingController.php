@@ -90,4 +90,29 @@ class BillingController extends Controller
         return redirect()->route('billing.subscribe')
             ->with('info', __('billing.checkout_canceled'));
     }
+
+    /**
+     * Redirect to Stripe Customer Billing Portal (manage subscription, cancel, update card, invoices).
+     */
+    public function redirectToPortal(Request $request)
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return redirect()->route('login');
+        }
+
+        $returnUrl = $request->query('return') ? url($request->query('return')) : route('dashboard');
+        $url = $this->stripeService->createBillingPortalSession($user, $returnUrl);
+
+        if (!$url) {
+            if (!$user->stripe_customer_id && !$user->hasActiveSubscription()) {
+                return redirect()->route('billing.subscribe')
+                    ->with('info', __('billing.portal_no_customer'));
+            }
+            return redirect()->route('dashboard')
+                ->with('error', __('billing.portal_error'));
+        }
+
+        return redirect()->away($url);
+    }
 }

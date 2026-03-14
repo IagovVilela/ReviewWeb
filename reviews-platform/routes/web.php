@@ -88,6 +88,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/billing/checkout', [App\Http\Controllers\BillingController::class, 'redirectToCheckout'])->name('billing.checkout');
     Route::get('/billing/success', [App\Http\Controllers\BillingController::class, 'success'])->name('billing.success');
     Route::get('/billing/cancel', [App\Http\Controllers\BillingController::class, 'cancel'])->name('billing.cancel');
+    Route::get('/billing/portal', [App\Http\Controllers\BillingController::class, 'redirectToPortal'])->name('billing.portal');
 });
 
 // Dashboard route - accessible to all authenticated users (requires subscription if payment_required)

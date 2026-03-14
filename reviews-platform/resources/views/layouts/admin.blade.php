@@ -1149,17 +1149,11 @@
                     </a>
                     @endif
                     
-                    {{-- Subscription and Billing - Hidden for future use --}}
-                    {{-- 
-                    <a href="/subscription" class="nav-item flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-700">
-                        <i class="fas fa-crown w-5 h-5 mr-3"></i>
-                        {{ __('app.subscription') }}
-                    </a>
-                    <a href="/billing" class="nav-item flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-700">
+                    {{-- Gerenciar assinatura: abre o portal do Stripe (cancelar, trocar cartão, faturas) --}}
+                    <a href="{{ route('billing.portal') }}" class="nav-item {{ request()->is('billing*') ? 'active' : '' }} flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-700">
                         <i class="fas fa-credit-card w-5 h-5 mr-3"></i>
-                        {{ __('app.billing') }}
+                        {{ __('billing.manage_subscription') }}
                     </a>
-                    --}}
                     <a href="/profile" class="nav-item {{ request()->is('profile') ? 'active' : '' }} flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-700">
                         <i class="fas fa-user w-5 h-5 mr-3"></i>
                         {{ __('app.profile') }}

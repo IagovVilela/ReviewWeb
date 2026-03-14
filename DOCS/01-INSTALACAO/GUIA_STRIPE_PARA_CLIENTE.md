@@ -4,11 +4,14 @@ Este guia é para você **encontrar na sua conta Stripe** os dados que precisamo
 
 Acesse o painel do Stripe: **[https://dashboard.stripe.com](https://dashboard.stripe.com)** (faça login na sua conta).
 
+> **Dificuldade para achar algum item?** Use o guia detalhado: **[GUIA_STRIPE_PASSO_A_PASSO.md](GUIA_STRIPE_PASSO_A_PASSO.md)** – lá tem passo a passo e links diretos para cada tela.
+
 ---
 
 ## 1. Chave publicável e Chave secreta (API Keys)
 
-**Onde fica:** no menu lateral, clique em **Developers** (Desenvolvedores) e depois em **API keys** (Chaves de API).
+**Onde fica:** no menu lateral, clique em **Developers** (Desenvolvedores) e depois em **API keys** (Chaves de API).  
+**Link direto:** [dashboard.stripe.com/apikeys](https://dashboard.stripe.com/apikeys)
 
 **O que enviar:**
 
@@ -28,7 +31,8 @@ Envie as duas: a publicável e a secreta.
 
 Esse é o “produto” que será cobrado todo mês (ex.: plano mensal da plataforma).
 
-**Onde fica:** no menu lateral, clique em **Product catalog** → **Products** (ou acesse **[https://dashboard.stripe.com/products](https://dashboard.stripe.com/products)**).
+**Onde fica:** no menu lateral, clique em **Product catalog** → **Products**.  
+**Link direto:** [dashboard.stripe.com/products](https://dashboard.stripe.com/products)
 
 **O que fazer:**
 
@@ -43,15 +47,16 @@ Esse é o “produto” que será cobrado todo mês (ex.: plano mensal da plataf
 
 ## 3. Segredo do webhook (Signing secret)
 
-Esse dado **só pode ser obtido depois** que a plataforma estiver no ar com uma URL fixa (ex.: `https://sua-plataforma.up.railway.app`). Quem for configurar o sistema vai te informar essa URL.
+Esse dado **só pode ser obtido depois** que a plataforma estiver no ar. A URL da aplicação é **https://www.avalieganhe.app**.
 
-**Onde fica:** no menu lateral, clique em **Developers** → **Webhooks** (ou **[https://dashboard.stripe.com/webhooks](https://dashboard.stripe.com/webhooks)**).
+**Onde fica:** no menu lateral, clique em **Developers** → **Webhooks**.  
+**Link direto:** [dashboard.stripe.com/webhooks](https://dashboard.stripe.com/webhooks)
 
 **O que fazer:**
 
 1. Clique em **Add endpoint** (Adicionar endpoint).
-2. Em **Endpoint URL**, coloque a URL que te passaram, seguida de `/stripe/webhook`.  
-   Exemplo: `https://sua-plataforma.up.railway.app/stripe/webhook`
+2. Em **Endpoint URL**, coloque exatamente:  
+   **`https://www.avalieganhe.app/stripe/webhook`**
 3. Em **Events to send** (Eventos para enviar), escolha **Select events** e marque estes:
    - `checkout.session.completed`
    - `customer.subscription.updated`
