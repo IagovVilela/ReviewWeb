@@ -92,7 +92,15 @@ class User extends Authenticatable
      */
     public function isProprietario(): bool
     {
-        return $this->role === self::ROLE_PROPRIETARIO;
+        return strtolower((string) $this->role) === self::ROLE_PROPRIETARIO;
+    }
+
+    /**
+     * Verifica se é admin (case-insensitive para compatibilidade com dados legados).
+     */
+    public function isAdmin(): bool
+    {
+        return strtolower((string) $this->role) === self::ROLE_ADMIN;
     }
 
     /**
@@ -100,7 +108,8 @@ class User extends Authenticatable
      */
     public function isAtLeastAdmin(): bool
     {
-        return in_array($this->role, [self::ROLE_PROPRIETARIO, self::ROLE_ADMIN], true);
+        $role = strtolower((string) $this->role);
+        return in_array($role, [self::ROLE_PROPRIETARIO, self::ROLE_ADMIN], true);
     }
 
     /**

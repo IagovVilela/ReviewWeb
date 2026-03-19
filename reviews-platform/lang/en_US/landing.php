@@ -7,6 +7,14 @@ return [
     // Hero Section
     'hero_title' => 'Transform Reviews into Growth',
     'hero_description' => 'Intelligent platform that directs positive reviews to Google and captures negative feedback before it becomes public. Protect your reputation and increase your sales.',
+    'hero_kicker' => 'Review & Win',
+    'hero_control_total' => 'Total control',
+    'hero_preview_title' => 'Reviews - Google',
+    'hero_preview_filter_title' => 'Filter active',
+    'hero_preview_filter_desc' => 'Negative blocked',
+    'hero_preview_alert_title' => 'Alert sent',
+    'hero_preview_alert_desc' => 'Just now',
+    'hero_stat_growth_value' => 'Up to 10x',
     'start_now' => 'Start Now',
     'learn_more' => 'Learn More',
     

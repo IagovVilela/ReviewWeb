@@ -14,5 +14,6 @@ return [
     |--------------------------------------------------------------------------
     */
     'subscription_price_id' => env('STRIPE_SUBSCRIPTION_PRICE_ID'),
+    'trial_days' => (int) env('STRIPE_TRIAL_DAYS', 0),
 
 ];

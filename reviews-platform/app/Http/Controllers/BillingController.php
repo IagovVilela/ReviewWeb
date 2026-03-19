@@ -22,6 +22,9 @@ class BillingController extends Controller
         if (!$user) {
             return redirect()->route('login');
         }
+        if (method_exists($user, 'isAtLeastAdmin') && $user->isAtLeastAdmin()) {
+            return redirect()->route('dashboard');
+        }
         if (!$user->requiresPayment()) {
             return redirect()->route('dashboard');
         }
@@ -40,6 +43,9 @@ class BillingController extends Controller
         $user = Auth::user();
         if (!$user) {
             return redirect()->route('login');
+        }
+        if (method_exists($user, 'isAtLeastAdmin') && $user->isAtLeastAdmin()) {
+            return redirect()->route('dashboard');
         }
         if (!$user->requiresPayment() || $user->hasActiveSubscription()) {
             return redirect()->route('dashboard');

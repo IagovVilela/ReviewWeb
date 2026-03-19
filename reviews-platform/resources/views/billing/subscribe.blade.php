@@ -24,8 +24,14 @@
             <div class="w-14 h-14 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mx-auto mb-3">
                 <i class="fas fa-credit-card text-purple-600 dark:text-purple-400 text-2xl"></i>
             </div>
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300 text-xs font-semibold mb-3">
+                <i class="fas fa-gift"></i>
+                {{ __('billing.subscribe_trial_badge') }}
+            </div>
             <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">{{ __('billing.subscribe_title') }}</h2>
             <p class="mt-2 text-gray-600 dark:text-gray-400">{{ __('billing.subscribe_subtitle') }}</p>
+            <p class="mt-2 text-sm text-gray-700 dark:text-gray-300">{{ __('billing.subscribe_trial_note') }}</p>
+            <p class="mt-1 text-sm text-gray-700 dark:text-gray-300">{{ __('billing.subscribe_cancel_note') }}</p>
         </div>
 
         <form method="POST" action="{{ route('billing.checkout') }}">
@@ -38,7 +44,7 @@
 
         <p class="mt-4 text-center text-sm text-gray-500 dark:text-gray-400">
             <i class="fas fa-shield-alt mr-1"></i>
-            Pagamento seguro via Stripe.
+            {{ __('billing.secure_payment') }}
         </p>
     </div>
 

@@ -7,6 +7,14 @@ return [
     // Hero Section
     'hero_title' => 'Transforme Avaliações em Crescimento',
     'hero_description' => 'Plataforma inteligente que direciona avaliações positivas para o Google e captura feedback negativo antes de se tornarem públicos. Proteja sua reputação e aumente suas vendas.',
+    'hero_kicker' => 'Avalie e Ganhe',
+    'hero_control_total' => 'Controle total',
+    'hero_preview_title' => 'Avaliações - Google',
+    'hero_preview_filter_title' => 'Filtro ativo',
+    'hero_preview_filter_desc' => 'Negativas bloqueadas',
+    'hero_preview_alert_title' => 'Alerta enviado',
+    'hero_preview_alert_desc' => 'Agora mesmo',
+    'hero_stat_growth_value' => 'Até 10x',
     'start_now' => 'Começar Agora',
     'learn_more' => 'Saiba Mais',
     

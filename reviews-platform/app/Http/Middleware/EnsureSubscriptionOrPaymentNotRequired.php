@@ -33,8 +33,8 @@ class EnsureSubscriptionOrPaymentNotRequired
             $user = $request->user();
 
             // Admin and proprietário always have access
-            $role = $user->role ?? null;
-            if (in_array($role, ['proprietario', 'admin'])) {
+            $role = strtolower((string) ($user->role ?? ''));
+            if (in_array($role, ['proprietario', 'admin'], true)) {
                 return $next($request);
             }
 

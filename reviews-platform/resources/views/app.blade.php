@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/home-entry.jsx'])
     
     <!-- Favicon - Logo da Plataforma -->
     <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('assets/images/lopgosDASHBOARD.png') }}?v=2">
@@ -1085,6 +1086,369 @@
             transform: translateY(-3px);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         }
+
+        /* React home island (premium refresh) */
+        .home-modern {
+            position: relative;
+            overflow-x: clip;
+        }
+
+        .home-modern-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .home-modern-hero {
+            position: relative;
+            overflow: visible;
+            padding: 154px 2rem 104px;
+            border-bottom: 1px solid #e5e7eb;
+            background:
+                radial-gradient(920px 440px at 18% 12%, rgba(139, 92, 246, 0.14), transparent 68%),
+                linear-gradient(180deg, #f2f0fc 0%, #eeebfb 100%);
+        }
+
+        .dark .home-modern-hero {
+            background:
+                radial-gradient(900px 420px at 10% 0%, rgba(139, 92, 246, 0.2), transparent 68%),
+                radial-gradient(700px 320px at 95% 15%, rgba(59, 130, 246, 0.16), transparent 72%),
+                linear-gradient(180deg, #0f172a 0%, #111827 100%);
+            border-bottom-color: #374151;
+        }
+
+        .home-modern-hero-glow {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: linear-gradient(115deg, rgba(255, 255, 255, 0.35), transparent 40%);
+        }
+
+        .dark .home-modern-hero-glow {
+            background: linear-gradient(115deg, rgba(255, 255, 255, 0.08), transparent 40%);
+        }
+
+        .home-modern-hero h1 {
+            font-size: 4rem;
+            line-height: 1.03;
+            font-weight: 900;
+            color: #111827;
+            margin-bottom: 1.25rem;
+            letter-spacing: -0.03em;
+        }
+
+        .dark .home-modern-hero h1 {
+            color: #f9fafb;
+        }
+
+        .home-modern-hero p {
+            font-size: 1.1rem;
+            line-height: 1.85;
+            max-width: 560px;
+            margin: 0 0 2.25rem;
+            color: #4b5563;
+        }
+
+        .dark .home-modern-hero p {
+            color: #d1d5db;
+        }
+
+        .home-modern-hero-grid {
+            display: grid;
+            grid-template-columns: 1.05fr 0.95fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .home-modern-hero-copy {
+            text-align: left;
+        }
+
+        .home-modern-kicker {
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #7c3aed;
+            margin-bottom: 1rem;
+        }
+
+        .home-modern-hero .hero-buttons {
+            animation: none;
+            margin-top: 0.25rem;
+            justify-content: flex-start;
+        }
+
+        .home-modern-hero .btn-primary {
+            border: 0;
+            cursor: pointer;
+            padding: 0.92rem 1.8rem;
+            font-size: 1rem;
+        }
+
+        .home-modern-hero .btn-secondary {
+            padding: 0.92rem 1.8rem;
+            font-size: 1rem;
+        }
+
+        .home-modern-inline-stats {
+            margin-top: 2.25rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid #d7d3ed;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 1rem;
+            max-width: 560px;
+        }
+
+        .home-modern-inline-stat strong {
+            display: block;
+            font-size: 1.7rem;
+            line-height: 1.1;
+            color: #111827;
+        }
+
+        .home-modern-inline-stat span {
+            display: block;
+            margin-top: 0.35rem;
+            font-size: 0.78rem;
+            color: #6b7280;
+        }
+
+        .dark .home-modern-inline-stats {
+            border-top-color: #334155;
+        }
+
+        .dark .home-modern-inline-stat strong {
+            color: #f9fafb;
+        }
+
+        .dark .home-modern-inline-stat span {
+            color: #94a3b8;
+        }
+
+        .home-modern-preview {
+            width: 100%;
+            padding-right: 0.2rem;
+        }
+
+        .preview-main-card {
+            background: rgba(255, 255, 255, 0.78);
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            border-radius: 1rem;
+            box-shadow: 0 18px 48px rgba(55, 65, 81, 0.12);
+            backdrop-filter: blur(6px);
+            padding: 1.25rem 1.15rem;
+        }
+
+        .preview-label {
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            font-size: 0.62rem;
+            color: #94a3b8;
+            font-weight: 700;
+            margin-bottom: 0.85rem;
+        }
+
+        .preview-score {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.85rem;
+        }
+
+        .preview-score span {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .preview-score small {
+            color: #f59e0b;
+            letter-spacing: 0.12em;
+            font-size: 0.78rem;
+        }
+
+        .preview-bars div {
+            display: grid;
+            grid-template-columns: 14px 1fr;
+            align-items: center;
+            gap: 0.6rem;
+            margin: 0.3rem 0;
+        }
+
+        .preview-bars span {
+            font-size: 0.68rem;
+            color: #94a3b8;
+        }
+
+        .preview-bars i {
+            display: block;
+            height: 3px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #8b5cf6 0%, #a78bfa 100%);
+        }
+
+        .preview-mini-grid {
+            margin-top: 0.85rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.65rem;
+        }
+
+        .preview-mini-card {
+            background: rgba(255, 255, 255, 0.82);
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            border-radius: 0.85rem;
+            padding: 0.85rem 0.8rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+        }
+
+        .preview-mini-card i {
+            width: 24px;
+            height: 24px;
+            border-radius: 0.55rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #7c3aed;
+            background: #ede9fe;
+            font-size: 0.72rem;
+        }
+
+        .preview-mini-card strong {
+            display: block;
+            font-size: 0.72rem;
+            color: #0f172a;
+            margin-bottom: 0.2rem;
+        }
+
+        .preview-mini-card span {
+            display: block;
+            font-size: 0.66rem;
+            color: #94a3b8;
+        }
+
+        .dark .preview-main-card,
+        .dark .preview-mini-card {
+            background: rgba(17, 24, 39, 0.82);
+            border-color: rgba(100, 116, 139, 0.34);
+        }
+
+        .dark .preview-score span,
+        .dark .preview-mini-card strong {
+            color: #f8fafc;
+        }
+
+        .dark .preview-label,
+        .dark .preview-bars span,
+        .dark .preview-mini-card span {
+            color: #94a3b8;
+        }
+
+        .home-modern .home-modern-card {
+            border-radius: 1rem;
+            border-color: rgba(139, 92, 246, 0.12);
+            box-shadow: 0 10px 30px rgba(17, 24, 39, 0.05);
+            backdrop-filter: blur(2px);
+        }
+
+        .dark .home-modern .home-modern-card {
+            border-color: rgba(139, 92, 246, 0.28);
+            box-shadow: 0 14px 32px rgba(0, 0, 0, 0.36);
+        }
+
+        .home-modern-stats {
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .dark .home-modern-stats {
+            border-top-color: #374151;
+        }
+
+        .home-modern-features,
+        .home-modern-benefits {
+            position: relative;
+        }
+
+        .home-modern-cta {
+            position: relative;
+            overflow: hidden;
+            background:
+                radial-gradient(500px 300px at 20% 20%, rgba(255, 255, 255, 0.2), transparent 70%),
+                linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+        }
+
+        .home-modern-cta .btn-primary {
+            background: #ffffff;
+            color: #6d28d9;
+            font-size: 1.15rem;
+            padding: 1.05rem 3rem;
+            border: none;
+            cursor: pointer;
+        }
+
+        .home-modern-cta .btn-primary:hover {
+            color: #5b21b6;
+            background: #f5f3ff;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .home-modern .home-modern-card,
+            .home-modern .btn-primary,
+            .home-modern .btn-secondary {
+                transition: none !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .home-modern-hero {
+                padding: 132px 1rem 82px;
+            }
+
+            .home-modern-hero-grid {
+                grid-template-columns: 1fr;
+                gap: 1.8rem;
+            }
+
+            .home-modern-hero-copy {
+                text-align: center;
+            }
+
+            .home-modern-hero .hero-buttons {
+                justify-content: center;
+            }
+
+            .home-modern-hero h1 {
+                font-size: 2.55rem;
+            }
+
+            .home-modern-hero p {
+                font-size: 1.05rem;
+                margin-bottom: 1.5rem;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .home-modern-inline-stats {
+                grid-template-columns: 1fr;
+                max-width: 100%;
+                text-align: left;
+            }
+
+            .preview-main-card {
+                padding: 1rem;
+            }
+
+            .home-modern-preview {
+                padding-right: 0;
+            }
+        }
         
         /* Footer */
         .footer {
@@ -1279,23 +1643,68 @@
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-content">
-            <h1>{{ __('landing.hero_title') }}</h1>
-            <p>{{ __('landing.hero_description') }}</p>
-            <div class="hero-buttons">
-                <button onclick="openContactModal()" class="btn-primary" style="border: none; cursor: pointer;">
-                    <i class="fas fa-rocket"></i>
-                    {{ __('landing.start_now') }}
-                </button>
-                <a href="#como-funciona" class="btn-secondary">
-                    <i class="fas fa-play-circle"></i>
-                    {{ __('landing.learn_more') }}
-                </a>
-            </div>
-                                </div>
-    </section>
+    @php
+        $homeTranslations = [
+            'hero_title' => __('landing.hero_title'),
+            'hero_description' => __('landing.hero_description'),
+            'hero_kicker' => __('landing.hero_kicker'),
+            'hero_control_total' => __('landing.hero_control_total'),
+            'hero_preview_title' => __('landing.hero_preview_title'),
+            'hero_preview_filter_title' => __('landing.hero_preview_filter_title'),
+            'hero_preview_filter_desc' => __('landing.hero_preview_filter_desc'),
+            'hero_preview_alert_title' => __('landing.hero_preview_alert_title'),
+            'hero_preview_alert_desc' => __('landing.hero_preview_alert_desc'),
+            'start_now' => __('landing.start_now'),
+            'learn_more' => __('landing.learn_more'),
+            'features_title' => __('landing.features_title'),
+            'features_description' => __('landing.features_description'),
+            'feature_redirect_title' => __('landing.feature_redirect_title'),
+            'feature_redirect_desc' => __('landing.feature_redirect_desc'),
+            'feature_protection_title' => __('landing.feature_protection_title'),
+            'feature_protection_desc' => __('landing.feature_protection_desc'),
+            'feature_dashboard_title' => __('landing.feature_dashboard_title'),
+            'feature_dashboard_desc' => __('landing.feature_dashboard_desc'),
+            'feature_notifications_title' => __('landing.feature_notifications_title'),
+            'feature_notifications_desc' => __('landing.feature_notifications_desc'),
+            'feature_contacts_title' => __('landing.feature_contacts_title'),
+            'feature_contacts_desc' => __('landing.feature_contacts_desc'),
+            'feature_multilang_title' => __('landing.feature_multilang_title'),
+            'feature_multilang_desc' => __('landing.feature_multilang_desc'),
+            'feature_export_title' => __('landing.feature_export_title'),
+            'feature_export_desc' => __('landing.feature_export_desc'),
+            'feature_customization_title' => __('landing.feature_customization_title'),
+            'feature_customization_desc' => __('landing.feature_customization_desc'),
+            'feature_darkmode_title' => __('landing.feature_darkmode_title'),
+            'feature_darkmode_desc' => __('landing.feature_darkmode_desc'),
+            'benefits_title' => __('landing.benefits_title'),
+            'benefits_description' => __('landing.benefits_description'),
+            'benefit1_title' => __('landing.benefit1_title'),
+            'benefit1_desc' => __('landing.benefit1_desc'),
+            'benefit2_title' => __('landing.benefit2_title'),
+            'benefit2_desc' => __('landing.benefit2_desc'),
+            'benefit3_title' => __('landing.benefit3_title'),
+            'benefit3_desc' => __('landing.benefit3_desc'),
+            'benefit4_title' => __('landing.benefit4_title'),
+            'benefit4_desc' => __('landing.benefit4_desc'),
+            'benefit5_title' => __('landing.benefit5_title'),
+            'benefit5_desc' => __('landing.benefit5_desc'),
+            'benefit6_title' => __('landing.benefit6_title'),
+            'benefit6_desc' => __('landing.benefit6_desc'),
+            'cta_title' => __('landing.cta_title'),
+            'cta_description' => __('landing.cta_description'),
+            'start_free' => __('landing.start_free'),
+        ];
+
+        $homeStats = [
+            ['label' => __('landing.reviews_processed'), 'value' => '+10k', 'icon' => 'fas fa-star'],
+            ['label' => __('landing.more_google_reviews'), 'value' => __('landing.hero_stat_growth_value'), 'icon' => 'fas fa-chart-line'],
+        ];
+    @endphp
+    <div
+        id="homeModernRoot"
+        data-translations='@json($homeTranslations)'
+        data-stats='@json($homeStats)'
+    ></div>
 
     <!-- Prize Draw Section -->
     <section class="prize-draw">
@@ -1315,102 +1724,6 @@
         </div>
     </section>
 
-    <!-- Stats Section -->
-    <section class="stats">
-        <div class="stats-container">
-            <div class="stat-card fade-in">
-                <div class="stat-info">
-                    <h3>{{ __('landing.reviews_processed') }}</h3>
-                    <p>+10k</p>
-                </div>
-                <div class="stat-icon">
-                    <i class="fas fa-star"></i>
-                </div>
-            </div>
-            <div class="stat-card fade-in">
-                <div class="stat-info">
-                    <h3>{{ __('landing.more_google_reviews') }}</h3>
-                    <p>Up to 10x</p>
-                </div>
-                <div class="stat-icon">
-                    <i class="fas fa-chart-line"></i>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Features Section -->
-    <section class="features">
-        <div class="section-title">
-            <h2>{{ __('landing.features_title') }}</h2>
-            <p>{{ __('landing.features_description') }}</p>
-        </div>
-        <div class="features-grid">
-            <div class="feature-card fade-in">
-                <div class="feature-icon">
-                    <i class="fas fa-crosshairs"></i>
-                </div>
-                <h3>{{ __('landing.feature_redirect_title') }}</h3>
-                <p>{{ __('landing.feature_redirect_desc') }}</p>
-            </div>
-            <div class="feature-card fade-in">
-                <div class="feature-icon">
-                    <i class="fas fa-shield-alt"></i>
-                </div>
-                <h3>{{ __('landing.feature_protection_title') }}</h3>
-                <p>{{ __('landing.feature_protection_desc') }}</p>
-            </div>
-            <div class="feature-card fade-in">
-                <div class="feature-icon">
-                    <i class="fas fa-chart-bar"></i>
-                </div>
-                <h3>{{ __('landing.feature_dashboard_title') }}</h3>
-                <p>{{ __('landing.feature_dashboard_desc') }}</p>
-            </div>
-            <div class="feature-card fade-in">
-                <div class="feature-icon">
-                    <i class="fas fa-bell"></i>
-                </div>
-                <h3>{{ __('landing.feature_notifications_title') }}</h3>
-                <p>{{ __('landing.feature_notifications_desc') }}</p>
-            </div>
-            <div class="feature-card fade-in">
-                <div class="feature-icon">
-                    <i class="fas fa-mobile-alt"></i>
-                </div>
-                <h3>{{ __('landing.feature_contacts_title') }}</h3>
-                <p>{{ __('landing.feature_contacts_desc') }}</p>
-            </div>
-            <div class="feature-card fade-in">
-                <div class="feature-icon">
-                    <i class="fas fa-globe"></i>
-                </div>
-                <h3>{{ __('landing.feature_multilang_title') }}</h3>
-                <p>{{ __('landing.feature_multilang_desc') }}</p>
-            </div>
-            <div class="feature-card fade-in">
-                <div class="feature-icon">
-                    <i class="fas fa-download"></i>
-                </div>
-                <h3>{{ __('landing.feature_export_title') }}</h3>
-                <p>{{ __('landing.feature_export_desc') }}</p>
-            </div>
-            <div class="feature-card fade-in">
-                <div class="feature-icon">
-                    <i class="fas fa-palette"></i>
-                </div>
-                <h3>{{ __('landing.feature_customization_title') }}</h3>
-                <p>{{ __('landing.feature_customization_desc') }}</p>
-            </div>
-            <div class="feature-card fade-in">
-                <div class="feature-icon">
-                    <i class="fas fa-moon"></i>
-                </div>
-                <h3>{{ __('landing.feature_darkmode_title') }}</h3>
-                <p>{{ __('landing.feature_darkmode_desc') }}</p>
-            </div>
-        </div>
-    </section>
 
     <!-- How It Works -->
     <section class="how-it-works" id="como-funciona">
@@ -1442,79 +1755,6 @@
         </div>
     </section>
 
-    <!-- Benefits -->
-    <section class="benefits">
-        <div class="section-title">
-            <h2>{{ __('landing.benefits_title') }}</h2>
-            <p>{{ __('landing.benefits_description') }}</p>
-        </div>
-        <div class="benefits-grid">
-            <div class="benefit-card fade-in">
-                <div class="benefit-icon">
-                    <i class="fas fa-arrow-up"></i>
-                </div>
-                <div class="benefit-content">
-                    <h4>{{ __('landing.benefit1_title') }}</h4>
-                    <p>{{ __('landing.benefit1_desc') }}</p>
-                </div>
-            </div>
-            <div class="benefit-card fade-in">
-                <div class="benefit-icon">
-                    <i class="fas fa-shield-alt"></i>
-                </div>
-                <div class="benefit-content">
-                    <h4>{{ __('landing.benefit2_title') }}</h4>
-                    <p>{{ __('landing.benefit2_desc') }}</p>
-                </div>
-            </div>
-            <div class="benefit-card fade-in">
-                <div class="benefit-icon">
-                    <i class="fas fa-dollar-sign"></i>
-                </div>
-                <div class="benefit-content">
-                    <h4>{{ __('landing.benefit3_title') }}</h4>
-                    <p>{{ __('landing.benefit3_desc') }}</p>
-                </div>
-            </div>
-            <div class="benefit-card fade-in">
-                <div class="benefit-icon">
-                    <i class="fas fa-bolt"></i>
-                </div>
-                <div class="benefit-content">
-                    <h4>{{ __('landing.benefit4_title') }}</h4>
-                    <p>{{ __('landing.benefit4_desc') }}</p>
-                </div>
-            </div>
-            <div class="benefit-card fade-in">
-                <div class="benefit-icon">
-                    <i class="fas fa-chart-pie"></i>
-                </div>
-                <div class="benefit-content">
-                    <h4>{{ __('landing.benefit5_title') }}</h4>
-                    <p>{{ __('landing.benefit5_desc') }}</p>
-                </div>
-            </div>
-            <div class="benefit-card fade-in">
-                <div class="benefit-icon">
-                    <i class="fas fa-rocket"></i>
-                </div>
-                <div class="benefit-content">
-                    <h4>{{ __('landing.benefit6_title') }}</h4>
-                    <p>{{ __('landing.benefit6_desc') }}</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="cta">
-        <h2>{{ __('landing.cta_title') }}</h2>
-        <p>{{ __('landing.cta_description') }}</p>
-        <button onclick="openContactModal()" class="btn-primary" style="font-size: 1.2rem; padding: 1.2rem 3.5rem; border: none; cursor: pointer;">
-            <i class="fas fa-star"></i>
-            {{ __('landing.start_free') }}
-        </button>
-    </section>
 
     <!-- Footer -->
     <footer class="footer">
@@ -1766,6 +2006,7 @@
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
         }
+        window.openContactModal = openContactModal;
         
         function closeContactModal() {
             const modal = document.getElementById('contactModal');
@@ -1779,6 +2020,7 @@
                 document.getElementById('successMessage').classList.remove('active');
             }, 300);
         }
+        window.closeContactModal = closeContactModal;
         
         function closeModalOnOutsideClick(event) {
             if (event.target.id === 'contactModal') {

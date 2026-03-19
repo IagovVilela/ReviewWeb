@@ -31,5 +31,10 @@
     "bugs": {
         "url": "https://github.com/IagovVilela/review-web/issues"
     },
-    "homepage": "https://github.com/IagovVilela/review-web#readme"
+    "homepage": "https://github.com/IagovVilela/review-web#readme",
+    "dependencies": {
+        "framer-motion": "^12.38.0",
+        "react": "^19.2.4",
+        "react-dom": "^19.2.4"
+    }
 }

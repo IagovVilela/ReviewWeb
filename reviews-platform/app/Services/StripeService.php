@@ -75,6 +75,7 @@ class StripeService
     public function createSubscriptionCheckoutSession(User $user, string $successUrl, string $cancelUrl): ?string
     {
         $priceId = config('stripe.subscription_price_id');
+        $trialDays = (int) config('stripe.trial_days', 0);
         if (!$priceId) {
             Log::warning('STRIPE_SUBSCRIPTION_PRICE_ID not set');
             return null;
@@ -107,6 +108,9 @@ class StripeService
                     'metadata' => ['user_id' => (string) $user->id],
                 ],
             ];
+            if ($trialDays > 0) {
+                $params['subscription_data']['trial_period_days'] = $trialDays;
+            }
 
             if ($customerId) {
                 $params['customer'] = $customerId;
