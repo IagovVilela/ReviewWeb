@@ -667,12 +667,6 @@
                 <span class="logo-text">Reviews Platform</span>
             </div>
             <div style="display: flex; align-items: center;">
-                <div class="language-selector">
-                    <select id="languageSelector">
-                        <option value="pt_BR" {{ app()->getLocale() === 'pt_BR' ? 'selected' : '' }}>🇧🇷 PT</option>
-                        <option value="en_US" {{ app()->getLocale() === 'en_US' ? 'selected' : '' }}>🇬🇧 EN</option>
-                    </select>
-                </div>
                 <a href="/login" class="btn-login">
                     <i class="fas fa-sign-in-alt"></i>
                     {{ __('landing.access_panel') }}
@@ -955,7 +949,7 @@
                     <i class="fas fa-envelope"></i>
                     {{ __('landing.contact') }}
                 </h4>
-                <p><i class="fas fa-at"></i> contato@reviewsplatform.com</p>
+                <p><i class="fas fa-at"></i> contact@reviewsplatform.com</p>
                 <p><i class="fas fa-phone"></i> (11) 9 9999-9999</p>
                 <p><i class="fas fa-headset"></i> {{ __('landing.technical_support') }}</p>
             </div>
@@ -982,30 +976,7 @@
             document.head.appendChild(link);
         })();
         
-        // Language Selector
-        document.getElementById('languageSelector').addEventListener('change', function() {
-            const locale = this.value;
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-            
-            fetch('/change-locale', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken,
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({ locale: locale })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    window.location.reload();
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        });
+
         
         // Scroll Animation
         const observerOptions = {

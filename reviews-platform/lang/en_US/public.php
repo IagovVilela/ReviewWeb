@@ -83,9 +83,9 @@ return [
     'powered_by' => 'Powered by Reviews Platform',
     
     // Prize Banner
-    'prize_amount' => 'R$ 10,000 in Prizes!',
+    'prize_amount' => '£10,000 in Prizes!',
     'prize_description' => 'Participate in our promotion and compete for incredible prizes!',
-    'prize_box_text' => 'Rate and compete for a prize of R$ 10,000!',
-    'prize_hero_text' => 'Review and enter to win R$10,000',
+    'prize_box_text' => 'Rate and compete for a prize of £10,000!',
+    'prize_hero_text' => 'Review and enter to win £10,000',
 ];
 
