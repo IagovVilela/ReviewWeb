@@ -20,7 +20,8 @@ return [
     
     // Prize Draw
     'prize_draw_title' => 'Avalie e Ganhe!',
-    'prize_draw_description' => 'Seus clientes são incentivados a avaliar através de um sorteio de R$ 10.000,00. Pago por nós, sem custo para eles ou para você.',
+    'prize_amount_display' => '£10,000',
+    'prize_draw_description' => 'Seus clientes são incentivados a avaliar através de um sorteio de £10,000. Pago por nós, sem custo para eles ou para você.',
     'prize_draw_badge' => '100% Gratuito para Clientes',
     
     // Stats

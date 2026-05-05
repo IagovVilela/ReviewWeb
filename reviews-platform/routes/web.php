@@ -50,7 +50,7 @@ Route::post('/contact-trial', [ContactController::class, 'submitTrialRequest'])-
 
 // Change locale route
 Route::post('/change-locale', function (Request $request) {
-    $locale = $request->input('locale', 'pt_BR');
+    $locale = $request->input('locale', config('app.locale', 'en_US'));
     
     if (in_array($locale, ['pt_BR', 'en_US'])) {
         session(['locale' => $locale]);

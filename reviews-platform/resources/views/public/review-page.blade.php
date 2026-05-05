@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -261,20 +261,6 @@
         </div>
     </div>
     @endif
-    <!-- Language Selector -->
-    <div class="fixed top-4 right-4 z-50">
-        <div class="bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-2">
-            <div class="flex items-center space-x-2">
-                <a href="?lang=pt_BR" class="px-3 py-2 rounded {{ app()->getLocale() === 'pt_BR' ? 'bg-blue-500 text-white' : 'text-gray-600 hover:bg-gray-100' }} transition-colors text-sm font-medium">
-                    PT
-                </a>
-                <a href="?lang=en_US" class="px-3 py-2 rounded {{ app()->getLocale() === 'en_US' ? 'bg-blue-500 text-white' : 'text-gray-600 hover:bg-gray-100' }} transition-colors text-sm font-medium">
-                    EN
-                </a>
-            </div>
-        </div>
-    </div>
-    
     <!-- Hero Section -->
     <div class="relative overflow-hidden hero-gradient" @if($company->background_image_url) style="background-image: url('{{ $company->background_image_url }}'); background-size: cover; background-position: center;" @else style="background-image: url('{{ asset('assets/images/Backpadrao.jpg') }}'); background-size: cover; background-position: center;" @endif>
         <!-- Overlay para melhorar legibilidade quando há imagem de fundo -->

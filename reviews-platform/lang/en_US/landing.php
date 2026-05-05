@@ -20,7 +20,8 @@ return [
     
     // Prize Draw
     'prize_draw_title' => 'Review & Win!',
-    'prize_draw_description' => 'Your customers are incentivized to review via a R$10,000 prize draw. Paid by us at no cost to them or to you.',
+    'prize_amount_display' => '£10,000',
+    'prize_draw_description' => 'Your customers are incentivized to review via a £10,000 prize draw. Paid by us at no cost to them or to you.',
     'prize_draw_badge' => '100% Free for Customers',
     
     // Stats

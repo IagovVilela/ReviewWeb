@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1107,8 +1107,8 @@
             padding: 154px 2rem 104px;
             border-bottom: 1px solid #e5e7eb;
             background:
-                radial-gradient(920px 440px at 18% 12%, rgba(139, 92, 246, 0.14), transparent 68%),
-                linear-gradient(180deg, #f2f0fc 0%, #eeebfb 100%);
+                radial-gradient(860px 400px at 18% 10%, rgba(139, 92, 246, 0.09), transparent 70%),
+                linear-gradient(180deg, #fafafa 0%, #f4f2fb 100%);
         }
 
         .dark .home-modern-hero {
@@ -1131,12 +1131,12 @@
         }
 
         .home-modern-hero h1 {
-            font-size: 4rem;
-            line-height: 1.03;
-            font-weight: 900;
+            font-size: clamp(2.15rem, 4.2vw, 3.35rem);
+            line-height: 1.08;
+            font-weight: 800;
             color: #111827;
             margin-bottom: 1.25rem;
-            letter-spacing: -0.03em;
+            letter-spacing: -0.035em;
         }
 
         .dark .home-modern-hero h1 {
@@ -1398,6 +1398,94 @@
             background: #f5f3ff;
         }
 
+        .home-modern-hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .home-modern-btn-primary {
+            box-shadow: 0 4px 14px rgba(139, 92, 246, 0.18);
+        }
+
+        .home-modern-btn-secondary {
+            position: relative;
+            overflow: visible;
+            border-width: 1px !important;
+        }
+
+        .home-modern-btn-secondary .home-modern-link-line {
+            position: absolute;
+            bottom: 0.55rem;
+            left: 1.35rem;
+            right: 1.35rem;
+            height: 1px;
+            background: currentColor;
+            opacity: 0.35;
+            transform: scaleX(0.2);
+            transform-origin: left center;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .home-modern-btn-secondary:hover .home-modern-link-line {
+            transform: scaleX(1);
+            opacity: 0.55;
+        }
+
+        .home-modern-play-icon {
+            display: inline-flex;
+        }
+
+        .preview-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+            transform-style: preserve-3d;
+        }
+
+        .home-modern-preview-tilt {
+            cursor: default;
+        }
+
+        .home-modern-stat-card:hover {
+            box-shadow: 0 10px 26px rgba(17, 24, 39, 0.07) !important;
+        }
+
+        .dark .home-modern-stat-card:hover {
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35) !important;
+        }
+
+        .home-modern-stats-inner .stat-card {
+            will-change: transform;
+        }
+
+        .home-modern-section-head h2 {
+            letter-spacing: -0.02em;
+        }
+
+        .home-modern-cta-inner {
+            position: relative;
+            z-index: 1;
+        }
+
+        .home-modern-cta-glow {
+            position: absolute;
+            inset: -30% 10% auto;
+            height: 140px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.35), transparent 68%);
+            pointer-events: none;
+            z-index: 0;
+            filter: blur(20px);
+        }
+
+        .home-modern-cta-btn {
+            position: relative;
+            z-index: 2;
+        }
+
         @media (prefers-reduced-motion: reduce) {
             .home-modern .home-modern-card,
             .home-modern .btn-primary,
@@ -1626,12 +1714,6 @@
                 <span class="logo-text">{{ __('app.name') }}</span>
             </div>
             <div style="display: flex; align-items: center; gap: 0.75rem;">
-                <div class="language-selector">
-                    <select id="languageSelector">
-                        <option value="pt_BR" {{ app()->getLocale() === 'pt_BR' ? 'selected' : '' }}>🇧🇷 PT</option>
-                        <option value="en_US" {{ app()->getLocale() === 'en_US' ? 'selected' : '' }}>🇬🇧 EN</option>
-                    </select>
-                </div>
                 <button id="darkModeToggle" onclick="toggleDarkMode()" class="dark-mode-toggle" title="Toggle Dark Mode">
                     <i id="darkModeIcon" class="fas fa-moon"></i>
                 </button>
@@ -1714,7 +1796,7 @@
                     <i class="fas fa-trophy"></i>
                 </div>
                 <h2>{{ __('landing.prize_draw_title') }}</h2>
-                <p class="prize-amount">R$ 10.000,00</p>
+                <p class="prize-amount">{{ __('landing.prize_amount_display') }}</p>
                 <p class="prize-description">{{ __('landing.prize_draw_description') }}</p>
                 <div class="prize-badge">
                     <i class="fas fa-gift"></i>
@@ -1904,31 +1986,6 @@
             // Add new favicon
             document.head.appendChild(link);
         })();
-        
-        // Language Selector
-        document.getElementById('languageSelector').addEventListener('change', function() {
-            const locale = this.value;
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-            
-            fetch('/change-locale', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken,
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({ locale: locale })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    window.location.reload();
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        });
         
         // Scroll Animation
         const observerOptions = {

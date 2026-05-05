@@ -135,7 +135,7 @@
         </div>
 
         <div style="background-color: #d1f4e8; padding: 15px; border-radius: 6px; border: 1px solid #86efac; margin: 20px 0; text-align: center;">
-            <p style="margin: 0;"><strong>🎁 Special Bonus:</strong> Your customers will be incentivized to review via a <strong>R$10,000 prize draw</strong> - paid by us at no cost to you!</p>
+            <p style="margin: 0;"><strong>🎁 Special Bonus:</strong> Your customers will be incentivized to review via a <strong>£10,000 prize draw</strong> - paid by us at no cost to you!</p>
         </div>
 
         <div class="footer">

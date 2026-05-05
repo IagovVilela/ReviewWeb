@@ -432,17 +432,10 @@
     </style>
 </head>
 <body>
-    <!-- Language Selector and Dark Mode Toggle -->
     <div class="language-selector">
         <button id="darkModeToggle" onclick="toggleDarkMode()" class="dark-mode-toggle" title="Toggle Dark Mode">
             <i id="darkModeIcon" class="fas fa-moon"></i>
         </button>
-        <div style="position: relative;">
-        <select id="languageSelector">
-            <option value="pt_BR" {{ app()->getLocale() === 'pt_BR' ? 'selected' : '' }}>🇧🇷 PT</option>
-            <option value="en_US" {{ app()->getLocale() === 'en_US' ? 'selected' : '' }}>🇬🇧 EN</option>
-        </select>
-        </div>
     </div>
     
     <!-- Login Container -->
@@ -549,31 +542,6 @@
     </div>
     
     <script>
-        // Language Selector
-        document.getElementById('languageSelector').addEventListener('change', function() {
-            const locale = this.value;
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-            
-            fetch('/change-locale', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken,
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({ locale: locale })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    window.location.reload();
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        });
-        
         // Add loading state to button
         document.querySelector('form').addEventListener('submit', function(e) {
             const button = document.querySelector('.btn-login');
