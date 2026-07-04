@@ -22,6 +22,7 @@ return [
     'name_placeholder' => 'Your full name',
     'register_button' => 'Create account',
     'already_have_account' => 'Already have an account?',
+    'no_account_yet' => "Don't have an account?",
     'login_here' => 'Log in',
 ];
 

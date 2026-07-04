@@ -42,7 +42,7 @@
     <div class="mt-6 space-y-3 text-center text-sm">
         <a href="{{ route('password.forgot') }}" class="text-ink-muted transition hover:text-ink">{{ __('app.forgot') ?? 'Forgot password?' }}</a>
         <p>
-            <span class="text-ink-muted">{{ __('auth.already_have_account') }}</span>
+            <span class="text-ink-muted">{{ __('auth.no_account_yet') }}</span>
             <a href="{{ route('register') }}" class="ml-1 font-medium text-ink underline-offset-4 hover:underline">{{ __('auth.register_title') }}</a>
         </p>
     </div>
