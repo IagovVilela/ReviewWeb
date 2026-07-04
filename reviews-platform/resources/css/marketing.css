@@ -1,0 +1,103 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --ink: #0a0a0a;
+        --ink-muted: #525252;
+        --ink-subtle: #737373;
+        --surface: #fafafa;
+        --surface-raised: #ffffff;
+        --surface-border: #e5e5e5;
+        --accent: #7c3aed;
+        --accent-hover: #6d28d9;
+        --accent-muted: #ede9fe;
+    }
+
+    .dark {
+        --ink: #fafafa;
+        --ink-muted: #a3a3a3;
+        --ink-subtle: #737373;
+        --surface: #0a0a0a;
+        --surface-raised: #171717;
+        --surface-border: #262626;
+        --accent: #a78bfa;
+        --accent-hover: #c4b5fd;
+        --accent-muted: #2e1065;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        @apply font-sans antialiased bg-surface text-ink;
+    }
+}
+
+@layer components {
+    .editorial-container {
+        @apply mx-auto w-full max-w-editorial px-6 md:px-10;
+    }
+
+    .editorial-display {
+        @apply font-display tracking-display text-ink;
+    }
+
+    .editorial-kicker {
+        @apply text-xs font-semibold uppercase tracking-[0.2em] text-ink-subtle;
+    }
+
+    .editorial-btn-primary {
+        @apply inline-flex items-center justify-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-medium text-white transition-all duration-300 ease-editorial hover:bg-ink/90 dark:bg-white dark:text-ink dark:hover:bg-white/90;
+    }
+
+    .editorial-btn-ghost {
+        @apply inline-flex items-center justify-center gap-2 rounded-full border border-surface-border bg-transparent px-6 py-3 text-sm font-medium text-ink transition-all duration-300 ease-editorial hover:border-ink/30 hover:bg-ink/[0.03] dark:border-neutral-700 dark:hover:border-neutral-500;
+    }
+
+    .editorial-card {
+        @apply rounded-2xl border border-surface-border bg-surface-raised p-6 transition-colors duration-300 dark:border-neutral-800 dark:bg-neutral-900;
+    }
+
+    .editorial-input {
+        @apply w-full rounded-xl border border-surface-border bg-surface-raised px-4 py-3 text-sm text-ink outline-none transition-all duration-200 placeholder:text-ink-subtle focus:border-accent focus:ring-2 focus:ring-accent/20 dark:border-neutral-700 dark:bg-neutral-900;
+    }
+
+    .editorial-label {
+        @apply mb-2 block text-sm font-medium text-ink-muted;
+    }
+
+    .editorial-section {
+        @apply py-20 md:py-28;
+    }
+
+    .editorial-section-head {
+        @apply mb-12 max-w-prose md:mb-16;
+    }
+
+    .editorial-section-head h2 {
+        @apply editorial-display text-3xl md:text-4xl lg:text-5xl;
+    }
+
+    .editorial-section-head p {
+        @apply mt-4 text-base leading-relaxed text-ink-muted md:text-lg;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

@@ -1,43 +1,40 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import HomeModernSection from './home/HomeModernSection';
+import MarketingPage from './marketing/MarketingPage';
 
-function mountHomeModernSection() {
-    const rootElement = document.getElementById('homeModernRoot');
+function mountMarketingPage() {
+    const rootElement = document.getElementById('marketingRoot');
     if (!rootElement) {
         return;
     }
 
-    const translationsRaw = rootElement.dataset.translations ?? '{}';
-    const statsRaw = rootElement.dataset.stats ?? '[]';
+    const parse = (key, fallback) => {
+        try {
+            return JSON.parse(rootElement.dataset[key] ?? fallback);
+        } catch {
+            console.error(`Failed to parse ${key}`);
+            return JSON.parse(fallback);
+        }
+    };
 
-    let translations = {};
-    let stats = [];
-
-    try {
-        translations = JSON.parse(translationsRaw);
-    } catch (error) {
-        console.error('Failed to parse home translations', error);
-    }
-
-    try {
-        stats = JSON.parse(statsRaw);
-    } catch (error) {
-        console.error('Failed to parse home stats', error);
-    }
+    const translations = parse('translations', '{}');
+    const stats = parse('stats', '[]');
+    const assets = parse('assets', '{}');
+    const csrfToken = rootElement.dataset.csrf ?? '';
 
     const root = createRoot(rootElement);
     root.render(
-        <HomeModernSection
+        <MarketingPage
             translations={translations}
             stats={stats}
-            onOpenContact={() => window.openContactModal?.()}
+            assets={assets}
+            csrfToken={csrfToken}
         />
     );
 }
 
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', mountHomeModernSection);
+    document.addEventListener('DOMContentLoaded', mountMarketingPage);
 } else {
-    mountHomeModernSection();
+    mountMarketingPage();
 }
