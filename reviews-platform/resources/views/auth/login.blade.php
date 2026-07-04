@@ -5,7 +5,7 @@
 @section('content')
     <div>
         <h2 class="editorial-display text-3xl tracking-tight">{{ __('auth.welcome_back') }}</h2>
-        <p class="mt-2 text-sm text-ink-muted">{{ __('auth.login_subtitle') }}</p>
+        <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">{{ __('auth.login_subtitle') }}</p>
     </div>
 
     @if(session('success'))
@@ -40,10 +40,10 @@
     </form>
 
     <div class="mt-6 space-y-3 text-center text-sm">
-        <a href="{{ route('password.forgot') }}" class="text-ink-muted transition hover:text-ink">{{ __('app.forgot') ?? 'Forgot password?' }}</a>
+        <a href="{{ route('password.forgot') }}" class="text-gray-600 dark:text-gray-300 transition hover:text-primary-600">{{ __('app.forgot') ?? 'Forgot password?' }}</a>
         <p>
-            <span class="text-ink-muted">{{ __('auth.no_account_yet') }}</span>
-            <a href="{{ route('register') }}" class="ml-1 font-medium text-ink underline-offset-4 hover:underline">{{ __('auth.register_title') }}</a>
+            <span class="text-gray-600 dark:text-gray-300">{{ __('auth.no_account_yet') }}</span>
+            <a href="{{ route('register') }}" class="ml-1 font-medium text-primary-600 underline-offset-4 hover:underline">{{ __('auth.register_title') }}</a>
         </p>
     </div>
 @endsection

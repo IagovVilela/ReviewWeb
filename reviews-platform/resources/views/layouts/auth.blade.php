@@ -18,15 +18,15 @@
     @vite(['resources/css/marketing.css'])
     @stack('head')
 </head>
-<body class="min-h-screen bg-surface text-ink antialiased">
+<body class="min-h-screen bg-gray-50 text-gray-900 antialiased dark:bg-gray-900 dark:text-gray-100">
     <div class="grid min-h-screen lg:grid-cols-2">
-        <aside class="relative hidden flex-col justify-between border-r border-surface-border bg-ink p-10 text-white lg:flex dark:border-neutral-800">
+        <aside class="relative hidden flex-col justify-between rw-gradient-panel p-10 text-white lg:flex">
             <div>
                 <a href="/" class="inline-flex items-center gap-3">
                     <img src="{{ asset('assets/images/lopgosDASHBOARD.png') }}" alt="{{ __('app.name') }}" class="h-9 w-auto brightness-0 invert" />
                     <span class="text-sm font-semibold tracking-tight">{{ __('app.name') }}</span>
                 </a>
-                <h1 class="editorial-display mt-16 max-w-md text-4xl leading-tight text-white">
+                <h1 class="mt-16 max-w-md text-4xl font-bold leading-tight text-white">
                     {{ __('landing.hero_title') }}
                 </h1>
                 <p class="mt-6 max-w-sm text-sm leading-relaxed text-white/65">
@@ -43,7 +43,7 @@
         </aside>
 
         <main class="flex flex-col">
-            <header class="flex items-center justify-between border-b border-surface-border px-6 py-4 lg:border-none lg:px-10 lg:pt-8 dark:border-neutral-800">
+            <header class="flex items-center justify-between border-b border-gray-200 px-6 py-4 lg:border-none lg:px-10 lg:pt-8 dark:border-gray-700">
                 <a href="/" class="inline-flex items-center gap-2 lg:hidden">
                     <img src="{{ asset('assets/images/lopgosDASHBOARD.png') }}" alt="" class="h-8 w-auto" />
                     <span class="text-sm font-semibold">{{ __('app.name') }}</span>
@@ -51,7 +51,7 @@
                 <button
                     type="button"
                     onclick="document.documentElement.classList.toggle('dark'); localStorage.setItem('darkMode', document.documentElement.classList.contains('dark'));"
-                    class="rounded-full p-2 text-ink-muted transition hover:bg-ink/5"
+                    class="rounded-full p-2 text-gray-500 transition hover:bg-primary-50 hover:text-primary-600 dark:hover:bg-gray-800"
                     aria-label="Toggle theme"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
@@ -64,8 +64,8 @@
                 </div>
             </div>
 
-            <footer class="px-6 py-6 text-center text-xs text-ink-subtle lg:text-left lg:px-16">
-                <a href="/" class="hover:text-ink">{{ __('auth.back_to_home') }}</a>
+            <footer class="px-6 py-6 text-center text-xs text-gray-500 lg:text-left lg:px-16">
+                <a href="/" class="hover:text-primary-600">{{ __('auth.back_to_home') }}</a>
             </footer>
         </main>
     </div>

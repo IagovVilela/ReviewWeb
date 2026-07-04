@@ -9,21 +9,6 @@ module.exports = {
     theme: {
         extend: {
             colors: {
-                ink: {
-                    DEFAULT: '#0A0A0A',
-                    muted: '#525252',
-                    subtle: '#737373',
-                },
-                surface: {
-                    DEFAULT: '#FAFAFA',
-                    raised: '#FFFFFF',
-                    border: '#E5E5E5',
-                },
-                accent: {
-                    DEFAULT: '#7C3AED',
-                    hover: '#6D28D9',
-                    muted: '#EDE9FE',
-                },
                 primary: {
                     50: '#faf5ff',
                     100: '#f3e8ff',
@@ -36,22 +21,29 @@ module.exports = {
                     800: '#5b21b6',
                     900: '#4c1d95',
                 },
+                secondary: {
+                    50: '#eff6ff',
+                    100: '#dbeafe',
+                    200: '#bfdbfe',
+                    300: '#93c5fd',
+                    400: '#60a5fa',
+                    500: '#3b82f6',
+                    600: '#2563eb',
+                    700: '#1d4ed8',
+                    800: '#1e40af',
+                    900: '#1e3a8a',
+                },
+                success: {
+                    500: '#10b981',
+                    600: '#059669',
+                },
             },
             fontFamily: {
-                display: ['"Instrument Serif"', 'Georgia', 'serif'],
-                sans: ['"DM Sans"', 'system-ui', 'sans-serif'],
-            },
-            letterSpacing: {
-                display: '-0.03em',
-                tight: '-0.02em',
-            },
-            maxWidth: {
-                editorial: '72rem',
-                prose: '40rem',
+                sans: ['Inter', 'system-ui', 'sans-serif'],
             },
             boxShadow: {
-                editorial: '0 1px 2px rgba(10, 10, 10, 0.04), 0 8px 24px rgba(10, 10, 10, 0.06)',
-                'editorial-lg': '0 2px 8px rgba(10, 10, 10, 0.06), 0 24px 48px rgba(10, 10, 10, 0.08)',
+                editorial: '0 4px 6px rgba(139, 92, 246, 0.08), 0 10px 25px rgba(0, 0, 0, 0.08)',
+                'editorial-lg': '0 8px 30px rgba(139, 92, 246, 0.12), 0 20px 40px rgba(0, 0, 0, 0.1)',
             },
             transitionTimingFunction: {
                 editorial: 'cubic-bezier(0.16, 1, 0.3, 1)',

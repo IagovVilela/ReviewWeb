@@ -5,7 +5,7 @@
 @section('content')
     <div>
         <h2 class="editorial-display text-3xl tracking-tight">{{ __('auth.register_title') }}</h2>
-        <p class="mt-2 text-sm text-ink-muted">{{ __('auth.register_subtitle') }}</p>
+        <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">{{ __('auth.register_subtitle') }}</p>
     </div>
 
     @if($errors->any())
@@ -35,8 +35,8 @@
         <button type="submit" class="editorial-btn-primary w-full">{{ __('auth.register_button') }}</button>
     </form>
 
-    <p class="mt-6 text-center text-sm text-ink-muted">
+    <p class="mt-6 text-center text-sm text-gray-600 dark:text-gray-300">
         {{ __('auth.already_have_account') }}
-        <a href="{{ route('login') }}" class="font-medium text-ink underline-offset-4 hover:underline">{{ __('auth.login_here') }}</a>
+        <a href="{{ route('login') }}" class="font-medium text-primary-600 underline-offset-4 hover:underline">{{ __('auth.login_here') }}</a>
     </p>
 @endsection

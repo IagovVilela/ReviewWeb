@@ -21,7 +21,7 @@ function StarRating({ max = 5, onChange }) {
                     <motion.button
                         key={rating}
                         type="button"
-                        className="rounded-full p-1 text-amber-400 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+                        className="rounded-full p-1 text-amber-400 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/40"
                         whileHover={{ scale: 1.08 }}
                         whileTap={{ scale: 0.95 }}
                         onMouseEnter={() => setHover(rating)}

@@ -5,7 +5,7 @@
 @section('content')
     <div>
         <h2 class="editorial-display text-3xl tracking-tight">Reset password</h2>
-        <p class="mt-2 text-sm text-ink-muted">Choose a new password for your account</p>
+        <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Choose a new password for your account</p>
     </div>
 
     @if(session('success'))

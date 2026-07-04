@@ -87,7 +87,7 @@ function ContactModal({ open, onClose, t, csrfToken }) {
 
     return (
         <div
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-ink/40 p-4 backdrop-blur-sm"
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-primary-900/40 p-4 backdrop-blur-sm"
             onClick={(e) => e.target === e.currentTarget && onClose()}
             role="dialog"
             aria-modal="true"
@@ -97,17 +97,17 @@ function ContactModal({ open, onClose, t, csrfToken }) {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.96, y: 12 }}
                 transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                className="w-full max-w-md rounded-2xl border border-surface-border bg-surface-raised p-8 shadow-editorial-lg dark:border-neutral-800 dark:bg-neutral-900"
+                className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-8 shadow-editorial-lg dark:border-gray-700 dark:bg-gray-800"
             >
                 <div className="mb-6 flex items-start justify-between">
                     <div>
                         <h2 className="editorial-display text-2xl">{t.contact_form_title}</h2>
-                        <p className="mt-2 text-sm text-ink-muted">{t.contact_form_subtitle}</p>
+                        <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{t.contact_form_subtitle}</p>
                     </div>
                     <button
                         type="button"
                         onClick={onClose}
-                        className="rounded-full p-2 text-ink-muted transition hover:bg-ink/5"
+                        className="rounded-full p-2 text-gray-500 transition hover:bg-gray-100 dark:hover:bg-gray-700"
                         aria-label="Close"
                     >
                         <X size={18} />
@@ -116,11 +116,11 @@ function ContactModal({ open, onClose, t, csrfToken }) {
 
                 {status === 'success' ? (
                     <div className="py-8 text-center">
-                        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-accent-muted">
-                            <Star className="text-accent" size={20} />
+                        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary-100 dark:bg-primary-900">
+                            <Star className="text-primary-600 dark:text-primary-400" size={20} />
                         </div>
                         <h3 className="font-medium">{t.success_title}</h3>
-                        <p className="mt-2 text-sm text-ink-muted">{t.success_message}</p>
+                        <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{t.success_message}</p>
                     </div>
                 ) : (
                     <form onSubmit={handleSubmit} className="space-y-4">
@@ -210,8 +210,8 @@ function MarketingPage({ translations: t, stats, assets, csrfToken }) {
 
     return (
         <MotionConfig reducedMotion="user">
-            <div className="min-h-screen bg-surface text-ink">
-                <header className="fixed inset-x-0 top-0 z-50 border-b border-surface-border/80 bg-surface/80 backdrop-blur-md dark:border-neutral-800 dark:bg-neutral-950/80">
+            <div className="min-h-screen bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
+                <header className="fixed inset-x-0 top-0 z-50 border-b border-gray-200/80 bg-white/90 backdrop-blur-md dark:border-gray-700 dark:bg-gray-900/90">
                     <div className="editorial-container flex h-16 items-center justify-between md:h-[4.5rem]">
                         <a href="/" className="flex items-center gap-3">
                             <img src={assets.logo} alt={t.app_name} className="h-8 w-auto" />
@@ -221,7 +221,7 @@ function MarketingPage({ translations: t, stats, assets, csrfToken }) {
                             <button
                                 type="button"
                                 onClick={toggleDark}
-                                className="rounded-full p-2.5 text-ink-muted transition hover:bg-ink/5"
+                                className="rounded-full p-2.5 text-gray-500 transition hover:bg-primary-50 hover:text-primary-600 dark:hover:bg-gray-800"
                                 aria-label="Toggle theme"
                             >
                                 <Moon size={18} />
@@ -235,7 +235,7 @@ function MarketingPage({ translations: t, stats, assets, csrfToken }) {
 
                 <main className="pt-16 md:pt-[4.5rem]">
                     {/* Hero */}
-                    <section className="editorial-section border-b border-surface-border dark:border-neutral-800">
+                    <section className="editorial-section rw-gradient-bg border-b border-gray-200 dark:border-gray-700">
                         <div className="editorial-container">
                             <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
                                 <motion.div
@@ -247,7 +247,7 @@ function MarketingPage({ translations: t, stats, assets, csrfToken }) {
                                     <h1 className="editorial-display text-4xl leading-[1.08] md:text-5xl lg:text-6xl">
                                         {t.hero_title}
                                     </h1>
-                                    <p className="mt-6 max-w-prose text-base leading-relaxed text-ink-muted md:text-lg">
+                                    <p className="mt-6 max-w-prose text-base leading-relaxed text-gray-600 dark:text-gray-300 md:text-lg">
                                         {t.hero_description}
                                     </p>
                                     <div className="mt-10 flex flex-wrap gap-3">
@@ -271,16 +271,16 @@ function MarketingPage({ translations: t, stats, assets, csrfToken }) {
                                             {t.learn_more}
                                         </motion.a>
                                     </div>
-                                    <div className="mt-12 flex flex-wrap gap-8 border-t border-surface-border pt-8 dark:border-neutral-800">
+                                    <div className="mt-12 flex flex-wrap gap-8 border-t border-gray-200 pt-8 dark:border-gray-700">
                                         {stats.map((s) => (
                                             <div key={s.label}>
-                                                <p className="text-2xl font-semibold tracking-tight">{s.value}</p>
-                                                <p className="mt-1 text-xs text-ink-subtle">{s.label}</p>
+                                                <p className="text-2xl font-semibold tracking-tight text-primary-600 dark:text-primary-400">{s.value}</p>
+                                                <p className="mt-1 text-xs text-gray-500">{s.label}</p>
                                             </div>
                                         ))}
                                         <div>
-                                            <p className="text-2xl font-semibold tracking-tight">100%</p>
-                                            <p className="mt-1 text-xs text-ink-subtle">{t.hero_control_total}</p>
+                                            <p className="text-2xl font-semibold tracking-tight text-primary-600 dark:text-primary-400">100%</p>
+                                            <p className="mt-1 text-xs text-gray-500">{t.hero_control_total}</p>
                                         </div>
                                     </div>
                                 </motion.div>
@@ -291,7 +291,7 @@ function MarketingPage({ translations: t, stats, assets, csrfToken }) {
                                     transition={{ duration: 0.75, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
                                     className="editorial-card shadow-editorial"
                                 >
-                                    <p className="text-xs font-medium uppercase tracking-widest text-ink-subtle">
+                                    <p className="text-xs font-medium uppercase tracking-widest text-gray-500">
                                         {t.hero_preview_title}
                                     </p>
                                     <div className="mt-4 flex items-baseline gap-3">
@@ -304,24 +304,24 @@ function MarketingPage({ translations: t, stats, assets, csrfToken }) {
                                             ['4', '58%'],
                                             ['3', '24%'],
                                         ].map(([star, w]) => (
-                                            <div key={star} className="flex items-center gap-3 text-xs text-ink-subtle">
+                                            <div key={star} className="flex items-center gap-3 text-xs text-gray-500">
                                                 <span className="w-3">{star}</span>
-                                                <div className="h-px flex-1 bg-surface-border dark:bg-neutral-700">
-                                                    <div className="h-full bg-ink dark:bg-white" style={{ width: w }} />
+                                                <div className="h-px flex-1 bg-gray-200 dark:bg-gray-600">
+                                                    <div className="h-full bg-gradient-to-r from-primary-500 to-pink-500" style={{ width: w }} />
                                                 </div>
                                             </div>
                                         ))}
                                     </div>
                                     <div className="mt-6 grid grid-cols-2 gap-3">
-                                        <div className="rounded-xl border border-surface-border p-3 dark:border-neutral-700">
-                                            <Shield size={14} className="text-accent" />
+                                        <div className="rounded-xl border border-gray-200 p-3 dark:border-gray-600">
+                                            <Shield size={14} className="text-primary-500" />
                                             <p className="mt-2 text-xs font-medium">{t.hero_preview_filter_title}</p>
-                                            <p className="text-[11px] text-ink-subtle">{t.hero_preview_filter_desc}</p>
+                                            <p className="text-[11px] text-gray-500">{t.hero_preview_filter_desc}</p>
                                         </div>
-                                        <div className="rounded-xl border border-surface-border p-3 dark:border-neutral-700">
-                                            <Bell size={14} className="text-accent" />
+                                        <div className="rounded-xl border border-gray-200 p-3 dark:border-gray-600">
+                                            <Bell size={14} className="text-primary-500" />
                                             <p className="mt-2 text-xs font-medium">{t.hero_preview_alert_title}</p>
-                                            <p className="text-[11px] text-ink-subtle">{t.hero_preview_alert_desc}</p>
+                                            <p className="text-[11px] text-gray-500">{t.hero_preview_alert_desc}</p>
                                         </div>
                                     </div>
                                 </motion.div>
@@ -331,18 +331,18 @@ function MarketingPage({ translations: t, stats, assets, csrfToken }) {
 
                     {/* Prize */}
                     <motion.section
-                        className="editorial-section border-b border-surface-border bg-surface-raised dark:border-neutral-800 dark:bg-neutral-900/50"
+                        className="editorial-section rw-prize-band border-b border-primary-700 text-white"
                         variants={sectionReveal}
                         initial="hidden"
                         whileInView="show"
                         viewport={{ once: true, margin: '-80px' }}
                     >
                         <div className="editorial-container text-center">
-                            <Trophy className="mx-auto text-accent" size={32} strokeWidth={1.5} />
-                            <h2 className="editorial-display mt-6 text-3xl md:text-4xl">{t.prize_draw_title}</h2>
-                            <p className="editorial-display mt-4 text-5xl md:text-6xl lg:text-7xl">{t.prize_amount_display}</p>
-                            <p className="mx-auto mt-6 max-w-2xl text-base text-ink-muted md:text-lg">{t.prize_draw_description}</p>
-                            <div className="mt-8 inline-flex items-center gap-2 rounded-full border border-surface-border px-4 py-2 text-sm dark:border-neutral-700">
+                            <Trophy className="mx-auto text-white/90" size={32} strokeWidth={1.5} />
+                            <h2 className="editorial-display mt-6 text-3xl text-white md:text-4xl">{t.prize_draw_title}</h2>
+                            <p className="editorial-display mt-4 text-5xl text-white md:text-6xl lg:text-7xl">{t.prize_amount_display}</p>
+                            <p className="mx-auto mt-6 max-w-2xl text-base text-white/85 md:text-lg">{t.prize_draw_description}</p>
+                            <div className="mt-8 inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2 text-sm text-white">
                                 <Gift size={14} />
                                 {t.prize_draw_badge}
                             </div>
@@ -352,7 +352,7 @@ function MarketingPage({ translations: t, stats, assets, csrfToken }) {
                     {/* Features */}
                     <motion.section
                         id="features"
-                        className="editorial-section border-b border-surface-border dark:border-neutral-800"
+                        className="editorial-section border-b border-gray-200 dark:border-gray-700"
                         variants={sectionReveal}
                         initial="hidden"
                         whileInView="show"
@@ -379,9 +379,9 @@ function MarketingPage({ translations: t, stats, assets, csrfToken }) {
                                             whileHover={reduced ? {} : hoverLift}
                                             className="editorial-card group"
                                         >
-                                            <Icon size={20} className="text-ink-muted transition group-hover:text-accent" strokeWidth={1.5} />
-                                            <h3 className="mt-4 font-medium tracking-tight">{f.title}</h3>
-                                            <p className="mt-2 text-sm leading-relaxed text-ink-muted">{f.desc}</p>
+                                            <Icon size={20} className="text-primary-500 transition group-hover:text-primary-600" strokeWidth={1.5} />
+                                            <h3 className="mt-4 font-medium tracking-tight text-gray-900 dark:text-white">{f.title}</h3>
+                                            <p className="mt-2 text-sm leading-relaxed text-gray-600 dark:text-gray-300">{f.desc}</p>
                                         </motion.article>
                                     );
                                 })}
@@ -391,7 +391,7 @@ function MarketingPage({ translations: t, stats, assets, csrfToken }) {
 
                     {/* Benefits */}
                     <motion.section
-                        className="editorial-section border-b border-surface-border dark:border-neutral-800"
+                        className="editorial-section border-b border-gray-200 dark:border-gray-700"
                         variants={sectionReveal}
                         initial="hidden"
                         whileInView="show"
@@ -407,12 +407,12 @@ function MarketingPage({ translations: t, stats, assets, csrfToken }) {
                                     const Icon = iconMap[b.icon] || Star;
                                     return (
                                         <motion.article key={b.title} variants={staggerItem} whileHover={reduced ? {} : hoverLift} className="editorial-card flex gap-4">
-                                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-surface-border dark:border-neutral-700">
+                                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-primary-200 bg-primary-50 text-primary-600 dark:border-primary-700 dark:bg-primary-900/40">
                                                 <Icon size={18} strokeWidth={1.5} />
                                             </div>
                                             <div>
-                                                <h3 className="font-medium">{b.title}</h3>
-                                                <p className="mt-1 text-sm text-ink-muted">{b.desc}</p>
+                                                <h3 className="font-medium text-gray-900 dark:text-white">{b.title}</h3>
+                                                <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">{b.desc}</p>
                                             </div>
                                         </motion.article>
                                     );
@@ -424,7 +424,7 @@ function MarketingPage({ translations: t, stats, assets, csrfToken }) {
                     {/* How it works */}
                     <motion.section
                         id="how-it-works"
-                        className="editorial-section border-b border-surface-border dark:border-neutral-800"
+                        className="editorial-section border-b border-gray-200 dark:border-gray-700"
                         variants={sectionReveal}
                         initial="hidden"
                         whileInView="show"
@@ -444,9 +444,9 @@ function MarketingPage({ translations: t, stats, assets, csrfToken }) {
                                         viewport={{ once: true }}
                                         transition={{ delay: i * 0.08, duration: 0.5 }}
                                     >
-                                        <span className="editorial-display text-4xl text-ink-subtle/40">{step.n}</span>
-                                        <h3 className="mt-4 font-medium">{step.title}</h3>
-                                        <p className="mt-2 text-sm leading-relaxed text-ink-muted">{step.desc}</p>
+                                        <span className="text-4xl font-bold text-primary-300 dark:text-primary-600">{step.n}</span>
+                                        <h3 className="mt-4 font-medium text-gray-900 dark:text-white">{step.title}</h3>
+                                        <p className="mt-2 text-sm leading-relaxed text-gray-600 dark:text-gray-300">{step.desc}</p>
                                     </motion.div>
                                 ))}
                             </div>
@@ -461,12 +461,12 @@ function MarketingPage({ translations: t, stats, assets, csrfToken }) {
                         whileInView="show"
                         viewport={{ once: true }}
                     >
-                        <div className="editorial-container rounded-3xl border border-surface-border bg-ink px-8 py-16 text-center text-white dark:border-neutral-800 md:px-16">
-                            <h2 className="editorial-display text-3xl text-white md:text-4xl">{t.cta_title}</h2>
-                            <p className="mx-auto mt-4 max-w-xl text-sm text-white/70 md:text-base">{t.cta_description}</p>
+                        <div className="editorial-container rounded-3xl rw-gradient-cta px-8 py-16 text-center text-white shadow-editorial-lg md:px-16">
+                            <h2 className="text-3xl font-bold text-white md:text-4xl">{t.cta_title}</h2>
+                            <p className="mx-auto mt-4 max-w-xl text-sm text-white/85 md:text-base">{t.cta_description}</p>
                             <motion.button
                                 type="button"
-                                className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-8 py-3.5 text-sm font-medium text-ink"
+                                className="mt-8 inline-flex items-center gap-2 rounded-xl bg-white px-8 py-3.5 text-sm font-semibold text-primary-600 shadow-md"
                                 whileHover={reduced ? {} : hoverLift}
                                 whileTap={reduced ? {} : tapScale}
                                 onClick={openModal}
@@ -479,27 +479,27 @@ function MarketingPage({ translations: t, stats, assets, csrfToken }) {
                     </motion.section>
                 </main>
 
-                <footer className="border-t border-surface-border py-16 dark:border-neutral-800">
+                <footer className="border-t border-gray-200 bg-white py-16 dark:border-gray-700 dark:bg-gray-900">
                     <div className="editorial-container grid gap-10 md:grid-cols-4">
                         <div className="md:col-span-2">
-                            <p className="font-medium">{t.app_name}</p>
-                            <p className="mt-3 max-w-sm text-sm text-ink-muted">{t.footer_description}</p>
-                            <p className="mt-6 text-xs text-ink-subtle">© 2025 {t.app_name}. {t.all_rights}</p>
+                            <p className="font-medium text-gray-900 dark:text-white">{t.app_name}</p>
+                            <p className="mt-3 max-w-sm text-sm text-gray-600 dark:text-gray-300">{t.footer_description}</p>
+                            <p className="mt-6 text-xs text-gray-500">© 2025 {t.app_name}. {t.all_rights}</p>
                         </div>
                         <div>
-                            <p className="text-xs font-semibold uppercase tracking-widest text-ink-subtle">{t.product}</p>
-                            <ul className="mt-4 space-y-2 text-sm text-ink-muted">
-                                <li><a href="#how-it-works" className="hover:text-ink">{t.how_works}</a></li>
-                                <li><a href="/login" className="hover:text-ink">{t.control_panel}</a></li>
-                                <li><a href="/login" className="hover:text-ink">{t.create_account}</a></li>
+                            <p className="text-xs font-semibold uppercase tracking-widest text-primary-600 dark:text-primary-400">{t.product}</p>
+                            <ul className="mt-4 space-y-2 text-sm text-gray-600 dark:text-gray-300">
+                                <li><a href="#how-it-works" className="hover:text-primary-600">{t.how_works}</a></li>
+                                <li><a href="/login" className="hover:text-primary-600">{t.control_panel}</a></li>
+                                <li><a href="/login" className="hover:text-primary-600">{t.create_account}</a></li>
                             </ul>
                         </div>
                         <div>
-                            <p className="text-xs font-semibold uppercase tracking-widest text-ink-subtle">{t.contact}</p>
-                            <p className="mt-4 text-sm text-ink-muted">{t.technical_support}</p>
+                            <p className="text-xs font-semibold uppercase tracking-widest text-primary-600 dark:text-primary-400">{t.contact}</p>
+                            <p className="mt-4 text-sm text-gray-600 dark:text-gray-300">{t.technical_support}</p>
                         </div>
                     </div>
-                    <div className="editorial-container mt-10 border-t border-surface-border pt-8 text-center text-xs text-ink-subtle dark:border-neutral-800">
+                    <div className="editorial-container mt-10 border-t border-gray-200 pt-8 text-center text-xs text-gray-500 dark:border-gray-700">
                         {t.developed_with} {t.by} Iago Vilela & Mateus Bittencourt
                     </div>
                 </footer>

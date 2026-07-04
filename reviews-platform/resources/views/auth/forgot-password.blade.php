@@ -5,7 +5,7 @@
 @section('content')
     <div>
         <h2 class="editorial-display text-3xl tracking-tight">Recover password</h2>
-        <p class="mt-2 text-sm text-ink-muted">Enter your email to receive a recovery code</p>
+        <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Enter your email to receive a recovery code</p>
     </div>
 
     @if(session('success'))
@@ -29,7 +29,7 @@
         <button type="submit" class="editorial-btn-primary w-full">Send code</button>
     </form>
 
-    <p class="mt-6 text-center text-xs text-ink-subtle">
+    <p class="mt-6 text-center text-xs text-gray-500">
         If the email exists in our system, you will receive a recovery code.
     </p>
 @endsection

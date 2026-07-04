@@ -5,7 +5,7 @@
 @section('content')
     <div>
         <h2 class="editorial-display text-3xl tracking-tight">Verify code</h2>
-        <p class="mt-2 text-sm text-ink-muted">Enter the 6-digit code sent to your email</p>
+        <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Enter the 6-digit code sent to your email</p>
     </div>
 
     @if(session('success'))
@@ -32,7 +32,7 @@
     </form>
 
     <p class="mt-6 text-center text-sm">
-        <a href="{{ route('password.forgot') }}" class="text-ink-muted hover:text-ink">Back</a>
+        <a href="{{ route('password.forgot') }}" class="text-gray-600 hover:text-primary-600">Back</a>
     </p>
 @endsection
 

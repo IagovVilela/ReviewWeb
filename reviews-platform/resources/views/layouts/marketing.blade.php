@@ -18,7 +18,7 @@
     @vite(['resources/css/marketing.css', 'resources/js/home-entry.jsx'])
     @stack('head')
 </head>
-<body class="min-h-screen bg-surface text-ink antialiased">
+<body class="min-h-screen bg-gray-50 text-gray-900 antialiased dark:bg-gray-900 dark:text-gray-100">
     @yield('content')
     @stack('scripts')
 </body>

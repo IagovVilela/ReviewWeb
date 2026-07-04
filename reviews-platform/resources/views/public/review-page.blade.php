@@ -8,28 +8,29 @@
     @vite(['resources/css/marketing.css', 'resources/js/review-entry.jsx'])
     <style>
         .review-hero {
-            background: #0a0a0a;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
         .company-logo {
             filter: drop-shadow(0 8px 24px rgba(0,0,0,.25));
             border-radius: 1rem;
         }
         .company-name-large {
-            font-family: 'Instrument Serif', Georgia, serif;
-            letter-spacing: -0.03em;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            letter-spacing: -0.02em;
             text-shadow: 0 2px 20px rgba(0,0,0,.35);
         }
         input[type="text"], input[type="email"], input[type="tel"], textarea {
             font-size: 16px;
         }
         .google-button {
-            background: #0a0a0a;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
             transition: opacity .2s ease;
         }
         .google-button:hover { opacity: .9; }
     </style>
 </head>
-<body class="min-h-screen bg-surface text-ink antialiased">
+<body class="min-h-screen bg-gray-50 text-gray-900 antialiased">
     <!-- Success Message -->
     @if(session('success'))
     <div class="fixed top-4 right-4 z-50 rounded-xl border border-green-200 bg-green-50 px-6 py-4 text-green-800 shadow-editorial">
@@ -41,7 +42,7 @@
     @endif
     <!-- Hero Section -->
     <div class="relative overflow-hidden review-hero" @if($company->background_image_url) style="background-image: url('{{ $company->background_image_url }}'); background-size: cover; background-position: center;" @else style="background-image: url('{{ asset('assets/images/Backpadrao.jpg') }}'); background-size: cover; background-position: center;" @endif>
-        <div class="absolute inset-0 bg-gradient-to-b from-black/55 via-black/45 to-black/60"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-primary-900/40 via-primary-800/30 to-primary-900/50"></div>
         
         <div class="relative z-10 px-4 py-12 sm:py-20 sm:px-6 lg:px-8">
             <div class="max-w-3xl mx-auto text-center">
@@ -59,7 +60,7 @@
                 </div>
                 
                 <div class="mb-4 sm:mb-6">
-                    <div class="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2.5 backdrop-blur-sm">
+                    <div class="inline-flex items-center gap-2 rounded-full border border-white/30 bg-green-500/20 px-4 py-2.5 backdrop-blur-sm">
                         <span class="text-sm font-medium text-white">{{ __('public.prize_hero_text') }}</span>
                     </div>
                 </div>
@@ -71,7 +72,7 @@
     <div class="editorial-container py-12 md:py-16">
         <div class="max-w-xl mx-auto mb-16">
             <div class="editorial-card shadow-editorial p-6 sm:p-8">
-                <h2 class="editorial-display text-2xl sm:text-3xl text-center mb-6">{{ __('public.how_was_experience') }}</h2>
+                <h2 class="text-2xl sm:text-3xl font-bold text-center text-gray-900 mb-6">{{ __('public.how_was_experience') }}</h2>
                 
                 <div class="text-center mb-8" id="reviewStarsRoot"></div>
                 
@@ -95,8 +96,8 @@
                             placeholder="{{ __('public.whatsapp_placeholder') }}"
                             maxlength="15"
                         >
-                        <p class="mt-1 text-xs italic text-ink-subtle">{{ __('public.competition_internal_use') }}</p>
-                        <p class="mt-3 hidden text-center text-sm font-medium text-ink-muted" id="confirmText"></p>
+                        <p class="mt-1 text-xs italic text-gray-500">{{ __('public.competition_internal_use') }}</p>
+                        <p class="mt-3 hidden text-center text-sm font-medium text-gray-600 dark:text-gray-300" id="confirmText"></p>
                     </div>
                     
                     <!-- Comment - Only shown for negative reviews -->
@@ -127,14 +128,14 @@
                 <!-- Loading State -->
                 <div id="loadingState" class="hidden text-center py-8">
                     <div class="editorial-card mb-4 border-green-200 bg-green-50/80" id="loadingStateContent">
-                        <h5 class="text-lg font-semibold text-ink mb-2" id="loadingTitle">{{ __('public.redirecting_to_google') }}</h5>
-                        <p class="text-ink-muted mb-3" id="loadingDescription">{{ __('public.redirecting_google_desc') }}</p>
-                        <div class="mx-auto mb-2 h-10 w-10 animate-spin rounded-full border-2 border-ink/20 border-t-ink"></div>
-                        <p class="text-sm text-ink-muted" id="loadingCountdown">{{ __('public.redirecting_in_seconds') }}</p>
+                        <h5 class="text-lg font-semibold text-gray-900 mb-2" id="loadingTitle">{{ __('public.redirecting_to_google') }}</h5>
+                        <p class="text-gray-600 dark:text-gray-300 mb-3" id="loadingDescription">{{ __('public.redirecting_google_desc') }}</p>
+                        <div class="mx-auto mb-2 h-10 w-10 animate-spin rounded-full border-2 border-primary-200 border-t-primary-600"></div>
+                        <p class="text-sm text-gray-600 dark:text-gray-300" id="loadingCountdown">{{ __('public.redirecting_in_seconds') }}</p>
                     </div>
                     <div class="editorial-card mb-4 hidden" id="genericLoadingState">
-                        <h5 class="text-lg font-semibold text-ink mb-2">{{ __('public.processing_review') }}</h5>
-                        <div class="mx-auto h-10 w-10 animate-spin rounded-full border-2 border-ink/20 border-t-ink"></div>
+                        <h5 class="text-lg font-semibold text-gray-900 mb-2">{{ __('public.processing_review') }}</h5>
+                        <div class="mx-auto h-10 w-10 animate-spin rounded-full border-2 border-primary-200 border-t-primary-600"></div>
                     </div>
                 </div>
                 
@@ -143,8 +144,8 @@
                     <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full border border-green-200 bg-green-50 text-green-700">
                         <span class="text-2xl">✓</span>
                     </div>
-                    <h3 class="editorial-display text-xl text-ink mb-2">{{ __('public.review_sent') }}</h3>
-                    <p class="text-ink-muted mb-4">{{ __('public.thanks_for_feedback') }}</p>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">{{ __('public.review_sent') }}</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">{{ __('public.thanks_for_feedback') }}</p>
                     <div id="nextAction" class="mt-6">
                         <!-- Content will be dynamically inserted here -->
                     </div>
@@ -154,7 +155,7 @@
         
         <!-- Footer -->
         <div class="text-center mt-8 sm:mt-16">
-            <p class="text-xs sm:text-sm text-ink-subtle">
+            <p class="text-xs sm:text-sm text-gray-500">
                 {{ __('public.powered_by') }}
             </p>
         </div>
@@ -688,8 +689,8 @@
                     // Show success message
                     document.getElementById('nextAction').innerHTML = `
                         <div class="editorial-card border-green-200 bg-green-50/80 p-6">
-                            <h4 class="text-lg font-semibold text-ink mb-2">${t.private_feedback_sent}</h4>
-                            <p class="text-ink-muted mb-4">${t.private_feedback_sent_desc}</p>
+                            <h4 class="text-lg font-semibold text-gray-900 mb-2">${t.private_feedback_sent}</h4>
+                            <p class="text-gray-600 dark:text-gray-300 mb-4">${t.private_feedback_sent_desc}</p>
                             <p class="text-green-700">${t.private_feedback_success}</p>
                         </div>
                     `;
@@ -711,9 +712,9 @@
         function skipPrivateFeedback() {
             document.getElementById('nextAction').innerHTML = `
                 <div class="editorial-card p-6">
-                    <h4 class="text-lg font-semibold text-ink mb-2">{{ __('public.thanks_for_feedback') }}</h4>
-                    <p class="text-ink-muted mb-4">${t.review_registered}</p>
-                    <p class="text-ink-muted">${t.review_registered_success}</p>
+                    <h4 class="text-lg font-semibold text-gray-900 mb-2">{{ __('public.thanks_for_feedback') }}</h4>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">${t.review_registered}</p>
+                    <p class="text-gray-600 dark:text-gray-300">${t.review_registered_success}</p>
                 </div>
             `;
         }
